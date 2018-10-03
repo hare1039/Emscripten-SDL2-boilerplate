@@ -8,8 +8,6 @@
 
 #include "basic_headers.hpp"
 #include "movable.hpp"
-#include "element.hpp"
-#include "animation.hpp"
 
 namespace game
 {
@@ -28,7 +26,9 @@ public:
         if (error_code ec = SDL_Init(SDL_INIT_VIDEO); ec < 0)
             std::cout << SDL_GetError() << std::endl;
         
-        if (error_code ec = SDL_CreateWindowAndRenderer(900, 600, 0, &window, &renderer); ec < 0)
+        if (error_code ec = SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT,
+                                                        0,
+                                                        &window, &renderer); ec < 0)
             std::cout << SDL_GetError() << std::endl;
 
         if (error_code ec = SDL_SetRenderDrawColor(renderer, 12, 199, 166, 255); ec < 0)
