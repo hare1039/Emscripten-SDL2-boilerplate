@@ -7,19 +7,21 @@
 #include <emscripten.h>
 
 #include "basic_headers.hpp"
+#include "movable.hpp"
 #include "element.hpp"
+#include "animation.hpp"
 
 namespace game
 {
 
 class app
 {
-    bool is_running = true;
+    bool should_continue = true;
     SDL_Window   * window = nullptr;
     SDL_Renderer * renderer = nullptr;
     
-    std::unique_ptr<element> rin;
-
+    std::unique_ptr<movable> rin;
+    std::unique_ptr<movable> yoshi;
 public:
     app()
     {
@@ -32,12 +34,14 @@ public:
         if (error_code ec = SDL_SetRenderDrawColor(renderer, 12, 199, 166, 255); ec < 0)
             std::cout << SDL_GetError() << std::endl;
 
-        {
-            auto r = std::make_unique<element>(renderer);
-            rin.swap(r);
-        }
+        
+        rin.reset (new movable(renderer));
         if (error_code ec = rin->set_texture("asset/rin.png"); ec < 0)
             std::cout << "Load rin image error" << std::endl;
+
+        yoshi.reset (new movable(renderer));
+        if (error_code ec = yoshi->set_texture("asset/yoshi.png", 8); ec < 0)
+            std::cout << "Load yoshi image error" << std::endl;
     }
     
     ~app()
@@ -47,7 +51,7 @@ public:
 
     void run()
     {
-        if (not is_running)
+        if (not should_continue)
         {
             emscripten_cancel_main_loop();
             return;
@@ -57,89 +61,28 @@ public:
         while (SDL_PollEvent (&event))
             handle_event(event);
 
-        calculation();
+        calculate();
         render();
     }
 
 public:
     void handle_event(SDL_Event& event)
     {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            is_running = false;
-            break;
-        case SDL_MOUSEMOTION:
-            std::cout << "mouse moved" << std::endl;
-            break;
-
-        case SDL_KEYUP:
-        case SDL_KEYDOWN:
-        {
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_UP:
-                if (event.key.type == SDL_KEYDOWN)
-                    rin->active_state |= UP_PRESSED;
-                else if (event.key.type == SDL_KEYUP)
-                    rin->active_state ^= UP_PRESSED;
-                break;
-
-            case SDLK_DOWN:
-                if (event.key.type == SDL_KEYDOWN)
-                    rin->active_state |= DOWN_PRESSED;
-                else if (event.key.type == SDL_KEYUP)
-                    rin->active_state ^= DOWN_PRESSED;
-                break;
-
-            case SDLK_LEFT:
-                if (event.key.type == SDL_KEYDOWN)
-                    rin->active_state |= LEFT_PRESSED;
-                else if (event.key.type == SDL_KEYUP)
-                    rin->active_state ^= LEFT_PRESSED;
-                break;
-
-            case SDLK_RIGHT:
-                if (event.key.type == SDL_KEYDOWN)
-                    rin->active_state |= RIGHT_PRESSED;
-                else if (event.key.type == SDL_KEYUP)
-                    rin->active_state ^= RIGHT_PRESSED;
-                break;
-
-            default:
-                break;
-            }
-            std::cout << "key emit" << std::endl;
-            break;
-        }
-        default:
-            break;
-        }
+        std::for_each (element::all_elements().begin(), element::all_elements().end(),
+                       [&] (element * e) { e->handle_event(event); });
     }
 
-    void calculation()
+    void calculate()
     {
-//        rin->vx = rin->vy = 0;
-        if (rin->active_state & UP_PRESSED)
-            rin->vy = -50;
-        if (rin->active_state & DOWN_PRESSED)
-            rin->vy =  50;
-        if (rin->active_state & LEFT_PRESSED)
-            rin->vx = -50;
-        if (rin->active_state & RIGHT_PRESSED)
-            rin->vx =  50;
-
-        rin->vx *= INV;
-        rin->vy *= INV;
-
-        rin->dest.x += rin->vx;
-        rin->dest.y += rin->vy;
+        std::for_each (element::all_elements().begin(), element::all_elements().end(),
+                       [] (element * e) { e->calculate(); });
     }
 
     void render()
     {
         SDL_RenderClear(renderer);
-        SDL_RenderCopy (renderer, rin->texture, NULL, &rin->dest);
+        std::for_each (element::all_elements().begin(), element::all_elements().end(),
+                       [] (element * e) { e->render(); });
         SDL_RenderPresent(renderer);
     }
 };

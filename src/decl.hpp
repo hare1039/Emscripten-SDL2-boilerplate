@@ -4,22 +4,10 @@
 
 namespace game
 {
-
-enum input_state
-{
-    NOTHING_PRESSED = 0,
-    UP_PRESSED      = 1,
-    DOWN_PRESSED    = 1 << 1,
-    LEFT_PRESSED    = 1 << 2,
-    RIGHT_PRESSED   = 1 << 3
-};
-
+    
 using error_code = int;
-
-constexpr double SPEED_DOWN_RATE = 1.3; //1.4142135624;
-constexpr double INV = 1.0 / SPEED_DOWN_RATE;
-
-
+using SDL_Texture_ptr = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+using SDL_Surface_ptr = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>;
     
 } // namespace game
 
