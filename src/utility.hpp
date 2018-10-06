@@ -8,6 +8,9 @@
 namespace game::utility
 {
 
+constexpr inline static
+int get_array_pos(int x, int y, int width) { return y * width + x; }
+
 }
 
 

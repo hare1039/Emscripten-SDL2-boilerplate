@@ -38,7 +38,7 @@ public:
 //            should_continue = false;
             break;
         case SDL_MOUSEMOTION:
-            std::cout << "mouse moved" << std::endl;
+//            std::cout << "mouse moved" << std::endl;
             break;
 
         case SDL_KEYUP:
