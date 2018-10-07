@@ -31,9 +31,6 @@ public:
         center
     } mode = camera_mode::top_left;
 public:
-    camera() {instance() = this;};
-    ~camera() {instance() = nullptr;}
-
     
     void shift(pos_pair p) { pos += p; }
     pos_pair get_pos()

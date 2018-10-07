@@ -47,8 +47,6 @@ public:
             }
         std::cout << path << " builded" << std::endl;
     }
-
-    ~area() { instance() = nullptr; }
     
     void render (pixel camera_x_pixel, pixel camera_y_pixel)
     {
