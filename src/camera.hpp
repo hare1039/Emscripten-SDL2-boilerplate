@@ -5,16 +5,14 @@
 
 #include <utility>
 #include "basic_headers.hpp"
+#include "enable_instance.hpp"
 
 namespace game
 {
 
-class camera
+class camera : public enable_instance<camera>
 {
 public:
-    static
-    camera *& instance() { static camera * _p = nullptr; return _p; }
-
     class pos_pair
     {
     public:

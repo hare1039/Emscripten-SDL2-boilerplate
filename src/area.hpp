@@ -8,17 +8,15 @@
 #include <fstream>
 #include <memory>
 #include "basic_headers.hpp"
+#include "enable_instance.hpp"
 #include "map.hpp"
 
 namespace game
 {
 
-class area
+class area : public enable_instance<area>
 {
 public:
-    static
-    area *& instance() { static area * _ptr = nullptr; return _ptr; }
-
     std::vector<map> maps;
     int area_width  = 0;
     int area_height = 0; 
@@ -28,7 +26,6 @@ public:
 public:
     area (SDL_Renderer * r, std::string path): renderer{r}
     {
-        instance() = this;
         std::ifstream area_file{path};
         std::string tile_path;
         area_file >> tile_path;
