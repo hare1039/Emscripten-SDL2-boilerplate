@@ -1,11 +1,12 @@
-#ifndef __AREA_HPP__
-#define __AREA_HPP__
+#ifndef AREA_HPP_
+#define AREA_HPP_
 
 #pragma once
 
 #include <deque>
 #include <algorithm>
 #include <fstream>
+#include <memory>
 #include "basic_headers.hpp"
 #include "map.hpp"
 
@@ -16,11 +17,7 @@ class area
 {
 public:
     static
-    std::deque<area *> & all_areas()
-    {
-        static std::deque<area *> _v;
-        return _v;
-    }
+    area *& instance() { static area * _ptr = nullptr; return _ptr; }
 
     std::vector<map> maps;
     int area_width  = 0;
@@ -31,7 +28,7 @@ public:
 public:
     area (SDL_Renderer * r, std::string path): renderer{r}
     {
-        all_areas().push_back(this);
+        instance() = this;
         std::ifstream area_file{path};
         std::string tile_path;
         area_file >> tile_path;
@@ -48,20 +45,19 @@ public:
                 area_file >> map_path;
                 maps.emplace_back(map_path, renderer, tile_surface.get());
             }
-    }
-    
-    ~area ()
-    {
-        std::deque<area *> all = all_areas();
-        auto it = std::remove(all.begin(), all.end(), this);
-        all.erase(it, all.end());
+        std::cout << path << " builded" << std::endl;
     }
 
+    ~area() { instance() = nullptr; }
+    
     void render (pixel camera_x_pixel, pixel camera_y_pixel)
     {
         constexpr pixel MAP_WIDTH_PIXEL  = MAP_WIDTH  * TILE_SIZE_PIXEL;
         constexpr pixel MAP_HEIGHT_PIXEL = MAP_HEIGHT * TILE_SIZE_PIXEL;
-
+        
+        static_assert(MAP_WIDTH_PIXEL  >= WINDOW_WIDTH_PIXEL,  "Single map width must bigger then window width");
+        static_assert(MAP_HEIGHT_PIXEL >= WINDOW_HEIGHT_PIXEL, "Single map height must bigger then window height");
+        
         int left_up = -camera_x_pixel / MAP_WIDTH_PIXEL;
         left_up += ((-camera_y_pixel / MAP_HEIGHT_PIXEL) * area_width);
 
@@ -81,4 +77,4 @@ public:
 };
 
 }
-#endif // __AREA_HPP__
+#endif // AREA_HPP_

@@ -6,6 +6,7 @@ ALL: ../index.html
 	$(CXX) main.cpp -Wall -Wextra -O2               \
                     -std=c++17                      \
                     -s WASM=1                       \
+                    -s DISABLE_EXCEPTION_CATCHING=0 \
                     -s USE_SDL=2                    \
                     -s USE_SDL_NET=2                \
                     -s USE_SDL_IMAGE=2              \

@@ -1,5 +1,5 @@
-#ifndef __MOVABLE_HPP__
-#define __MOVABLE_HPP__
+#ifndef MOVABLE_HPP_
+#define MOVABLE_HPP_
 #pragma once
 
 #include "element.hpp"
@@ -32,6 +32,7 @@ public:
 
     void handle_event(SDL_Event& event) override
     {
+        return;
         switch (event.type)
         {
         case SDL_QUIT:
@@ -88,13 +89,13 @@ public:
     {
         element::calculate();
         if (active_state & UP_PRESSED)
-            vy = -50;
+            vy = -5;
         if (active_state & DOWN_PRESSED)
-            vy =  50;
+            vy =  5;
         if (active_state & LEFT_PRESSED)
-            vx = -50;
+            vx = -5;
         if (active_state & RIGHT_PRESSED)
-            vx =  50;
+            vx =  5;
 
         vx *= INV;
         vy *= INV;
@@ -106,4 +107,4 @@ public:
 
 } // namespace game
 
-#endif // __MOVABLE_HPP__
+#endif // MOVABLE_HPP_

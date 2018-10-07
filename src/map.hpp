@@ -1,5 +1,5 @@
-#ifndef __MAP_HPP__
-#define __MAP_HPP__
+#ifndef MAP_HPP_
+#define MAP_HPP_
 
 #pragma once
 
@@ -34,7 +34,7 @@ public:
                 auto pos      = token.find(":");
                 int  id_num   = std::stoi(token.substr(0, pos)),
                      type_num = std::stoi(token.substr(pos + 1));
-                tiles.emplace_back (id_num, tile::cast(type_num), tile_surface);
+                tiles.emplace_back (id_num, tile::cast(type_num));
             } catch (std::invalid_argument const & e) {
                 std::cout << "map parse failed" << std::endl;
             }
@@ -65,12 +65,28 @@ public:
 private:
     void gen_texture()
     {
+        Uint32 rmask = 0, gmask = 0, bmask = 0, amask = 0;
+        if constexpr (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        {
+            rmask = 0xff000000;
+            gmask = 0x00ff0000;
+            bmask = 0x0000ff00;
+            amask = 0x000000ff;
+        }
+        else
+        {
+            rmask = 0x000000ff;
+            gmask = 0x0000ff00;
+            bmask = 0x00ff0000;
+            amask = 0xff000000;
+        }
+        
         SDL_Surface_ptr s {SDL_CreateRGBSurface(
-            0,         // no flags
+            0,                         // no flags
             MAP_WIDTH  * TILE_SIZE_PIXEL,
             MAP_HEIGHT * TILE_SIZE_PIXEL,
-            32,        // color depth
-            0, 0, 0, 0 // color RGBA
+            32,                        // color depth
+            rmask, gmask, bmask, amask // color RGBA
         ), &SDL_FreeSurface};
 
         for (int x = 0; x < MAP_HEIGHT; x++)
@@ -96,4 +112,4 @@ private:
 
 } // namespace game
 
-#endif // __MAP_HPP__
+#endif // MAP_HPP_

@@ -1,5 +1,5 @@
-#ifndef __TILE_HPP__
-#define __TILE_HPP__
+#ifndef TILE_HPP_
+#define TILE_HPP_
 #pragma once
 
 #include <iostream>
@@ -14,7 +14,9 @@ public:
     enum class type
     {
         none = 0,
-        land,
+        grass,
+        brick,
+        snow,
         water
     };
 
@@ -23,12 +25,12 @@ public:
     SDL_Rect src = {};
 
 public:
-    tile (int i, type t, SDL_Surface * surface):
+    tile (int i, type t):
         id{i},
         type_id{t},
         src {
-            .x = (cast(t) % (surface->w / TILE_SIZE_PIXEL)) * TILE_SIZE_PIXEL,
-            .y = (cast(t) / (surface->w / TILE_SIZE_PIXEL)) * TILE_SIZE_PIXEL,
+            .x = (cast(t) - 1) * TILE_SIZE_PIXEL, //(cast(t) % (surface->w / TILE_SIZE_PIXEL)) * TILE_SIZE_PIXEL,
+            .y = 0, //(cast(t) / (surface->w / TILE_SIZE_PIXEL)) * TILE_SIZE_PIXEL,
             .h = TILE_SIZE_PIXEL,
             .w = TILE_SIZE_PIXEL
         } {}
@@ -48,4 +50,4 @@ std::ostream & operator << (std::ostream & os, tile const & t)
 }
 
 } // namespace game
-#endif // __TILE_HPP__
+#endif // TILE_HPP_

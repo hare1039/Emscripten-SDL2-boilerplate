@@ -1,5 +1,5 @@
-#ifndef __ANIMATION_HPP__
-#define __ANIMATION_HPP__
+#ifndef ANIMATION_HPP_
+#define ANIMATION_HPP_
 
 #pragma once
 
@@ -43,4 +43,4 @@ public:
     int  get_current_frame() { return current_frame; }
 };
 
-#endif // __ANIMATION_HPP__
+#endif // ANIMATION_HPP_

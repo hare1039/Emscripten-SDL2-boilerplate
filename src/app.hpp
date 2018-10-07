@@ -1,9 +1,10 @@
-#ifndef __APP_HPP__
-#define __APP_HPP__
+#ifndef APP_HPP_
+#define APP_HPP_
 #pragma once
 
 #include "basic_headers.hpp"
 #include "movable.hpp"
+#include "camera.hpp"
 #include "area.hpp"
 
 namespace game
@@ -18,6 +19,7 @@ class app
     std::unique_ptr<movable> rin;
     std::unique_ptr<movable> yoshi;
     std::unique_ptr<area>    a;
+    std::unique_ptr<camera>  cam;
 public:
     app()
     {
@@ -40,8 +42,8 @@ public:
         yoshi.reset (new movable(renderer));
         if (error_code ec = yoshi->set_texture("asset/pic/yoshi.png", 8); ec < 0)
             std::cout << "Load yoshi image error" << std::endl;
-
-        a.reset (new area (renderer, "./asset/map/00.area"));
+        a.reset(new area(renderer, "./asset/map/00.area"));
+        cam.reset(new camera);
     }
     
     ~app()
@@ -70,6 +72,7 @@ public:
     {
         std::for_each (element::all_elements().begin(), element::all_elements().end(),
                        [&] (element * e) { e->handle_event(event); });
+        move_camera(event);
     }
 
     void calculate()
@@ -81,14 +84,40 @@ public:
     void render()
     {
         SDL_RenderClear(renderer);
-        a->render (50, 50);
+        auto [x, y] = cam->get_pos();
+        a->render (x, y);
         std::for_each (element::all_elements().begin(), element::all_elements().end(),
                        [] (element * e) { e->render(); });
         SDL_RenderPresent(renderer);
     }
+
+    void move_camera (SDL_Event& event)
+    {
+        switch (event.type)
+        {
+        case SDL_KEYUP:
+        case SDL_KEYDOWN:
+        {
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_UP:
+                cam->shift(camera::pos_pair{ 0,  20});
+                break;
+            case SDLK_DOWN:
+                cam->shift(camera::pos_pair{ 0, -20});
+                break;
+            case SDLK_LEFT:
+                cam->shift(camera::pos_pair{ 20,  0});
+                break;
+            case SDLK_RIGHT:
+                cam->shift(camera::pos_pair{-20,  0});
+                break;
+            }
+            break;
+        }
+        }
+    }
 };
 
-
-
 } // namespace game
-#endif // __APP_HPP__
+#endif // APP_HPP_

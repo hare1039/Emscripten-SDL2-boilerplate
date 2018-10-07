@@ -6,7 +6,12 @@
 void run_loop (void * ptr)
 {
     auto game_ptr = static_cast<game::app *>(ptr);
-    game_ptr->run();
+    try
+    {
+        game_ptr->run();
+    } catch (std::exception const & e) {
+        std::cout << "[run_loop] " << e.what() <<std::endl;
+    }
 }
 
 int main()

@@ -1,5 +1,5 @@
-#ifndef __ELEMENT_HPP__
-#define __ELEMENT_HPP__
+#ifndef ELEMENT_HPP_
+#define ELEMENT_HPP_
 #pragma once
 
 #include <string>
@@ -78,4 +78,4 @@ public:
 using element_ptr = std::unique_ptr<element>;
 
 }// namespace game
-#endif // __ELEMENT_HPP__
+#endif // ELEMENT_HPP_

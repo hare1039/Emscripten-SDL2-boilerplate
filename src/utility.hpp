@@ -1,5 +1,5 @@
-#ifndef __UTILITY_HPP__
-#define __UTILITY_HPP__
+#ifndef UTILITY_HPP_
+#define UTILITY_HPP_
 
 #pragma once
 
@@ -8,10 +8,10 @@
 namespace game::utility
 {
 
-constexpr inline static
+constexpr inline
 int get_array_pos(int x, int y, int width) { return y * width + x; }
 
 }
 
 
-#endif // __UTILITY_HPP__
+#endif // UTILITY_HPP_
