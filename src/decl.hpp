@@ -18,6 +18,12 @@ constexpr pixel TILE_SIZE_PIXEL     = 80;
 
 constexpr double FPS = 32.0;
 
+enum class next_operation
+{
+    skip,
+    cont
+};
+
 } // namespace game
 
 

@@ -112,8 +112,10 @@ public:
     void animate() override
     {
         element::animate();
-//        if (speed_x == 0)
-//            anime_info->set_current_frame(0);
+        if (speed_x == 0)
+            anime_info->set_current_frame(0).lock();
+        else
+            anime_info->unlock();
     }
 };
 

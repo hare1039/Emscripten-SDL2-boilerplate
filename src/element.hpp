@@ -6,7 +6,6 @@
 #include <memory>
 #include <deque>
 #include <algorithm>
-#include <queue>
 #include <limits>
 #include <cassert>
 #include "animation.hpp"
@@ -24,15 +23,6 @@ using utility::cast;
 class element
 {
     struct point { int x = 0, y = 0; };
-
-    struct collision
-    {
-        static
-        std::queue<collision>& queue() { static std::queue<collision> q; return q; } 
-        
-        element * A = nullptr;
-        element * B = nullptr;
-    };
 protected:
     SDL_Renderer   *renderer = nullptr;
     SDL_Texture_ptr texture {nullptr, &SDL_DestroyTexture};
@@ -44,7 +34,7 @@ protected:
     double accel_x = 0; // pixel^2 per second
     double accel_y = 0; // pixel^2 per second
 
-    static constexpr int col_offset = 2;
+    static constexpr int col_offset = 10;
     int col_w = 0, col_h = 0;
 
     int current_frame_col = 0;
@@ -79,7 +69,16 @@ public:
         ghost    = 1 << 1,
         map_only = 1 << 2
     } flag_id = flag::none;
-    
+
+    struct collision
+    {
+        static
+        std::deque<collision>& queue() { static std::deque<collision> q; return q; } 
+        
+        element & A;
+        element & B;
+    };
+
 public:
     element(SDL_Renderer *r): renderer{r} { all_elements().push_back(this); }
     virtual ~element()
@@ -168,7 +167,7 @@ public:
     }
 
     virtual
-    void on_collision (element &) {}
+    next_operation on_collision (element &) { return next_operation::cont; }
 
 public:
     void move(double vx, double vy)
@@ -309,7 +308,7 @@ private:
                 .h = col_h
            }))
         {
-            collision::queue().push(collision{ .A = this, .B = e });
+            collision::queue().push_back(collision{ .A = *this, .B = *e });
             return false;
         }
 

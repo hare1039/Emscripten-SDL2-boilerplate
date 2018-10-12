@@ -5,12 +5,16 @@
 
 #include "basic_headers.hpp"
 
+namespace game
+{
+
 class animation
 {
 private:
     int  current_frame      = 0;
     int  frame_inc          = 1;
     unsigned long old_time  = 0;
+    bool frame_locked = false;
 
 public:
     int  frame_rate    = 100; //Milliseconds
@@ -28,7 +32,7 @@ public:
 
     void animate()
     {
-        if (old_time + frame_rate > SDL_GetTicks())
+        if (frame_locked or (old_time + frame_rate > SDL_GetTicks()))
             return;
 
         old_time = SDL_GetTicks();
@@ -58,8 +62,11 @@ public:
     }
 
 public:
-    void set_current_frame(int f) { if (f < 0 || f >= max_frame) return; current_frame = f;}
-    int  get_current_frame() { return current_frame; }
+    animation& set_current_frame(int f) { if (f < 0 || f >= max_frame) return *this; current_frame = f; return *this;}
+    animation& lock()   {frame_locked = true; return *this;}
+    animation& unlock() {frame_locked = false; return *this;}
+    int get_current_frame() { return current_frame; }
 };
 
+} // namespace game
 #endif // ANIMATION_HPP_

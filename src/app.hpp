@@ -80,6 +80,12 @@ public:
         f->calculate();
         std::for_each (element::all_elements().begin(), element::all_elements().end(),
                        [] (element * e) { e->calculate(); });
+        std::for_each (element::collision::queue().begin(), element::collision::queue().end(),
+                       [] (element::collision & col) {
+                           if (col.A.on_collision(col.B) == next_operation::cont)
+                               col.B.on_collision(col.A);
+                       });
+        element::collision::queue().clear();
     }
 
     void render()
