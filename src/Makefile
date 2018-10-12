@@ -1,5 +1,5 @@
 
-OBJECT=index.*
+OBJECT=../index.*
 CXX=emcc
 
 ALL: ../index.html

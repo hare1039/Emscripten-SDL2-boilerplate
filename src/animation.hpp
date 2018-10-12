@@ -15,10 +15,16 @@ private:
 public:
     int  frame_rate    = 100; //Milliseconds
     int  max_frame     = 1;
-    bool oscillate     = false;
-    
+
+    enum rotate_type
+    {
+        none,
+        circle,
+        oscillate
+    } rotate_type_id = none;
+
 public:
-    animation(int max_frame): max_frame{max_frame} {}  
+    animation(int max_frame, rotate_type t): max_frame{max_frame}, rotate_type_id{t} {}  
 
     void animate()
     {
@@ -28,11 +34,24 @@ public:
         old_time = SDL_GetTicks();
         current_frame += frame_inc;
 
-        if (oscillate)
+        if (rotate_type_id == rotate_type::oscillate)
         {
             if ((frame_inc > 0 && current_frame >= max_frame) || 
                 (current_frame <= 0))            
                 frame_inc = -frame_inc;
+        }
+        else if (rotate_type_id == rotate_type::circle)
+        {
+            if (frame_inc > 0)
+            {
+                if (current_frame >= max_frame)
+                    current_frame = 0;
+            }
+            else
+            {
+                if (current_frame < 0)
+                    current_frame = max_frame - 1;
+            }
         }
         else if (current_frame >= max_frame)
             current_frame = 0;

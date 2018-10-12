@@ -5,6 +5,7 @@
 
 #include <utility>
 #include "basic_headers.hpp"
+#include "element.hpp"
 #include "enable_instance.hpp"
 
 namespace game
@@ -13,34 +14,33 @@ namespace game
 class camera : public enable_instance<camera>
 {
 public:
-    class pos_pair
-    {
-    public:
-        pixel x = 0;
-        pixel y = 0;
-
-        pos_pair& operator += (const pos_pair & p) { x += p.x; y += p.y; return *this; }
-        pos_pair& operator =  (const pos_pair & p) { x =  p.x; y  = p.y; return *this; }
-    } pos;
-
-    enum class camera_mode
+    enum class mode
     {
         top_left = 0,
         center
-    } mode = camera_mode::top_left;
+    } mode_id = mode::top_left;
+
+    int *x = nullptr;
+    int *y = nullptr;
 public:
-    
-    void shift(pos_pair p) { pos += p; }
-    pos_pair get_pos()
+
+    void bind(int *target_x, int *target_y)
     {
-        pos_pair p = pos;
-        switch (mode)
+        x = target_x;
+        y = target_y;
+    }
+    
+    void shift(int x_shift, int y_shift) { if (not x and not y) {*x += x_shift; *y += y_shift;} }
+    std::pair<pixel, pixel> get_pos()
+    {
+        std::pair<pixel, pixel> p {*x, *y};
+        switch (mode_id)
         {
-        case camera_mode::top_left:
+        case mode::top_left:
             break;
-        case camera_mode::center:
-            p.x -= (WINDOW_WIDTH_PIXEL / 2);
-            p.y -= (WINDOW_HEIGHT_PIXEL / 2);
+        case mode::center:
+            p.first  -= (WINDOW_WIDTH_PIXEL / 2);
+            p.second -= (WINDOW_HEIGHT_PIXEL / 2);
             break;
         }
         return p;

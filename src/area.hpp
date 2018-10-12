@@ -52,22 +52,37 @@ public:
         
         static_assert(MAP_WIDTH_PIXEL  >= WINDOW_WIDTH_PIXEL,  "Single map width must bigger then window width");
         static_assert(MAP_HEIGHT_PIXEL >= WINDOW_HEIGHT_PIXEL, "Single map height must bigger then window height");
+
+        int map_id_x = utility::get_array_pos(camera_x_pixel / MAP_WIDTH_PIXEL,
+                                              camera_y_pixel / MAP_HEIGHT_PIXEL,
+                                              area_width);
+        int map_id_x_end = utility::get_array_pos((camera_x_pixel + WINDOW_WIDTH_PIXEL) / MAP_WIDTH_PIXEL,
+                                                  camera_y_pixel / MAP_HEIGHT_PIXEL,
+                                                  area_width);
+        int map_id_y_shift = utility::get_array_pos(camera_x_pixel / MAP_WIDTH_PIXEL,
+                                                    (camera_y_pixel + WINDOW_HEIGHT_PIXEL) / MAP_HEIGHT_PIXEL,
+                                                    area_width) - map_id_x;
         
-        int left_up = -camera_x_pixel / MAP_WIDTH_PIXEL;
-        left_up += ((-camera_y_pixel / MAP_HEIGHT_PIXEL) * area_width);
-
-        for (int i = 0; i < 4; i++)
+        for (int i = map_id_x; i <= map_id_x_end; i++)
         {
-            unsigned long id = left_up + ((i / 2) * area_width) + (i % 2);
-
-            if (id < 0 or id >= maps.size())
-                continue;
-
-            pixel x = ((id % area_width) * MAP_WIDTH_PIXEL)  + camera_x_pixel;
-            pixel y = ((id / area_width) * MAP_HEIGHT_PIXEL) + camera_y_pixel;
-
-            maps[id].render(x, y);
+            for (int id = i; id <= i + map_id_y_shift; id += area_width)
+            {
+                if (id < 0 or id >= static_cast<int>(maps.size()))
+                    continue;
+                pixel x = ((id % area_width) * MAP_WIDTH_PIXEL)  - camera_x_pixel;
+                pixel y = ((id / area_width) * MAP_HEIGHT_PIXEL) - camera_y_pixel;
+                maps[id].render(x, y);
+            }
         }
+    }
+
+    tile& at_map(int x, int y)
+    {
+        int area_x = x / MAP_WIDTH;
+        int area_y = y / MAP_HEIGHT;
+        
+        int mapid = utility::get_array_pos(area_x, area_y, area_width);
+        return maps.at(mapid).at(x % MAP_WIDTH, y % MAP_HEIGHT);
     }
 };
 

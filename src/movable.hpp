@@ -25,23 +25,15 @@ constexpr double INV = 1.0 / SPEED_DOWN_RATE;
 class movable : public element
 {
     unsigned int    active_state = NOTHING_PRESSED;
-    velocity        vx = 0;
-    velocity        vy = 0;
+//    velocity        vx = 0;
+//    velocity        vy = 0;
 public:
     movable(SDL_Renderer *r): element{r} {}
 
     void handle_event(SDL_Event& event) override
     {
-        return;
         switch (event.type)
         {
-        case SDL_QUIT:
-//            should_continue = false;
-            break;
-        case SDL_MOUSEMOTION:
-//            std::cout << "mouse moved" << std::endl;
-            break;
-
         case SDL_KEYUP:
         case SDL_KEYDOWN:
         {
@@ -63,16 +55,28 @@ public:
 
             case SDLK_LEFT:
                 if (event.key.type == SDL_KEYDOWN)
+                {
+                    move_left = true;
                     active_state |= LEFT_PRESSED;
+                }
                 else if (event.key.type == SDL_KEYUP)
+                {
+                    move_left = false;
                     active_state ^= LEFT_PRESSED;
+                }    
                 break;
 
             case SDLK_RIGHT:
                 if (event.key.type == SDL_KEYDOWN)
+                {
+                    move_right = true;
                     active_state |= RIGHT_PRESSED;
+                }
                 else if (event.key.type == SDL_KEYUP)
+                {
+                    move_right = false;
                     active_state ^= RIGHT_PRESSED;
+                }
                 break;
 
             default:
@@ -87,21 +91,29 @@ public:
 
     void calculate() override
     {
+//        element::calculate();
+//        if (active_state & UP_PRESSED)
+//            vy = -5;
+//        if (active_state & DOWN_PRESSED)
+//            vy =  5;
+//        if (active_state & LEFT_PRESSED)
+//            vx = -5;
+//        if (active_state & RIGHT_PRESSED)
+//            vx =  5;
+//
+//        vx *= INV;
+//        vy *= INV;
+//
+//        dest.x += vx;
+//        dest.y += vy;
         element::calculate();
-        if (active_state & UP_PRESSED)
-            vy = -5;
-        if (active_state & DOWN_PRESSED)
-            vy =  5;
-        if (active_state & LEFT_PRESSED)
-            vx = -5;
-        if (active_state & RIGHT_PRESSED)
-            vx =  5;
+    }
 
-        vx *= INV;
-        vy *= INV;
-
-        dest.x += vx;
-        dest.y += vy;
+    void animate() override
+    {
+        element::animate();
+//        if (speed_x == 0)
+//            anime_info->set_current_frame(0);
     }
 };
 

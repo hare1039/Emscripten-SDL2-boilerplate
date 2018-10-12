@@ -16,6 +16,8 @@ constexpr int   MAP_WIDTH           = 8;
 constexpr int   MAP_HEIGHT          = 8;
 constexpr pixel TILE_SIZE_PIXEL     = 80;
 
+constexpr double FPS = 32.0;
+
 } // namespace game
 
 

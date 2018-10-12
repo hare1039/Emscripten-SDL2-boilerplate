@@ -14,6 +14,7 @@ public:
     T* &instance() { static T * _ptr = nullptr; return _ptr; }
 
     enable_instance() { instance() = static_cast<T*>(this); }
+    virtual ~enable_instance() { if (instance() == static_cast<T*>(this)) instance() = nullptr; }
 };
 
 } // namespace game
