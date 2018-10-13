@@ -311,8 +311,6 @@ private:
                 if (not is_element_pos_valid(e, new_x, new_y))
                     ok = false;
 
-
-
         return ok;
     }
     bool is_tile_pos_valid (tile &t)

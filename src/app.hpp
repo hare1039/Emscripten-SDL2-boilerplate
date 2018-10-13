@@ -17,6 +17,7 @@ class app
     SDL_Renderer * renderer = nullptr;
 
     std::unique_ptr<movable> yoshi;
+    std::unique_ptr<element> rin;
     std::unique_ptr<area>    a;
     std::unique_ptr<camera>  cam;
     std::unique_ptr<fps>     f;
@@ -39,12 +40,18 @@ public:
         yoshi = std::make_unique<movable> (renderer);
         if (error_code ec = yoshi->set_texture("./asset/pic/yoshi.png", 64, 64, animation::rotate_type::circle); ec < 0)
             std::cout << "Load yoshi image error" << std::endl;
-        yoshi->dest.x = 200;
-        yoshi->dest.y = 200;
+        yoshi->dest.x = 10;
+        yoshi->dest.y = 10;
         yoshi->flag_id = element::flag::gravity;
         cam->bind(&yoshi->dest);
         cam->mode_id = camera::mode::center;
         a = std::make_unique<area>(renderer, "./asset/map/00.area");
+
+        rin = std::make_unique<element>(renderer);
+        if (error_code ec = rin->set_texture("./asset/pic/rin.png", 245, 224, animation::rotate_type::none); ec < 0)
+            std::cout << "Load rin image error" << std::endl;
+        rin->dest.x = 600;
+        rin->dest.y = 500;
     }
 
     ~app()
