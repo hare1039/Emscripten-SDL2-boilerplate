@@ -63,7 +63,7 @@ public:
                 {
                     move_left = false;
                     active_state ^= LEFT_PRESSED;
-                }    
+                }
                 break;
 
             case SDLK_RIGHT:
@@ -77,6 +77,10 @@ public:
                     move_right = false;
                     active_state ^= RIGHT_PRESSED;
                 }
+                break;
+
+            case SDLK_SPACE:
+                jump();
                 break;
 
             default:

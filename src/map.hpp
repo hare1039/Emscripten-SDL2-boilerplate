@@ -15,11 +15,11 @@ namespace game
 class map
 {
     std::vector<tile> tiles;
-public:    
+public:
     SDL_Renderer     *renderer     = nullptr;
     SDL_Surface      *tile_surface = nullptr;
     SDL_Texture_ptr   map_texture{nullptr, &SDL_DestroyTexture};
-    
+
 public:
     map (std::string path, SDL_Renderer * r, SDL_Surface * tile_s)
         : renderer{r}, tile_surface{tile_s}
@@ -42,7 +42,7 @@ public:
         std::cout << path << " loaded" << std::endl;
         gen_texture();
     }
-    
+
     void render (pixel map_x_pixel, pixel map_y_pixel)
     {
         int w = 0, h = 0;
@@ -84,7 +84,7 @@ private:
             bmask = 0x00ff0000;
             amask = 0xff000000;
         }
-        
+
         SDL_Surface_ptr s {SDL_CreateRGBSurface(
             0,                         // no flags
             MAP_WIDTH  * TILE_SIZE_PIXEL,

@@ -28,7 +28,7 @@ public:
     } rotate_type_id = none;
 
 public:
-    animation(int max_frame, rotate_type t): max_frame{max_frame}, rotate_type_id{t} {}  
+    animation(int max_frame, rotate_type t): max_frame{max_frame}, rotate_type_id{t} {}
 
     void animate()
     {
@@ -40,8 +40,8 @@ public:
 
         if (rotate_type_id == rotate_type::oscillate)
         {
-            if ((frame_inc > 0 && current_frame >= max_frame) || 
-                (current_frame <= 0))            
+            if ((frame_inc > 0 && current_frame >= max_frame) ||
+                (current_frame <= 0))
                 frame_inc = -frame_inc;
         }
         else if (rotate_type_id == rotate_type::circle)

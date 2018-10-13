@@ -34,7 +34,9 @@ public:
             .h = TILE_SIZE_PIXEL,
             .w = TILE_SIZE_PIXEL
         } {}
-    
+
+    bool is_solid() { return type_id == tile::type::water; }
+
     inline constexpr static
     tile::type cast (int i) { return static_cast<tile::type>(i); }
 

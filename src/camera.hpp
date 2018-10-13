@@ -20,27 +20,25 @@ public:
         center
     } mode_id = mode::top_left;
 
-    int *x = nullptr;
-    int *y = nullptr;
+    SDL_Rect *target = nullptr;
 public:
 
-    void bind(int *target_x, int *target_y)
+    void bind(SDL_Rect *t)
     {
-        x = target_x;
-        y = target_y;
+        target = t;
     }
-    
-    void shift(int x_shift, int y_shift) { if (not x and not y) {*x += x_shift; *y += y_shift;} }
+
+    void shift(int x_shift, int y_shift) { if (not target) {target->x += x_shift; target->y += y_shift;} }
     std::pair<pixel, pixel> get_pos()
     {
-        std::pair<pixel, pixel> p {*x, *y};
+        std::pair<pixel, pixel> p {target->x, target->y};
         switch (mode_id)
         {
         case mode::top_left:
             break;
         case mode::center:
-            p.first  -= (WINDOW_WIDTH_PIXEL / 2);
-            p.second -= (WINDOW_HEIGHT_PIXEL / 2);
+            p.first  -= (WINDOW_WIDTH_PIXEL / 2 - target->w / 2);
+            p.second -= (WINDOW_HEIGHT_PIXEL / 2 - target->h / 2);
             break;
         }
         return p;

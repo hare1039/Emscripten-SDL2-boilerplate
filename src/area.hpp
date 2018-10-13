@@ -19,7 +19,7 @@ class area : public enable_instance<area>
 public:
     std::vector<map> maps;
     int area_width  = 0;
-    int area_height = 0; 
+    int area_height = 0;
     SDL_Surface_ptr tile_surface {nullptr, &SDL_FreeSurface};
     SDL_Renderer  * renderer = nullptr;
 
@@ -44,14 +44,11 @@ public:
             }
         std::cout << path << " builded" << std::endl;
     }
-    
+
     void render (pixel camera_x_pixel, pixel camera_y_pixel)
     {
         constexpr pixel MAP_WIDTH_PIXEL  = MAP_WIDTH  * TILE_SIZE_PIXEL;
         constexpr pixel MAP_HEIGHT_PIXEL = MAP_HEIGHT * TILE_SIZE_PIXEL;
-        
-        static_assert(MAP_WIDTH_PIXEL  >= WINDOW_WIDTH_PIXEL,  "Single map width must bigger then window width");
-        static_assert(MAP_HEIGHT_PIXEL >= WINDOW_HEIGHT_PIXEL, "Single map height must bigger then window height");
 
         int map_id_x = utility::get_array_pos(camera_x_pixel / MAP_WIDTH_PIXEL,
                                               camera_y_pixel / MAP_HEIGHT_PIXEL,
@@ -62,7 +59,7 @@ public:
         int map_id_y_shift = utility::get_array_pos(camera_x_pixel / MAP_WIDTH_PIXEL,
                                                     (camera_y_pixel + WINDOW_HEIGHT_PIXEL) / MAP_HEIGHT_PIXEL,
                                                     area_width) - map_id_x;
-        
+
         for (int i = map_id_x; i <= map_id_x_end; i++)
         {
             for (int id = i; id <= i + map_id_y_shift; id += area_width)
@@ -80,7 +77,7 @@ public:
     {
         int area_x = x / MAP_WIDTH;
         int area_y = y / MAP_HEIGHT;
-        
+
         int mapid = utility::get_array_pos(area_x, area_y, area_width);
         return maps.at(mapid).at(x % MAP_WIDTH, y % MAP_HEIGHT);
     }

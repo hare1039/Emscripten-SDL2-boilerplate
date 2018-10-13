@@ -40,6 +40,8 @@ protected:
     int current_frame_col = 0;
     int current_frame_row = 0;
 
+    bool jumpable = false;
+
 public:
     static
     std::deque<element *> & all_elements()
@@ -52,8 +54,8 @@ public:
     bool move_left  = false;
     bool dead = false;
 
-    double max_speed_x = std::numeric_limits<double>::max();
-    double max_speed_y = std::numeric_limits<double>::max();
+    double max_speed_x = 10;
+    double max_speed_y = 15;
 
 public:
     enum class type
@@ -73,8 +75,8 @@ public:
     struct collision
     {
         static
-        std::deque<collision>& queue() { static std::deque<collision> q; return q; } 
-        
+        std::deque<collision>& queue() { static std::deque<collision> q; return q; }
+
         element & A;
         element & B;
     };
@@ -138,7 +140,20 @@ public:
         if (speed_y < -max_speed_y) speed_y = -max_speed_y;
 
         animate();
-        move (speed_x, speed_y);
+
+        jumpable = false;
+        int old_y = dest.y;
+        move_calculate (speed_x, speed_y);
+        if (dest.y == old_y)
+            try
+            {
+                int left_x   = (dest.x + col_offset) / TILE_SIZE_PIXEL;
+                int right_x  = (dest.x + col_offset + col_w) / TILE_SIZE_PIXEL;
+                int target_y = (dest.y + col_offset + dest.h) / TILE_SIZE_PIXEL;
+                if (area::instance()->at_map(left_x, target_y).is_solid() or
+                    area::instance()->at_map(right_x, target_y).is_solid())
+                    jumpable = true;
+            } catch (std::out_of_range const &e) { /* expected exception */ }
     }
 
     virtual
@@ -170,10 +185,11 @@ public:
     next_operation on_collision (element &) { return next_operation::cont; }
 
 public:
-    void move(double vx, double vy)
+    void move_calculate(double vx, double vy)
     {
         if (vx == 0 && vy == 0)
             return;
+
         double speed_factor = fps::instance()->speed_factor();
         vx *= speed_factor;
         vy *= speed_factor;
@@ -234,6 +250,15 @@ public:
             accel_x = speed_x = 0;
     }
 
+    bool jump()
+    {
+        if (not jumpable)
+            return false;
+
+        speed_y = -max_speed_y;
+        return true;
+    }
+
     bool collides_with (SDL_Rect const & r)
     {
         point top_left   = { .x = r.x,       .y = r.y };
@@ -256,7 +281,7 @@ private:
                 (s.y < p.y && p.y < s.y + s.h));
     }
     bool is_pos_valid (pixel new_x, pixel new_y)
-    {        
+    {
         point top_left_map   = { .x = (new_x + col_offset        ) / TILE_SIZE_PIXEL,
                                  .y = (new_y + col_offset        ) / TILE_SIZE_PIXEL};
         point top_right_map  = { .x = (new_x + col_offset + col_w) / TILE_SIZE_PIXEL,
@@ -271,7 +296,7 @@ private:
             {
                 try
                 {
-                    tile& t = area::instance()->at_map(x_i, y_i);                                    
+                    tile& t = area::instance()->at_map(x_i, y_i);
                     if (not is_tile_pos_valid(t))
                     {
                         ok = false;
@@ -282,19 +307,17 @@ private:
         }
 
         if (not (cast(flag_id) & cast(flag::map_only)))
-        {
             for (element * e : all_elements())
-            {
                 if (not is_element_pos_valid(e, new_x, new_y))
                     ok = false;
-            }
-        }
-        
+
+
+
         return ok;
     }
     bool is_tile_pos_valid (tile &t)
     {
-        return t.type_id != tile::type::water;
+        return not t.is_solid();
     }
     bool is_element_pos_valid (element *e, pixel x, pixel y)
     {
