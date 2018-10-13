@@ -194,6 +194,12 @@ public:
         vx *= speed_factor;
         vy *= speed_factor;
 
+        if (vy > max_speed_y * max_speed_y)
+        {
+            std::cout << "Speed too fast. Ignore." << std::endl;
+            vy = 0;
+        }
+
         double x_shift = vx;
         double y_shift = vy;
 
