@@ -20,13 +20,10 @@ public:
         center
     } mode_id = mode::top_left;
 
-    SDL_Rect *target = nullptr;
+    SDL_Rect pos = {0, 0, 0, 0}, *target = &pos;
 public:
 
-    void bind(SDL_Rect *t)
-    {
-        target = t;
-    }
+    void bind(SDL_Rect *t) { target = t; }
 
     void shift(int x_shift, int y_shift) { if (not target) {target->x += x_shift; target->y += y_shift;} }
     std::pair<pixel, pixel> get_pos()
