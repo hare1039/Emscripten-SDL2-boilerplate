@@ -12,9 +12,12 @@ class app
     bool should_continue = true;
     SDL_Window_ptr   window{nullptr, &SDL_DestroyWindow};
     SDL_Renderer_ptr renderer{nullptr, &SDL_DestroyRenderer};
+    std::unique_ptr<fps>   game_fps;
     std::unique_ptr<theme> thm;
+
 public:
-    app()
+    app():
+        game_fps {std::make_unique<fps>()}
     {
         if (error_code ec = SDL_Init(SDL_INIT_VIDEO); ec < 0)
             std::cout << SDL_GetError() << std::endl;
@@ -53,31 +56,18 @@ public:
     }
 
 public:
-    void handle_event(SDL_Event& event)
-    {
-        thm->on_event(event);
-    }
+    void handle_event(SDL_Event& event) { thm->on_event(event); }
 
     void calculate()
     {
-        thm->theme_fps->calculate();
-        std::for_each (element::all_elements().begin(), element::all_elements().end(),
-                       [] (auto &e) { e.second->calculate(); });
-        std::for_each (element::collision::queue().begin(), element::collision::queue().end(),
-                       [] (element::collision & col) {
-                           if (col.A.on_collision(col.B) == next_operation::cont)
-                               col.B.on_collision(col.A);
-                       });
-        element::collision::queue().clear();
+        game_fps->calculate();
+        thm->calculate();
     }
 
     void render()
     {
         SDL_RenderClear(renderer.get());
-        auto [x, y] = thm->theme_camera->get_pos();
-        thm->theme_area->render (x, y);
-        std::for_each (element::all_elements().begin(), element::all_elements().end(),
-                       [] (auto &e) { e.second->render(); });
+        thm->render();
         SDL_RenderPresent(renderer.get());
     }
 };

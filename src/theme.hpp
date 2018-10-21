@@ -23,13 +23,11 @@ class theme : public event
     std::vector<std::unique_ptr<movable>> movables;
     std::unique_ptr<area>   theme_area;
     std::unique_ptr<camera> theme_camera;
-    std::unique_ptr<fps>    theme_fps;
 
 public:
     theme(SDL_Renderer * r, std::string path):
         renderer {r},
-        theme_camera {std::make_unique<camera>()},
-        theme_fps {std::make_unique<fps>()}
+        theme_camera {std::make_unique<camera>()}
     {
         // std::shared_ptr<cpptoml::table>
         auto config = cpptoml::parse_file(path);
@@ -80,6 +78,27 @@ public:
             if (bind_cam)
                 theme_camera->bind(&movables.back()->dest);
         }
+    }
+
+    void calculate()
+    {
+        std::for_each (element::all_elements().begin(), element::all_elements().end(),
+                       [] (auto &e) { e.second->calculate(); });
+        std::for_each (element::collision::queue().begin(), element::collision::queue().end(),
+                       [] (element::collision & col) {
+                           if (col.A.on_collision(col.B) == next_operation::cont)
+                               col.B.on_collision(col.A);
+                       });
+        element::collision::queue().clear();
+    }
+
+    void render()
+    {
+        auto [x, y] = theme_camera->get_pos();
+        theme_area->render (x, y);
+        std::for_each (element::all_elements().begin(), element::all_elements().end(),
+                       [] (auto &e) { e.second->render(); });
+
     }
 
     void on_key_down(SDL_Keycode const & key, Uint16 const &) override
