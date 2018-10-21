@@ -1,10 +1,11 @@
 # This is a TOML document.
 
 area = "./asset/map/00.area"
-camera_mode = 1 # camera::mode::center
+[camera]
+mode = 1 # camera::mode::center
 
 [[elements]]
-name     = "rin1"
+name     = "rin"
 pic      = "./asset/pic/rin.png"
 width    = 245
 height   = 224

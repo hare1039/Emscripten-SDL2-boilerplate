@@ -40,16 +40,10 @@ protected:
 
     int current_frame_col = 0;
     int current_frame_row = 0;
-
+    std::unordered_map<std::string, std::unique_ptr<element>> &all_elements;
     bool jumpable = false;
 
 public:
-    static
-    std::unordered_map<std::string, element *> & all_elements()
-    {
-        static std::unordered_map<std::string, element *> _v;
-        return _v;
-    }
     SDL_Rect dest = {}, src = {};
     bool move_right = false;
     bool move_left  = false;
@@ -83,13 +77,14 @@ public:
     };
 
 public:
-    element(SDL_Renderer *r, std::string element_name): renderer{r}
-    {
-        all_elements().insert({element_name, this});
-        name = element_name;
-    }
+    element(SDL_Renderer *r,
+            std::string_view element_name,
+            std::unordered_map<std::string, std::unique_ptr<element>> &all):
+        name {element_name},
+        renderer{r},
+        all_elements{all} {}
 
-    virtual ~element() { all_elements().erase(name); }
+    virtual ~element() = default;
 
     virtual
     error_code set_texture(std::string path,
@@ -311,8 +306,8 @@ private:
         }
 
         if (not (cast(flag_id) & cast(flag::map_only)))
-            for (auto &e : all_elements())
-                if (not is_element_pos_valid(e.second, new_x, new_y))
+            for (auto &e : all_elements)
+                if (not is_element_pos_valid(e.second.get(), new_x, new_y))
                     ok = false;
 
         return ok;
@@ -340,8 +335,6 @@ private:
         return true;
     }
 };
-
-using element_ptr = std::unique_ptr<element>;
 
 }// namespace game
 #endif // ELEMENT_HPP_

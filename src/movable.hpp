@@ -10,7 +10,9 @@ namespace game
 class movable : public element
 {
 public:
-    movable(SDL_Renderer *r, std::string name): element{r, name} {}
+    movable(SDL_Renderer *r,
+            std::string name,
+            std::unordered_map<std::string, std::unique_ptr<element>> &a): element{r, name, a} {}
 
     void animate() override
     {

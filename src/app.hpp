@@ -53,6 +53,8 @@ public:
 
         calculate();
         render();
+        if (thm->is_finished())
+            thm = std::make_unique<theme>(renderer.get(), thm->next());
     }
 
 public:
