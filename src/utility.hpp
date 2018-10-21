@@ -19,21 +19,17 @@ auto cast(E e) noexcept { return static_cast<std::underlying_type_t<E>>(e); }
 
 std::string random_string(std::string::size_type length)
 {
-    auto randchar = []() -> char
-    {
+    std::string str(length, 0);
+    std::generate_n(str.begin(), length, []() -> char {
         static const char charset[] =
         "0123456789"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
 
         thread_local static std::mt19937 rg{std::random_device{}()};
-        thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(charset) - 2);
-        constexpr size_t max_index = sizeof(charset) - 1;
-        return charset [pick(rg) % max_index];
-    };
-
-    std::string str(length, 0);
-    std::generate_n(str.begin(), length, randchar);
+        thread_local static std::uniform_int_distribution<std::string::size_type> pick{0, sizeof(charset) - 2};
+        return charset [pick(rg)];
+    });
     return str;
 }
 
