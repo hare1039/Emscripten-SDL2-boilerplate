@@ -4,6 +4,7 @@ area = "./asset/map/00.area"
 camera_mode = 1 # camera::mode::center
 
 [[elements]]
+name     = "rin1"
 pic      = "./asset/pic/rin.png"
 width    = 245
 height   = 224
@@ -20,6 +21,7 @@ x        = 800
 y        = 900
 
 [[movables]]
+name     = "yoshi"
 pic      = "./asset/pic/yoshi.png"
 width    = 64
 height   = 64

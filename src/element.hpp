@@ -4,7 +4,7 @@
 
 #include <string>
 #include <memory>
-#include <deque>
+#include <unordered_map>
 #include <algorithm>
 #include <limits>
 #include <cassert>
@@ -23,6 +23,7 @@ using utility::cast;
 class element
 {
     struct point { int x = 0, y = 0; };
+    std::string name;
 protected:
     SDL_Renderer   *renderer = nullptr;
     SDL_Texture_ptr texture {nullptr, &SDL_DestroyTexture};
@@ -44,9 +45,9 @@ protected:
 
 public:
     static
-    std::deque<element *> & all_elements()
+    std::unordered_map<std::string, element *> & all_elements()
     {
-        static std::deque<element *> _v;
+        static std::unordered_map<std::string, element *> _v;
         return _v;
     }
     SDL_Rect dest = {}, src = {};
@@ -82,13 +83,13 @@ public:
     };
 
 public:
-    element(SDL_Renderer *r): renderer{r} { all_elements().push_back(this); }
-    virtual ~element()
+    element(SDL_Renderer *r, std::string element_name): renderer{r}
     {
-        std::deque<element *> & all = all_elements();
-        auto it = std::remove(all.begin(), all.end(), this);
-        all.erase(it, all.end());
+        all_elements().insert({element_name, this});
+        name = element_name;
     }
+
+    virtual ~element() { all_elements().erase(name); }
 
     virtual
     error_code set_texture(std::string path,
@@ -112,9 +113,6 @@ public:
         anime_info = std::make_unique<animation>(pic_frame, t);
         return 0;
     }
-
-    virtual
-    void handle_event(SDL_Event &) {}
 
     virtual
     void calculate()
@@ -313,8 +311,8 @@ private:
         }
 
         if (not (cast(flag_id) & cast(flag::map_only)))
-            for (element * e : all_elements())
-                if (not is_element_pos_valid(e, new_x, new_y))
+            for (auto &e : all_elements())
+                if (not is_element_pos_valid(e.second, new_x, new_y))
                     ok = false;
 
         return ok;
@@ -325,9 +323,9 @@ private:
     }
     bool is_element_pos_valid (element *e, pixel x, pixel y)
     {
-        if (this != e &&
-            not e->dead &&
-            cast(e->flag_id) ^ cast(flag::map_only) &&
+        if (this != e and
+            not e->dead and
+            cast(e->flag_id) ^ cast(flag::map_only) and
             e->collides_with(SDL_Rect{
                 .x = x + col_offset,
                 .y = y + col_offset,

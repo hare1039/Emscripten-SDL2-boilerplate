@@ -55,15 +55,14 @@ public:
 public:
     void handle_event(SDL_Event& event)
     {
-        std::for_each (element::all_elements().begin(), element::all_elements().end(),
-                       [&] (element * e) { e->handle_event(event); });
+        thm->on_event(event);
     }
 
     void calculate()
     {
         thm->theme_fps->calculate();
         std::for_each (element::all_elements().begin(), element::all_elements().end(),
-                       [] (element * e) { e->calculate(); });
+                       [] (auto &e) { e.second->calculate(); });
         std::for_each (element::collision::queue().begin(), element::collision::queue().end(),
                        [] (element::collision & col) {
                            if (col.A.on_collision(col.B) == next_operation::cont)
@@ -78,7 +77,7 @@ public:
         auto [x, y] = thm->theme_camera->get_pos();
         thm->theme_area->render (x, y);
         std::for_each (element::all_elements().begin(), element::all_elements().end(),
-                       [] (element * e) { e->render(); });
+                       [] (auto &e) { e.second->render(); });
         SDL_RenderPresent(renderer.get());
     }
 };

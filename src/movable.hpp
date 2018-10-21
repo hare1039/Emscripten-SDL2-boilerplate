@@ -10,52 +10,7 @@ namespace game
 class movable : public element
 {
 public:
-    movable(SDL_Renderer *r): element{r} {}
-
-    void handle_event(SDL_Event& event) override
-    {
-        switch (event.type)
-        {
-        case SDL_KEYUP:
-        case SDL_KEYDOWN:
-        {
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_UP:
-                if (event.key.type == SDL_KEYDOWN)
-                    jump();
-                break;
-
-            case SDLK_DOWN:
-                break;
-
-            case SDLK_LEFT:
-                if (event.key.type == SDL_KEYDOWN)
-                    move_left = true;
-                else if (event.key.type == SDL_KEYUP)
-                    move_left = false;
-                break;
-
-            case SDLK_RIGHT:
-                if (event.key.type == SDL_KEYDOWN)
-                    move_right = true;
-                else if (event.key.type == SDL_KEYUP)
-                    move_right = false;
-                break;
-
-            case SDLK_SPACE:
-                jump();
-                break;
-
-            default:
-                break;
-            }
-            break;
-        }
-        default:
-            break;
-        }
-    }
+    movable(SDL_Renderer *r, std::string name): element{r, name} {}
 
     void animate() override
     {
