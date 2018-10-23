@@ -27,7 +27,7 @@ class element
 protected:
     std::string name;
     std::unordered_map<std::string, std::unique_ptr<element>> &all_elements;
-    camera cam;
+    camera& cam;
 
     SDL_Renderer   *renderer = nullptr;
     SDL_Texture_ptr texture {nullptr, &SDL_DestroyTexture};
@@ -196,7 +196,7 @@ public:
         dest.x  = table->get_as<pixel>("x").value_or(0);
         dest.y  = table->get_as<pixel>("y").value_or(0);
         flag_id = static_cast<element::flag>(table->get_as<int>("flag_id")
-                                                          .value_or(cast(element::flag::none)));
+                                             .value_or(cast(element::flag::none)));
     }
 
 public:

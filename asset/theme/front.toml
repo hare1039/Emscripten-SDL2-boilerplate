@@ -4,7 +4,7 @@ area = "./asset/map/front.area"
 [camera]
 mode = 0 # camera::mode::top_left
 
-[[floating_elements]]
+[[floatings]]
 name     = "rin"
 pic      = "./asset/pic/rin.png"
 width    = 245

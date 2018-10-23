@@ -21,7 +21,7 @@ rotate_t = 0 # animation::rotate_type::none
 x        = 800
 y        = 900
 
-[[movable_elements]]
+[[movables]]
 name     = "yoshi"
 pic      = "./asset/pic/yoshi.png"
 width    = 64

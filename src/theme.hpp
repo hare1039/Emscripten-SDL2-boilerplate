@@ -21,19 +21,18 @@ class theme : public event
 {
 protected:
     friend app;
-    SDL_Renderer *          renderer = nullptr;
-    std::unique_ptr<area>   theme_area;
-    std::unique_ptr<camera> theme_camera;
-    std::unique_ptr<theme>  next_theme;
+    SDL_Renderer *          renderer    {nullptr};
+    std::unique_ptr<area>   theme_area  {nullptr};
+    std::unique_ptr<camera> theme_camera{std::make_unique<camera>()};
+    std::unique_ptr<theme>  next_theme  {nullptr};
     std::unordered_map<std::string, std::unique_ptr<element>> elements;
 
 public:
-    theme(SDL_Renderer * r, std::string path):
-        renderer {r},
-        theme_camera {std::make_unique<camera>()}
+    theme(SDL_Renderer * r, std::string_view path):
+        renderer {r}
     {
         // std::shared_ptr<cpptoml::table>
-        auto config = cpptoml::parse_file(path);
+        auto config = cpptoml::parse_file(path.data());
 
         theme_area  = std::make_unique<area>(renderer, *(config->get_as<std::string>("area")));
         auto cam    = config->get_table("camera");
@@ -43,8 +42,8 @@ public:
                           cam->get_as<int>("y").value_or(0));
 
         build<element>("elements", config);
-        build<element_types::movable> ("movable_elements", config);
-        build<element_types::floating>("floating_elements", config);
+        build<element_types::movable> ("movables", config);
+        build<element_types::floating>("floatings", config);
     }
 
     virtual
@@ -87,7 +86,7 @@ private:
             elements.emplace(name, std::make_unique<T>(renderer, name, elements, *theme_camera,
                                                        std::forward<Args>(args)...));
             elements[name]->build_from_toml(table);
-            if (table->get_as<bool>("bind_cam").value_or(false))
+            if (table->get_as<bool>("bind_cam"))
                 theme_camera->bind(&elements[name]->dest);
         }
     }
