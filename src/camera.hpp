@@ -24,7 +24,7 @@ public:
 public:
 
     void bind(SDL_Rect *t) { target = t; }
-
+    void set(int x, int y) { if (target) {target->x = x; target->y = y;} }
     void shift(int x_shift, int y_shift) { if (target) {target->x += x_shift; target->y += y_shift;} }
     std::pair<pixel, pixel> get_pos()
     {

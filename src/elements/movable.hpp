@@ -1,18 +1,20 @@
-#ifndef MOVABLE_HPP_
-#define MOVABLE_HPP_
+#ifndef ELEMENTS_MOVABLE_HPP_
+#define ELEMENTS_MOVABLE_HPP_
 #pragma once
 
-#include "element.hpp"
+#include "../basic_headers.hpp"
+#include "../element.hpp"
 
-namespace game
+namespace game::element_types
 {
 
 class movable : public element
 {
 public:
     movable(SDL_Renderer *r,
-            std::string name,
-            std::unordered_map<std::string, std::unique_ptr<element>> &a): element{r, name, a} {}
+                    std::string name,
+                    std::unordered_map<std::string, std::unique_ptr<element>> &a,
+                    camera &c): element{r, name, a, c} {}
 
     void animate() override
     {
@@ -28,4 +30,4 @@ public:
 
 } // namespace game
 
-#endif // MOVABLE_HPP_
+#endif // ELEMENTS_MOVABLE_HPP_

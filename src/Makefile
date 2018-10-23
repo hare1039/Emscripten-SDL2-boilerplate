@@ -2,7 +2,7 @@
 OBJECT=../index.*
 CXX=emcc
 
-ALL: ../index.html
+ALL:
 	$(CXX) main.cpp -Wall -Wextra -O2               \
                     -std=c++17                      \
                     -s WASM=1                       \

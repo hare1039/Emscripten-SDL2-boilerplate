@@ -6,17 +6,20 @@ namespace game
 {
 
 using error_code = int;
-using pixel = int;
+using pixel      = int;
 using SDL_Texture_ptr = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
 using SDL_Surface_ptr = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>;
 using SDL_Window_ptr  = std::unique_ptr<SDL_Window,  decltype(&SDL_DestroyWindow)>;
 using SDL_Renderer_ptr= std::unique_ptr<SDL_Renderer,decltype(&SDL_DestroyRenderer)>;
 
-constexpr pixel WINDOW_WIDTH_PIXEL  = 900;
-constexpr pixel WINDOW_HEIGHT_PIXEL = 600;
-constexpr int   MAP_WIDTH           = 8;
-constexpr int   MAP_HEIGHT          = 8;
-constexpr pixel TILE_SIZE_PIXEL     = 80;
+constexpr double ZOOM_FACTOR = 2;
+constexpr pixel  WINDOW_WIDTH_PIXEL  = 450 * ZOOM_FACTOR;
+constexpr pixel  WINDOW_HEIGHT_PIXEL = 330 * ZOOM_FACTOR;
+constexpr pixel  TILE_SIZE_PIXEL     = 30  * ZOOM_FACTOR;
+constexpr int    MAP_WIDTH           = 3;
+constexpr int    MAP_HEIGHT          = 3;
+constexpr pixel  MAP_WIDTH_PIXEL     = MAP_WIDTH  * TILE_SIZE_PIXEL;
+constexpr pixel  MAP_HEIGHT_PIXEL    = MAP_HEIGHT * TILE_SIZE_PIXEL;
 
 constexpr double FPS = 32.0;
 

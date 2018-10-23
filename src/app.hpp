@@ -3,7 +3,7 @@
 #pragma once
 
 #include "basic_headers.hpp"
-#include "theme.hpp"
+#include "./themes/front_page.hpp"
 namespace game
 {
 
@@ -34,7 +34,7 @@ public:
         if (error_code ec = SDL_SetRenderDrawColor(renderer.get(), 12, 199, 166, 255); ec < 0)
             std::cout << SDL_GetError() << std::endl;
 
-        thm = std::make_unique<theme>(renderer.get(), "./asset/theme/01.toml");
+        thm = std::make_unique<theme_types::front_page>(renderer.get());
     }
 
     ~app() { SDL_Quit(); }
@@ -54,7 +54,7 @@ public:
         calculate();
         render();
         if (thm->is_finished())
-            thm = std::make_unique<theme>(renderer.get(), thm->next());
+            thm = thm->next();
     }
 
 public:

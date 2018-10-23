@@ -39,7 +39,6 @@ public:
                 std::cout << "map parse failed" << std::endl;
             }
         }
-        std::cout << path << " loaded" << std::endl;
         gen_texture();
     }
 

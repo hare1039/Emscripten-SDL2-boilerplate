@@ -5,7 +5,8 @@
 #include <unordered_map>
 #include "basic_headers.hpp"
 #include "event.hpp"
-#include "movable.hpp"
+#include "elements/floating.hpp"
+#include "elements/movable.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "fps.hpp"
@@ -18,11 +19,12 @@ class app;
 
 class theme : public event
 {
+protected:
     friend app;
     SDL_Renderer *          renderer = nullptr;
     std::unique_ptr<area>   theme_area;
     std::unique_ptr<camera> theme_camera;
-    std::string             next_theme;
+    std::unique_ptr<theme>  next_theme;
     std::unordered_map<std::string, std::unique_ptr<element>> elements;
 
 public:
@@ -35,56 +37,17 @@ public:
 
         theme_area  = std::make_unique<area>(renderer, *(config->get_as<std::string>("area")));
         auto cam    = config->get_table("camera");
-        theme_camera->mode_id = static_cast<camera::mode>(*(cam->get_as<int>("mode")));
-        theme_camera->shift(cam->get_as<int>("x").value_or(0), cam->get_as<int>("y").value_or(0));
+        theme_camera->mode_id = static_cast<camera::mode>(cam->get_as<int>("mode")
+                                                          .value_or(cast(camera::mode::top_left)));
+        theme_camera->set(cam->get_as<int>("x").value_or(0),
+                          cam->get_as<int>("y").value_or(0));
 
-        for (const auto &table : *(config->get_table_array("elements")))
-        {
-            std::string name = table->
-                get_as<std::string>("name").
-                value_or(utility::random_string(20));
-
-            elements.emplace(name, std::make_unique<element>(renderer, name, elements));
-            auto && new_element = elements[name];
-            if (error_code ec = new_element->set_texture(
-                *(table->get_as<std::string>("pic")),
-                *(table->get_as<int>("width")),
-                *(table->get_as<int>("height")),
-                static_cast<animation::rotate_type>(*(table->get_as<int>("rotate_t")))); ec < 0)
-                std::cout << SDL_GetError() << std::endl;;
-
-            new_element->dest.x = *(table->get_as<pixel>("x"));
-            new_element->dest.y = *(table->get_as<pixel>("y"));
-            auto bind_cam = table->get_as<bool>("bind_cam");
-            if (bind_cam)
-                theme_camera->bind(&new_element->dest);
-        }
-
-        for (const auto &table : *(config->get_table_array("movables")))
-        {
-            std::string name = table->
-                get_as<std::string>("name").
-                value_or(utility::random_string(20));
-
-            elements.emplace(name, std::make_unique<movable>(renderer, name, elements));
-            auto && new_element = elements[name];
-            if (error_code ec = new_element->set_texture(
-                *(table->get_as<std::string>("pic")),
-                *(table->get_as<int>("width")),
-                *(table->get_as<int>("height")),
-                static_cast<animation::rotate_type>(*(table->get_as<int>("rotate_t")))); ec < 0)
-                std::cout << "Load movables image error" << std::endl;;
-
-            new_element->dest.x  = *(table->get_as<pixel>("x"));
-            new_element->dest.y  = *(table->get_as<pixel>("y"));
-            new_element->flag_id = static_cast<element::flag>(*(table->get_as<int>("flag_id")));
-
-            auto bind_cam = table->get_as<bool>("bind_cam");
-            if (bind_cam)
-                theme_camera->bind(&new_element->dest);
-        }
+        build<element>("elements", config);
+        build<element_types::movable> ("movable_elements", config);
+        build<element_types::floating>("floating_elements", config);
     }
 
+    virtual
     void calculate()
     {
         std::for_each (elements.begin(), elements.end(),
@@ -97,6 +60,7 @@ public:
         element::collision::queue().clear();
     }
 
+    virtual
     void render()
     {
         auto [x, y] = theme_camera->get_pos();
@@ -105,55 +69,26 @@ public:
                        [] (auto &e) { e.second->render(); });
     }
 
-    std::string next() { return next_theme; }
-    bool is_finished() { return next_theme != ""; }
+    virtual
+    std::unique_ptr<theme> next() { return std::move(next_theme); }
+    virtual
+    bool is_finished() { return (!! next_theme); }
 
-    void on_key_down(SDL_Keycode const & key, Uint16 const &) override
+private:
+    template<typename T, typename ... Args>
+    void build(std::string toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
     {
-        switch (key)
+        for (const auto &table : *(config->get_table_array(toml_name)))
         {
-        case SDLK_UP:
-            elements["yoshi"]->jump();
-            break;
+            std::string name = table->
+                get_as<std::string>("name").
+                value_or(utility::random_string(20));
 
-        case SDLK_DOWN:
-            for (auto && p : elements)
-                std::cout << p.first << " -> " << p.second.get() << std::endl;
-            next_theme = "./asset/theme/01.toml";
-            break;
-
-        case SDLK_LEFT:
-            elements["yoshi"]->move_left = true;
-            break;
-
-        case SDLK_RIGHT:
-            elements["yoshi"]->move_right = true;
-            break;
-
-        case SDLK_SPACE:
-            elements["yoshi"]->jump();
-            elements["rin"]->dest.x += 100;
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    void on_key_up  (SDL_Keycode const & key, Uint16 const &) override
-    {
-        switch (key)
-        {
-        case SDLK_LEFT:
-            elements["yoshi"]->move_left = false;
-            break;
-
-        case SDLK_RIGHT:
-            elements["yoshi"]->move_right = false;
-            break;
-
-        default:
-            break;
+            elements.emplace(name, std::make_unique<T>(renderer, name, elements, *theme_camera,
+                                                       std::forward<Args>(args)...));
+            elements[name]->build_from_toml(table);
+            if (table->get_as<bool>("bind_cam").value_or(false))
+                theme_camera->bind(&elements[name]->dest);
         }
     }
 };

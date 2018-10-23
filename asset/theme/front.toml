@@ -1,0 +1,14 @@
+# This is a TOML document.
+
+area = "./asset/map/front.area"
+[camera]
+mode = 0 # camera::mode::top_left
+
+[[floating_elements]]
+name     = "rin"
+pic      = "./asset/pic/rin.png"
+width    = 245
+height   = 224
+rotate_t = 0 # animation::rotate_type::none
+x        = 600
+y        = 500

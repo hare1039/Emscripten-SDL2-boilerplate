@@ -14,6 +14,7 @@
 #include "camera.hpp"
 #include "fps.hpp"
 #include "tile.hpp"
+#include "external_libraries/cpptoml/include/cpptoml.h"
 
 namespace game
 {
@@ -23,8 +24,11 @@ using utility::cast;
 class element
 {
     struct point { int x = 0, y = 0; };
-    std::string name;
 protected:
+    std::string name;
+    std::unordered_map<std::string, std::unique_ptr<element>> &all_elements;
+    camera cam;
+
     SDL_Renderer   *renderer = nullptr;
     SDL_Texture_ptr texture {nullptr, &SDL_DestroyTexture};
     std::unique_ptr<animation> anime_info;
@@ -40,7 +44,6 @@ protected:
 
     int current_frame_col = 0;
     int current_frame_row = 0;
-    std::unordered_map<std::string, std::unique_ptr<element>> &all_elements;
     bool jumpable = false;
 
 public:
@@ -79,10 +82,12 @@ public:
 public:
     element(SDL_Renderer *r,
             std::string_view element_name,
-            std::unordered_map<std::string, std::unique_ptr<element>> &all):
+            std::unordered_map<std::string, std::unique_ptr<element>> &all,
+            camera &c):
         name {element_name},
-        renderer{r},
-        all_elements{all} {}
+        all_elements{all},
+        cam{c},
+        renderer{r} {}
 
     virtual ~element() = default;
 
@@ -152,7 +157,7 @@ public:
     virtual
     void render()
     {
-        auto [camera_x, camera_y] = camera::instance()->get_pos();
+        auto [camera_x, camera_y] = cam.get_pos();
         SDL_Rect pos = {
             .x = dest.x - camera_x,
             .y = dest.y - camera_y,
@@ -176,6 +181,23 @@ public:
 
     virtual
     next_operation on_collision (element &) { return next_operation::cont; }
+
+    virtual
+    void build_from_toml(std::shared_ptr<cpptoml::table> table)
+    {
+        if (error_code ec = set_texture(
+                *(table->get_as<std::string>("pic")),
+                table->get_as<int>("width").value_or(0),
+                table->get_as<int>("height").value_or(0),
+                static_cast<animation::rotate_type>(table->get_as<int>("rotate_t")
+                                                    .value_or(cast(animation::rotate_type::none)))); ec < 0)
+            std::cout << SDL_GetError() << std::endl;
+
+        dest.x  = table->get_as<pixel>("x").value_or(0);
+        dest.y  = table->get_as<pixel>("y").value_or(0);
+        flag_id = static_cast<element::flag>(table->get_as<int>("flag_id")
+                                                          .value_or(cast(element::flag::none)));
+    }
 
 public:
     void move_calculate(double vx, double vy)

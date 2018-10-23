@@ -47,9 +47,6 @@ public:
 
     void render (pixel camera_x_pixel, pixel camera_y_pixel)
     {
-        constexpr pixel MAP_WIDTH_PIXEL  = MAP_WIDTH  * TILE_SIZE_PIXEL;
-        constexpr pixel MAP_HEIGHT_PIXEL = MAP_HEIGHT * TILE_SIZE_PIXEL;
-
         int map_id_x = utility::get_array_pos(camera_x_pixel / MAP_WIDTH_PIXEL,
                                               camera_y_pixel / MAP_HEIGHT_PIXEL,
                                               area_width);
