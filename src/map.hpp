@@ -21,10 +21,10 @@ public:
     SDL_Texture_ptr   map_texture{nullptr, &SDL_DestroyTexture};
 
 public:
-    map (std::string path, SDL_Renderer * r, SDL_Surface * tile_s)
+    map (std::string_view path, SDL_Renderer * r, SDL_Surface * tile_s)
         : renderer{r}, tile_surface{tile_s}
     {
-        std::ifstream level_file {path};
+        std::ifstream level_file {path.data()};
         std::string token;
         while (level_file >> token)
         {

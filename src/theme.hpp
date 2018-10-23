@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <string_view>
 #include "basic_headers.hpp"
 #include "event.hpp"
 #include "elements/floating.hpp"
@@ -75,9 +76,9 @@ public:
 
 private:
     template<typename T, typename ... Args>
-    void build(std::string toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
+    void build(std::string_view toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
     {
-        for (const auto &table : *(config->get_table_array(toml_name)))
+        for (const auto &table : *(config->get_table_array(toml_name.data())))
         {
             std::string name = table->
                 get_as<std::string>("name").

@@ -6,6 +6,7 @@
 #include <deque>
 #include <algorithm>
 #include <fstream>
+#include <string_view>
 #include <memory>
 #include "basic_headers.hpp"
 #include "enable_instance.hpp"
@@ -24,9 +25,9 @@ public:
     SDL_Renderer  * renderer = nullptr;
 
 public:
-    area (SDL_Renderer * r, std::string path): renderer{r}
+    area (SDL_Renderer * r, std::string_view path): renderer{r}
     {
-        std::ifstream area_file{path};
+        std::ifstream area_file{path.data()};
         std::string tile_path;
         area_file >> tile_path;
         tile_surface.reset(IMG_Load(tile_path.c_str()));
