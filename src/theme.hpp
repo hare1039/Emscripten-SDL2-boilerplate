@@ -38,7 +38,7 @@ public:
         theme_area  = std::make_unique<area>(renderer, *(config->get_as<std::string>("area")));
         auto cam    = config->get_table("camera");
         theme_camera->mode_id = static_cast<camera::mode>(cam->get_as<int>("mode")
-                                                          .value_or(cast(camera::mode::top_left)));
+                                                          .value_or(utility::cast(camera::mode::top_left)));
         theme_camera->set(cam->get_as<int>("x").value_or(0),
                           cam->get_as<int>("y").value_or(0));
 

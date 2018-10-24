@@ -19,11 +19,11 @@
 namespace game
 {
 
-using utility::cast;
-
 class element
 {
     struct point { int x = 0, y = 0; };
+    template <typename T> constexpr inline
+    auto cast(T&& v) { return utility::cast(std::forward<T>(v)); } // aliasing utility::cast function
 protected:
     std::string name;
     std::unordered_map<std::string, std::unique_ptr<element>> &all_elements;
@@ -39,8 +39,8 @@ protected:
     double accel_x = 0; // pixel^2 per second
     double accel_y = 0; // pixel^2 per second
 
-    static constexpr int col_offset = 10;
-    int col_w = 0, col_h = 0;
+    pixel col_offset = 10;
+    pixel col_w = 0, col_h = 0;
 
     int current_frame_col = 0;
     int current_frame_row = 0;
@@ -90,29 +90,6 @@ public:
         renderer{r} {}
 
     virtual ~element() = default;
-
-    virtual
-    error_code set_texture(std::string path,
-                           pixel pic_w, pixel pic_h,
-                           animation::rotate_type t = animation::rotate_type::none)
-    {
-        SDL_Surface_ptr image {IMG_Load(path.c_str()), &SDL_FreeSurface};
-        if (not image)
-        {
-            std::cout << IMG_GetError() << std::endl;
-            return -1;
-        }
-
-        texture.reset (SDL_CreateTextureFromSurface (renderer, image.get()));
-
-        src.w = dest.w = pic_w;
-        col_w = pic_w - col_offset * 2;
-        src.h = dest.h = pic_h;
-        col_h = pic_h - col_offset * 2;
-        int pic_frame = image->h / pic_h;
-        anime_info = std::make_unique<animation>(pic_frame, t);
-        return 0;
-    }
 
     virtual
     void calculate()
@@ -185,6 +162,12 @@ public:
     virtual
     void build_from_toml(std::shared_ptr<cpptoml::table> table)
     {
+        dest.x  = table->get_as<pixel>("x").value_or(0);
+        dest.y  = table->get_as<pixel>("y").value_or(0);
+        flag_id = static_cast<element::flag>(table->get_as<int>("flag_id")
+                                             .value_or(cast(element::flag::none)));
+        col_offset = table->get_as<pixel>("offset").value_or(10);
+
         if (error_code ec = set_texture(
                 *(table->get_as<std::string>("pic")),
                 table->get_as<int>("width").value_or(0),
@@ -192,11 +175,29 @@ public:
                 static_cast<animation::rotate_type>(table->get_as<int>("rotate_t")
                                                     .value_or(cast(animation::rotate_type::none)))); ec < 0)
             std::cout << SDL_GetError() << std::endl;
+    }
 
-        dest.x  = table->get_as<pixel>("x").value_or(0);
-        dest.y  = table->get_as<pixel>("y").value_or(0);
-        flag_id = static_cast<element::flag>(table->get_as<int>("flag_id")
-                                             .value_or(cast(element::flag::none)));
+    virtual
+    error_code set_texture(std::string_view path,
+                           pixel pic_w, pixel pic_h,
+                           animation::rotate_type t = animation::rotate_type::none)
+    {
+        SDL_Surface_ptr image {IMG_Load(path.data()), &SDL_FreeSurface};
+        if (not image)
+        {
+            std::cout << IMG_GetError() << std::endl;
+            return -1;
+        }
+
+        texture.reset (SDL_CreateTextureFromSurface (renderer, image.get()));
+
+        src.w = dest.w = pic_w;
+        col_w = pic_w - col_offset * 2;
+        src.h = dest.h = pic_h;
+        col_h = pic_h - col_offset * 2;
+        int pic_frame = image->h / pic_h;
+        anime_info = std::make_unique<animation>(pic_frame, t);
+        return 0;
     }
 
 public:

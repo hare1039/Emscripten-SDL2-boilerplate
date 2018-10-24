@@ -14,7 +14,7 @@ namespace game::utility
 constexpr inline
 int get_array_pos(int x, int y, int width) { return y * width + x; }
 
-template <typename E> constexpr
+template <typename E> constexpr inline
 auto cast(E e) noexcept { return static_cast<std::underlying_type_t<E>>(e); }
 
 std::string random_string(std::string::size_type length)

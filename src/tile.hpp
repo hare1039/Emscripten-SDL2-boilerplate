@@ -24,8 +24,8 @@ public:
     enum class flag
     {
         none   = 0,
-        deadly = 1,
-        solid  = 1 << 1,
+        solid  = 1,
+        deadly = 1 << 1,
     };
     flag flag_id = flag::none;
     SDL_Rect src = {};
