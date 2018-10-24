@@ -5,6 +5,7 @@
 
 #include "../basic_headers.hpp"
 #include "../theme.hpp"
+#include "court.hpp"
 #include "stage.hpp"
 namespace game::theme_types
 {
@@ -30,7 +31,7 @@ public:
         switch (key)
         {
         case SDLK_DOWN:
-            next_theme = std::make_unique<stage>(renderer, "./asset/theme/01.toml");
+            next_theme = std::make_unique<court>(renderer);
             break;
         default:
             break;

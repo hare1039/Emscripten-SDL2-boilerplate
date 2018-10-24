@@ -1,8 +1,11 @@
 # This is a TOML document.
 
-area = "./asset/map/00.area"
+area = "./asset/map/court.area"
+
 [camera]
-mode = 1 # camera::mode::center
+mode = 0 # camera::mode::top_left
+x    = 60
+y    = 60
 
 [[elements]]
 name     = "rin"
@@ -30,4 +33,3 @@ rotate_t = 1    # animation::rotate_type::circle
 x        = 10
 y        = 10
 flag_id  = 1    # element::flag::gravity
-bind_cam = true # bind camera on this element
