@@ -32,9 +32,9 @@ public:
             try
             {
                 auto pos      = token.find(":");
-                int  id_num   = std::stoi(token.substr(0, pos)),
-                     type_num = std::stoi(token.substr(pos + 1));
-                tiles.emplace_back (id_num, tile::cast(type_num));
+                int flag_num  = std::stoi(token.substr(0, pos)),
+                    graph_num = std::stoi(token.substr(pos + 1));
+                tiles.emplace_back (tile::cast<'g'>(graph_num), tile::cast<'f'>(flag_num));
             } catch (std::invalid_argument const & e) {
                 std::cout << "map parse failed" << std::endl;
             }
@@ -97,7 +97,7 @@ private:
             for (int y = 0; y < MAP_WIDTH; y++)
             {
                 tile &t {tiles.at (utility::get_array_pos(x, y, MAP_WIDTH))};
-                if (t.type_id == tile::type::none)
+                if (t.graph_id == tile::graph::none)
                     continue;
                 SDL_Rect dest = {
                     .x = x * TILE_SIZE_PIXEL,

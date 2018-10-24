@@ -11,7 +11,7 @@ namespace game
 class tile
 {
 public:
-    enum class type
+    enum class graph
     {
         none = 0,
         grass,
@@ -19,35 +19,46 @@ public:
         snow,
         water
     };
+    graph graph_id = graph::none;
 
-    int  id = 0;
-    type type_id = type::none;
+    enum class flag
+    {
+        none   = 0,
+        deadly = 1,
+        solid  = 1 << 1,
+    };
+    flag flag_id = flag::none;
     SDL_Rect src = {};
 
 public:
-    tile (int i, type t):
-        id{i},
-        type_id{t},
+    tile (graph g, flag f):
+        graph_id{g},
+        flag_id {f},
         src {
-            .x = (cast(t) - 1) * TILE_SIZE_PIXEL, //(cast(t) % (surface->w / TILE_SIZE_PIXEL)) * TILE_SIZE_PIXEL,
-            .y = 0, //(cast(t) / (surface->w / TILE_SIZE_PIXEL)) * TILE_SIZE_PIXEL,
+            .x = (utility::cast(g) - 1) * TILE_SIZE_PIXEL,
+            .y = 0,
             .h = TILE_SIZE_PIXEL,
             .w = TILE_SIZE_PIXEL
         } {}
 
-    bool is_solid() { return type_id == tile::type::water; }
+    bool is_solid() { return utility::cast(flag_id) & utility::cast(flag::solid); }
 
-    inline constexpr static
-    tile::type cast (int i) { return static_cast<tile::type>(i); }
-
-    inline constexpr static
-    int cast (tile::type t) { return static_cast<int>(t); }
+    template <char c> inline constexpr static
+    auto cast (int i)
+    {
+        if constexpr (c == 'g')
+            return static_cast<tile::graph>(i);
+        else if constexpr (c == 'f')
+            return static_cast<tile::flag>(i);
+        else
+            return i;
+    }
 };
 
 std::ostream & operator << (std::ostream & os, tile const & t)
 {
-    os << "[tile.id]: " << t.id << "\n"
-       << "[tile.type_id]: " << tile::cast(t.type_id);
+    os << "[tile.flag]: "  << utility::cast(t.flag_id) << "\n"
+       << "[tile.graph]: " << utility::cast(t.graph_id);
     return os;
 }
 
