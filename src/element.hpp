@@ -162,16 +162,16 @@ public:
     virtual
     void build_from_toml(std::shared_ptr<cpptoml::table> table)
     {
-        dest.x  = table->get_as<pixel>("x").value_or(0);
-        dest.y  = table->get_as<pixel>("y").value_or(0);
+        dest.x  = table->get_as<pixel>("x").value_or(dest.x);
+        dest.y  = table->get_as<pixel>("y").value_or(dest.y);
         flag_id = static_cast<element::flag>(table->get_as<int>("flag_id")
-                                             .value_or(cast(element::flag::none)));
-        col_offset = table->get_as<pixel>("offset").value_or(10);
+                                             .value_or(cast(flag_id)));
+        col_offset = table->get_as<pixel>("offset").value_or(col_offset);
 
         if (error_code ec = set_texture(
                 *(table->get_as<std::string>("pic")),
-                table->get_as<int>("width").value_or(0),
-                table->get_as<int>("height").value_or(0),
+                table->get_as<int>("width").value_or(src.w),
+                table->get_as<int>("height").value_or(src.h),
                 static_cast<animation::rotate_type>(table->get_as<int>("rotate_t")
                                                     .value_or(cast(animation::rotate_type::none)))); ec < 0)
             std::cout << SDL_GetError() << std::endl;
