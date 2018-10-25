@@ -40,7 +40,7 @@ protected:
     double accel_x = 0; // pixel^2 per second
     double accel_y = 0; // pixel^2 per second
 
-    pixel col_offset = 10;
+    pixel col_offset = 5;
 
     int current_frame_col = 0;
     int current_frame_row = 0;
