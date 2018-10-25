@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <optional>
 #include <algorithm>
 #include <limits>
 #include <cassert>
@@ -40,7 +41,6 @@ protected:
     double accel_y = 0; // pixel^2 per second
 
     pixel col_offset = 10;
-    pixel col_w = 0, col_h = 0;
 
     int current_frame_col = 0;
     int current_frame_row = 0;
@@ -123,7 +123,7 @@ public:
             try
             {
                 int left_x   = (dest.x + col_offset) / TILE_SIZE_PIXEL;
-                int right_x  = (dest.x + col_offset + col_w) / TILE_SIZE_PIXEL;
+                int right_x  = (dest.x + col_offset + col_w()) / TILE_SIZE_PIXEL;
                 int target_y = (dest.y + col_offset + dest.h) / TILE_SIZE_PIXEL;
                 if (area::instance()->at_map(left_x, target_y).is_solid() or
                     area::instance()->at_map(right_x, target_y).is_solid())
@@ -192,9 +192,7 @@ public:
         texture.reset (SDL_CreateTextureFromSurface (renderer, image.get()));
 
         src.w = dest.w = pic_w;
-        col_w = pic_w - col_offset * 2;
         src.h = dest.h = pic_h;
-        col_h = pic_h - col_offset * 2;
         int pic_frame = image->h / pic_h;
         anime_info = std::make_unique<animation>(pic_frame, t);
         return 0;
@@ -211,10 +209,7 @@ public:
         vy *= speed_factor;
 
         if (vy > max_speed_y * max_speed_y)
-        {
-            std::cout << "Speed too fast. Ignore." << std::endl;
             vy = 0;
-        }
 
         double x_shift = vx;
         double y_shift = vy;
@@ -281,6 +276,26 @@ public:
         return true;
     }
 
+    // this function amplify this element, and then adjust dest.x value
+    // to make middle point of the element won't change
+    void amplify(double w, std::optional<double> h = std::nullopt)
+    {
+        pixel old_w = dest.w;
+        pixel old_h = dest.h;
+        dest.w *= w;
+        dest.h = (h)? (dest.h * (*h)) : (static_cast<double>(src.h) * dest.w / src.w);
+        dest.x -= (dest.w - old_w) / 2;
+        dest.y -= (dest.h - old_h) / 2;
+    }
+
+    void amplify(pixel w, std::optional<pixel> h = std::nullopt)
+    {
+        if (h)
+            amplify(static_cast<double>(w)/dest.w, static_cast<double>(*h)/dest.h);
+        else
+            amplify(static_cast<double>(w)/dest.w);
+    }
+
     bool collides_with (SDL_Rect const & r)
     {
         point top_left   = { .x = r.x,       .y = r.y };
@@ -288,7 +303,7 @@ public:
         point down_left  = { .x = r.x,       .y = r.y + r.h };
         point down_right = { .x = r.x + r.w, .y = r.y + r.h };
 
-        SDL_Rect col = { .x = dest.x + col_offset, .y = dest.y + col_offset, .w = col_w, .h = col_h };
+        SDL_Rect col = { .x = dest.x + col_offset, .y = dest.y + col_offset, .w = col_w(), .h = col_h() };
 
         return within_range(col, top_left)
             || within_range(col, top_right)
@@ -304,12 +319,12 @@ private:
     }
     bool is_pos_valid (pixel new_x, pixel new_y)
     {
-        point top_left_map   = { .x = (new_x + col_offset        ) / TILE_SIZE_PIXEL,
-                                 .y = (new_y + col_offset        ) / TILE_SIZE_PIXEL};
-        point top_right_map  = { .x = (new_x + col_offset + col_w) / TILE_SIZE_PIXEL,
-                                 .y = (new_y + col_offset        ) / TILE_SIZE_PIXEL };
-        point down_left_map  = { .x = (new_x + col_offset        ) / TILE_SIZE_PIXEL,
-                                 .y = (new_y + col_offset + col_h) / TILE_SIZE_PIXEL };
+        point top_left_map   = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
+                                 .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL};
+        point top_right_map  = { .x = (new_x + col_offset + col_w()) / TILE_SIZE_PIXEL,
+                                 .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL };
+        point down_left_map  = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
+                                 .y = (new_y + col_offset + col_h()) / TILE_SIZE_PIXEL };
 
         bool ok = true; // we can't early return here
         for (int x_i = top_left_map.x; x_i <= top_right_map.x; x_i++)
@@ -347,8 +362,8 @@ private:
             e->collides_with(SDL_Rect{
                 .x = x + col_offset,
                 .y = y + col_offset,
-                .w = col_w,
-                .h = col_h
+                .w = col_w(),
+                .h = col_h()
            }))
         {
             collision::queue().push_back(collision{ .A = *this, .B = *e });
@@ -357,6 +372,9 @@ private:
 
         return true;
     }
+
+    inline pixel col_w() { return dest.w - col_offset * 2; }
+    inline pixel col_h() { return dest.h - col_offset * 2; }
 };
 
 }// namespace game

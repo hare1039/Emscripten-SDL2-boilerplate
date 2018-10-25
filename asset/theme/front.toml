@@ -5,10 +5,22 @@ area = "./asset/map/front.area"
 mode = 0 # camera::mode::top_left
 
 [[floatings]]
-name     = "rin"
 pic      = "./asset/pic/rin.png"
 width    = 245
 height   = 224
 rotate_t = 0 # animation::rotate_type::none
 x        = 600
 y        = 500
+
+[[wobbles]]
+name     = "rin"
+pic      = "./asset/pic/rin.png"
+width    = 245
+height   = 224
+rotate_t = 0 # animation::rotate_type::none
+x        = 300
+y        = 300
+duration = 2000 # ms
+max_ampl = 2
+min_ampl = 0.8
+start_ampl = 0.001

@@ -8,6 +8,7 @@
 #include "event.hpp"
 #include "elements/floating.hpp"
 #include "elements/movable.hpp"
+#include "elements/wobble.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "fps.hpp"
@@ -45,6 +46,7 @@ public:
         build<element>("elements", config);
         build<element_types::movable> ("movables", config);
         build<element_types::floating>("floatings", config);
+        build<element_types::wobble>("wobbles", config);
     }
 
     virtual
