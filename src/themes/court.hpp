@@ -20,6 +20,7 @@ public:
         {
         case SDLK_UP:
             elements["yoshi"]->jump();
+            elements["rin"]->amplify(1.2);
             break;
 
         case SDLK_DOWN:

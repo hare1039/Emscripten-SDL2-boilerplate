@@ -12,9 +12,9 @@ class movable : public element
 {
 public:
     movable(SDL_Renderer *r,
-                    std::string name,
-                    std::unordered_map<std::string, std::unique_ptr<element>> &a,
-                    camera &c): element{r, name, a, c} {}
+            std::string name,
+            std::unordered_map<std::string, std::unique_ptr<element>> &a,
+            camera &c): element{r, name, a, c} {}
 
     void animate() override
     {
