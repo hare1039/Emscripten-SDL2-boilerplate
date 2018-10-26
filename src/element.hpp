@@ -22,7 +22,6 @@ namespace game
 
 class element
 {
-    struct point { int x = 0, y = 0; };
     template <typename T> constexpr inline
     auto cast(T&& v) { return utility::cast(std::forward<T>(v)); } // aliasing utility::cast function
 protected:
@@ -298,33 +297,23 @@ public:
 
     bool collides_with (SDL_Rect const & r)
     {
-        point top_left   = { .x = r.x,       .y = r.y };
-        point top_right  = { .x = r.x + r.w, .y = r.y };
-        point down_left  = { .x = r.x,       .y = r.y + r.h };
-        point down_right = { .x = r.x + r.w, .y = r.y + r.h };
-
-        SDL_Rect col = { .x = dest.x + col_offset, .y = dest.y + col_offset, .w = col_w(), .h = col_h() };
-
-        return within_range(col, top_left)
-            || within_range(col, top_right)
-            || within_range(col, down_left)
-            || within_range(col, down_right);
+        SDL_Rect col = {
+            .x = dest.x + col_offset,
+            .y = dest.y + col_offset,
+            .w = col_w(),
+            .h = col_h()
+        };
+        return SDL_HasIntersection(&r, &col) == SDL_TRUE;
     }
 private:
-    static inline
-    bool within_range (SDL_Rect const & s, point const & p)
-    {
-        return ((s.x < p.x && p.x < s.x + s.w) &&
-                (s.y < p.y && p.y < s.y + s.h));
-    }
     bool is_pos_valid (pixel new_x, pixel new_y)
     {
-        point top_left_map   = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
-                                 .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL};
-        point top_right_map  = { .x = (new_x + col_offset + col_w()) / TILE_SIZE_PIXEL,
-                                 .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL };
-        point down_left_map  = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
-                                 .y = (new_y + col_offset + col_h()) / TILE_SIZE_PIXEL };
+        SDL_Point top_left_map  = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
+                                    .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL};
+        SDL_Point top_right_map = { .x = (new_x + col_offset + col_w()) / TILE_SIZE_PIXEL,
+                                    .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL };
+        SDL_Point down_left_map = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
+                                    .y = (new_y + col_offset + col_h()) / TILE_SIZE_PIXEL };
 
         bool ok = true; // we can't early return here
         for (int x_i = top_left_map.x; x_i <= top_right_map.x; x_i++)
