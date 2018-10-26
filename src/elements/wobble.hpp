@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <string_view>
 #include "../basic_headers.hpp"
 #include "../fps.hpp"
 #include "floating.hpp"
@@ -19,7 +20,7 @@ class wobble : public floating
     zoom dir_id = zoom::amplify; // flag to move element big / small
 public:
     wobble(SDL_Renderer *r,
-           std::string name,
+           std::string_view name,
            std::unordered_map<std::string, std::unique_ptr<element>> &a,
            camera &c): floating{r, name, a, c} {}
 

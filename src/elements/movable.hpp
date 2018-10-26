@@ -2,6 +2,7 @@
 #define ELEMENTS_MOVABLE_HPP_
 #pragma once
 
+#include <string_view>
 #include "../basic_headers.hpp"
 #include "../element.hpp"
 
@@ -12,7 +13,7 @@ class movable : public element
 {
 public:
     movable(SDL_Renderer *r,
-            std::string name,
+            std::string_view name,
             std::unordered_map<std::string, std::unique_ptr<element>> &a,
             camera &c): element{r, name, a, c} {}
 
