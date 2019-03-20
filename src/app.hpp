@@ -9,7 +9,7 @@ namespace game
 
 class app
 {
-    bool should_continue = true;
+    bool should_continue {true};
     SDL_Window_ptr   window{nullptr, &SDL_DestroyWindow};
     SDL_Renderer_ptr renderer{nullptr, &SDL_DestroyRenderer};
     std::unique_ptr<fps>   game_fps;
