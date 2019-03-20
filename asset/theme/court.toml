@@ -33,3 +33,4 @@ rotate_t = 1    # animation::rotate_type::circle
 x        = 100
 y        = 100
 flag_id  = 1    # element::flag::gravity
+amplify  = 2

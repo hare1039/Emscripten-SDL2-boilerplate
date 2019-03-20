@@ -174,6 +174,9 @@ public:
                 static_cast<animation::rotate_type>(table->get_as<int>("rotate_t")
                                                     .value_or(cast(animation::rotate_type::none)))); ec < 0)
             std::cout << SDL_GetError() << std::endl;
+
+        if (auto rate = table->get_as<double>("amplify"); rate)
+            amplify(*rate);
     }
 
     virtual
