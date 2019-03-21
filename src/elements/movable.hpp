@@ -29,6 +29,6 @@ public:
     next_operation on_collision (element &e) override { speed_y = -max_speed_y; return element::on_collision(e); }
 };
 
-} // namespace game
+} // namespace game::element_types
 
 #endif // ELEMENTS_MOVABLE_HPP_
