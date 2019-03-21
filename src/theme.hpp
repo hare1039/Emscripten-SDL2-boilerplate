@@ -9,6 +9,7 @@
 #include "elements/floating.hpp"
 #include "elements/movable.hpp"
 #include "elements/wobble.hpp"
+#include "elements/player.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "fps.hpp"
@@ -78,7 +79,7 @@ public:
     bool is_finished() { return (!! next_theme); }
 
 private:
-    template<typename T, typename ... Args>
+    template<typename Element, typename ... Args>
     void build(std::string_view toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
     {
         for (const auto &table : *(config->get_table_array(toml_name.data())))
@@ -87,8 +88,8 @@ private:
                 get_as<std::string>("name").
                 value_or(utility::random_string(20));
 
-            elements.emplace(name, std::make_unique<T>(renderer, name, elements, *theme_camera,
-                                                       std::forward<Args>(args)...));
+            elements.emplace(name, std::make_unique<Element>(renderer, name, elements, *theme_camera,
+                                                             std::forward<Args>(args)...));
             elements[name]->build_from_toml(table);
             if (table->get_as<bool>("bind_cam"))
                 theme_camera->bind(&elements[name]->dest);
