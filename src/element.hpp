@@ -200,6 +200,13 @@ public:
         return 0;
     }
 
+    virtual
+    void on_key_down(SDL_Keycode const &, Uint16 const &) {}
+
+    virtual
+    void on_key_up(SDL_Keycode const &, Uint16 const &) {}
+
+
 public:
     void move_calculate(double vx, double vy)
     {

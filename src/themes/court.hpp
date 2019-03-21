@@ -14,32 +14,20 @@ class court : public theme
 public:
     court(SDL_Renderer * r): theme{r, "./asset/theme/court.toml"} {}
 
-    void on_key_down(SDL_Keycode const & key, Uint16 const &) override final
+    void on_key_down(SDL_Keycode const & key, Uint16 const & mod) override
     {
+        elements["player1"]->on_key_down(key, mod);
+        elements["player2"]->on_key_down(key, mod);
         switch (key)
         {
-        case SDLK_UP:
-            elements["yoshi"]->jump();
-            elements["rin"]->amplify(1.2);
-            break;
-
         case SDLK_DOWN:
             for (auto && p : elements)
                 std::cout << p.first << " -> " << p.second.get() << std::endl;
             next_theme = std::make_unique<stage>(renderer, "./asset/theme/01.toml");
             break;
 
-        case SDLK_LEFT:
-            elements["yoshi"]->move_left = true;
-            break;
-
-        case SDLK_RIGHT:
-            elements["yoshi"]->move_right = true;
-            break;
-
         case SDLK_SPACE:
-            elements["yoshi"]->jump();
-            elements["rin"]->dest.x += 100;
+//            elements["rin"]->dest.x += 100;
             break;
 
         default:
@@ -47,21 +35,10 @@ public:
         }
     }
 
-    void on_key_up  (SDL_Keycode const & key, Uint16 const &) override
+    void on_key_up  (SDL_Keycode const & key, Uint16 const &mod) override
     {
-        switch (key)
-        {
-        case SDLK_LEFT:
-            elements["yoshi"]->move_left = false;
-            break;
-
-        case SDLK_RIGHT:
-            elements["yoshi"]->move_right = false;
-            break;
-
-        default:
-            break;
-        }
+        elements["player1"]->on_key_up(key, mod);
+        elements["player2"]->on_key_up(key, mod);
     }
 };
 

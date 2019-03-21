@@ -7,30 +7,35 @@ mode = 0 # camera::mode::top_left
 x    = 60
 y    = 60
 
-[[elements]]
-name     = "rin"
-pic      = "./asset/pic/rin.png"
-width    = 245
-height   = 224
-rotate_t = 0 # animation::rotate_type::none
-x        = 600
-y        = 500
+# SDL table at https://wiki.libsdl.org/SDLKeycodeLookup
 
-[[elements]]
-pic      = "./asset/pic/rin.png"
-width    = 245
-height   = 224
-rotate_t = 0 # animation::rotate_type::none
-x        = 200
-y        = 200
+[[players]]
+name     = "player1"
+pic      = "./asset/pic/yoshi.png"
+width    = 64
+height   = 64
+rotate_t = 1    # animation::rotate_type::circle
+x        = 800
+y        = 400
+flag_id  = 1    # element::flag::gravity
+amplify  = 2.2
+keyup    = 1073741906 # SDLK_UP
+keydown  = 1073741905 # SDLK_DOWN
+keyleft  = 1073741904 # SDLK_LEFT
+keyright = 1073741903 # SDLK_RIGHT
 
-[[movables]]
-name     = "yoshi"
+
+[[players]]
+name     = "player2"
 pic      = "./asset/pic/yoshi.png"
 width    = 64
 height   = 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 100
-y        = 100
+y        = 400
 flag_id  = 1    # element::flag::gravity
-amplify  = 2
+amplify  = 2.2
+keyup    = 119  # SDLK_w
+keydown  = 115  # SDLK_s
+keyleft  = 97   # SDLK_a
+keyright = 100  # SDLK_d

@@ -47,6 +47,7 @@ public:
         build<element_types::movable> ("movables", config);
         build<element_types::floating>("floatings", config);
         build<element_types::wobble>("wobbles", config);
+        build<element_types::player>("players", config);
     }
 
     virtual
