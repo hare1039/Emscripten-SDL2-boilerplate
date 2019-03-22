@@ -55,7 +55,8 @@ public:
             frames = 0;
         }
 
-        _speed_factor = ((SDL_GetTicks() - last_time) / 1000.0) * FPS;
+        double delta = (SDL_GetTicks() - last_time) / 1000.0;
+        _speed_factor = ((delta > 1) ? 0 /* pause game if browser stop looping */ : delta) * FPS;
         last_time = SDL_GetTicks();
         frames++;
     }
