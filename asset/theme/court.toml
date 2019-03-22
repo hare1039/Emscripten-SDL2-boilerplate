@@ -39,3 +39,10 @@ keyup    = 119  # SDLK_w
 keydown  = 115  # SDLK_s
 keyleft  = 97   # SDLK_a
 keyright = 100  # SDLK_d
+
+[[obstacles]]
+name     = "courtbar"
+x        = 512
+y        = 200
+w        = 1
+h        = 800
