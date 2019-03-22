@@ -26,7 +26,7 @@ public:
             anime_info->unlock();
     }
 
-    next_operation on_collision (element &e) override { speed_y = -max_speed_y; return element::on_collision(e); }
+//    next_operation on_collision (element &e) override { speed_y = -max_speed_y; return element::on_collision(e); }
 };
 
 } // namespace game::element_types

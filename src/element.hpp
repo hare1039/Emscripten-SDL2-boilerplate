@@ -51,8 +51,8 @@ public:
     bool move_left  = false;
     bool dead = false;
 
-    double max_speed_x = 10;
-    double max_speed_y = 15;
+    double max_speed_x = 30;
+    double max_speed_y = 21;
 
 public:
     enum class type
@@ -97,21 +97,16 @@ public:
             stop_move();
 
         if (move_left)
-            accel_x = -0.5;
+            speed_x = -max_speed_x;
 
         if (move_right)
-            accel_x = 0.5;
+            speed_x =  max_speed_x;
 
         if (cast(flag_id) & cast(flag::gravity))
-            accel_y = 0.75;
+            accel_y = 0.80;
 
-        speed_x += accel_x * fps::instance()->speed_factor();
+        speed_x *= fps::instance()->speed_factor();
         speed_y += accel_y * fps::instance()->speed_factor();
-
-        if (speed_x >  max_speed_x) speed_x =  max_speed_x;
-        if (speed_x < -max_speed_x) speed_x = -max_speed_x;
-        if (speed_y >  max_speed_y) speed_y =  max_speed_y;
-        if (speed_y < -max_speed_y) speed_y = -max_speed_y;
 
         animate();
 
@@ -264,6 +259,7 @@ public:
         } while (not ((vx == 0 and vy == 0) or
                       (x_shift == 0 and y_shift == 0)));
     }
+
     void stop_move()
     {
         if (speed_x > 0)
@@ -357,7 +353,7 @@ private:
     {
         if (this != e and
             not e->dead and
-            cast(e->flag_id) ^ cast(flag::map_only) and
+            cast(e->flag_id) ^ cast(flag::map_only) /* doesn't have the ENTITY_FLAG_MAPONLY flag turned on */ and
             e->collides_with(SDL_Rect{
                 .x = x + col_offset,
                 .y = y + col_offset,
