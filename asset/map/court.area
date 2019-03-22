@@ -1,3 +1,6 @@
 ./asset/pic/court.png
 6 4
-./asset/map/court.0.map ./asset/map/court.1.map ./asset/map/court.2.map ./asset/map/court.3.map ./asset/map/court.4.map ./asset/map/court.5.map ./asset/map/court.6.map ./asset/map/court.7.map ./asset/map/court.8.map ./asset/map/court.9.map ./asset/map/court.10.map ./asset/map/court.11.map ./asset/map/court.12.map ./asset/map/court.13.map ./asset/map/court.14.map ./asset/map/court.15.map ./asset/map/court.16.map ./asset/map/court.17.map ./asset/map/court.18.map ./asset/map/court.19.map ./asset/map/court.20.map ./asset/map/court.21.map ./asset/map/court.22.map ./asset/map/court.23.map 
+./asset/map/court.0.map  ./asset/map/court.1.map  ./asset/map/court.2.map  ./asset/map/court.3.map  ./asset/map/court.4.map  ./asset/map/court.5.map
+./asset/map/court.6.map  ./asset/map/court.7.map  ./asset/map/court.8.map  ./asset/map/court.9.map  ./asset/map/court.10.map ./asset/map/court.11.map
+./asset/map/court.12.map ./asset/map/court.13.map ./asset/map/court.14.map ./asset/map/court.15.map ./asset/map/court.16.map ./asset/map/court.17.map
+./asset/map/court.18.map ./asset/map/court.19.map ./asset/map/court.20.map ./asset/map/court.21.map ./asset/map/court.22.map ./asset/map/court.23.map
