@@ -27,7 +27,6 @@ public:
             break;
 
         case SDLK_SPACE:
-//            elements["rin"]->dest.x += 100;
             break;
 
         default:
