@@ -110,16 +110,15 @@ public:
 
         animate();
 
-        jumpable = false;
         int old_y = dest.y;
         move_calculate (speed_x, speed_y);
-        if (dest.y == old_y)
+        if (not jumpable and dest.y == old_y)
             try
             {
-                int left_x   = (dest.x + col_offset) / TILE_SIZE_PIXEL;
+                int left_x   = (dest.x + col_offset)           / TILE_SIZE_PIXEL;
                 int right_x  = (dest.x + col_offset + col_w()) / TILE_SIZE_PIXEL;
-                int target_y = (dest.y + col_offset + dest.h) / TILE_SIZE_PIXEL;
-                if (area::instance()->at_map(left_x, target_y).is_solid() or
+                int target_y = (dest.y + col_offset + dest.h)  / TILE_SIZE_PIXEL;
+                if (area::instance()->at_map(left_x,  target_y).is_solid() or
                     area::instance()->at_map(right_x, target_y).is_solid())
                     jumpable = true;
             } catch (std::out_of_range const &e) { /* expected exception */ }
@@ -237,7 +236,15 @@ public:
                 if (is_pos_valid(dest.x, dest.y + y_shift))
                     dest.y += y_shift;
                 else
+                {
                     speed_y = 0;
+                    if (not jumpable)
+                    {
+                        pixel final_y = dest.y + y_shift + col_offset + col_h();
+                        pixel backoff = final_y % TILE_SIZE_PIXEL;
+                        dest.y += (y_shift - backoff - 1);
+                    }
+                }
             }
 
             vx -= x_shift;
@@ -278,6 +285,7 @@ public:
             return false;
 
         speed_y = -max_speed_y;
+        jumpable = false;
         return true;
     }
 
