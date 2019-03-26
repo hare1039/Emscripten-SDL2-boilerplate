@@ -6,5 +6,7 @@
 #include <emscripten.h>
 #include "decl.hpp"
 #include "utility.hpp"
+#include "rect.hpp"
+#include "point.hpp"
 
 #endif // BASIC_HEADERS_HPP_

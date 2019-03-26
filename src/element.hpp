@@ -14,6 +14,7 @@
 #include "basic_headers.hpp"
 #include "camera.hpp"
 #include "fps.hpp"
+#include "rect.hpp"
 #include "tile.hpp"
 #include "external_libraries/cpptoml/include/cpptoml.h"
 
@@ -22,6 +23,7 @@ namespace game
 
 class element
 {
+public:
     template <typename T> constexpr inline
     auto cast(T&& v) { return utility::cast(std::forward<T>(v)); } // aliasing utility::cast function
 protected:
@@ -33,12 +35,6 @@ protected:
     SDL_Texture_ptr texture {nullptr, &SDL_DestroyTexture};
     std::unique_ptr<animation> anime_info;
 
-    double speed_x = 0; // pixel per second
-    double speed_y = 0; // pixel per second
-
-    double accel_x = 0; // pixel^2 per second
-    double accel_y = 0; // pixel^2 per second
-
     pixel col_offset = 5;
 
     int current_frame_col = 0;
@@ -46,13 +42,20 @@ protected:
     bool jumpable = false;
 
 public:
-    SDL_Rect dest = {}, src = {};
+    rect<> dest {};
+    SDL_Rect src {};
     bool move_right = false;
     bool move_left  = false;
     bool dead = false;
 
-    double max_speed_x = 30;
-    double max_speed_y = 21;
+    double speed_x = 0; // pixel per second
+    double speed_y = 0; // pixel per second
+
+    double accel_x = 0; // pixel^2 per second
+    double accel_y = 10; // pixel^2 per second
+
+    double max_speed_x = 20;
+    double max_speed_y = 80;
 
 public:
     enum class type
@@ -68,6 +71,10 @@ public:
         ghost    = 1 << 1,
         map_only = 1 << 2
     } flag_id = flag::none;
+
+    enum class bounce_direction {stop, reverse, same};
+    bounce_direction bounce_x = bounce_direction::stop,
+                     bounce_y = bounce_direction::stop;
 
     struct collision
     {
@@ -102,22 +109,20 @@ public:
         if (move_right)
             speed_x =  max_speed_x;
 
-        if (cast(flag_id) & cast(flag::gravity))
-            accel_y = 0.80;
+        pixel old_y = dest.y;
+        move_calculate (speed_x, speed_y);
 
-        speed_x *= fps::instance()->speed_factor();
+        speed_x += accel_x * fps::instance()->speed_factor();
         speed_y += accel_y * fps::instance()->speed_factor();
 
         animate();
 
-        int old_y = dest.y;
-        move_calculate (speed_x, speed_y);
         if (not jumpable and dest.y == old_y)
             try
             {
-                int left_x   = (dest.x + col_offset)           / TILE_SIZE_PIXEL;
-                int right_x  = (dest.x + col_offset + col_w()) / TILE_SIZE_PIXEL;
-                int target_y = (dest.y + col_offset + dest.h)  / TILE_SIZE_PIXEL;
+                pixel left_x   = (dest.x + col_offset)           / TILE_SIZE_PIXEL;
+                pixel right_x  = (dest.x + col_offset + col_w()) / TILE_SIZE_PIXEL;
+                pixel target_y = (dest.y + col_offset + dest.h)  / TILE_SIZE_PIXEL;
                 if (area::instance()->at_map(left_x,  target_y).is_solid() or
                     area::instance()->at_map(right_x, target_y).is_solid())
                     jumpable = true;
@@ -128,12 +133,11 @@ public:
     void render()
     {
         auto [camera_x, camera_y] = cam.get_pos();
-        SDL_Rect pos = {
-            .x = dest.x - camera_x,
-            .y = dest.y - camera_y,
-            .w = dest.w,
-            .h = dest.h
-        };
+
+        SDL_Rect pos = dest;
+        pos.x -= camera_x;
+        pos.y -= camera_y;
+
         SDL_RenderCopy (renderer, texture.get(), &src, &pos);
     }
 
@@ -161,10 +165,18 @@ public:
                                              .value_or(cast(flag_id)));
         col_offset = table->get_as<pixel>("offset").value_or(col_offset);
 
+        bounce_x = static_cast<bounce_direction>(table->get_as<int>("bounce_x")
+                                                 .value_or(cast(bounce_x)));
+        bounce_y = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
+                                                 .value_or(cast(bounce_y)));
+
+        if (not (cast(flag_id) & cast(flag::gravity)))
+            accel_y = 0;
+
         if (error_code ec = set_texture(
                 *(table->get_as<std::string>("pic")),
-                table->get_as<int>("width").value_or(src.w),
-                table->get_as<int>("height").value_or(src.h),
+                table->get_as<int>("picwidth").value_or(src.w),
+                table->get_as<int>("picheight").value_or(src.h),
                 static_cast<animation::rotate_type>(table->get_as<int>("rotate_t")
                                                     .value_or(cast(animation::rotate_type::none)))); ec < 0)
             std::cout << SDL_GetError() << std::endl;
@@ -202,80 +214,96 @@ public:
 
 
 public:
-    void move_calculate(double vx, double vy)
+    void move_calculate(double vx, double vy,
+                        bounce_direction bounce_direction_x = bounce_direction::stop,
+                        bounce_direction bounce_direction_y = bounce_direction::stop)
     {
-        if (vx == 0 && vy == 0)
+        if (vx == 0 and vy == 0)
             return;
 
         double speed_factor = fps::instance()->speed_factor();
         vx *= speed_factor;
         vy *= speed_factor;
 
-        if (vy > max_speed_y * max_speed_y)
-            vy = 0;
+        double x_shift_step = 0;
+        if (vx < 0)
+            x_shift_step = -speed_factor;
+        else if (vx == 0)
+            x_shift_step = 0;
+        else
+            x_shift_step = speed_factor;
 
-        double x_shift = vx;
-        double y_shift = vy;
+        double y_shift_step = 0;
+        if (vy < 0)
+            y_shift_step = -speed_factor;
+        else if (vy == 0)
+            y_shift_step = 0;
+        else
+            y_shift_step = speed_factor;
 
-        do
+        while (not (x_shift_step == 0 and y_shift_step == 0))
         {
             if (cast(flag_id) & cast(flag::ghost))
             {
+                dest.x += x_shift_step;
+                dest.y += y_shift_step;
+
                 // send collisions
-                is_pos_valid(dest.x + x_shift, dest.y + y_shift);
-                dest.x += x_shift;
-                dest.y += y_shift;
+                is_pos_valid(dest.x, dest.y);
             }
             else
             {
-                if (is_pos_valid(dest.x + x_shift, dest.y))
-                    dest.x += x_shift;
-                else
-                    speed_x = 0;
-
-                if (is_pos_valid(dest.x, dest.y + y_shift))
-                    dest.y += y_shift;
-                else
+                if (x_shift_step != 0)
                 {
-                    speed_y = 0;
-                    if (not jumpable)
-                    {
-                        pixel final_y = dest.y + y_shift + col_offset + col_h();
-                        pixel backoff = final_y % TILE_SIZE_PIXEL;
-                        dest.y += (y_shift - backoff - 1);
-                    }
+                    if (is_pos_valid(dest.x + x_shift_step, dest.y))
+                        dest.x += x_shift_step;
+                    else
+                        switch(bounce_direction_x)
+                        {
+                            case bounce_direction::stop:    speed_x = 0; break;
+                            case bounce_direction::reverse: speed_x = -speed_x; break;
+                            case bounce_direction::same:    break;
+                        }
+                }
+
+                if (y_shift_step != 0)
+                {
+                    if (is_pos_valid(dest.x, dest.y + y_shift_step))
+                        dest.y += y_shift_step;
+                    else
+                        switch(bounce_direction_y)
+                        {
+                            case bounce_direction::stop:    speed_y = 0; break;
+                            case bounce_direction::reverse: speed_y = -speed_y; break;
+                            case bounce_direction::same:    break;
+                        }
                 }
             }
 
-            vx -= x_shift;
-            vy -= y_shift;
+            vx -= x_shift_step;
+            vy -= y_shift_step;
 
-            if (x_shift > 0 && vx <= 0)
-                x_shift = 0;
-            if (x_shift < 0 && vx >= 0)
-                x_shift = 0;
-            if (y_shift > 0 && vy <= 0)
-                y_shift = 0;
-            if (y_shift > 0 && vy <= 0)
-                y_shift = 0;
+            if (x_shift_step * vx <= 0)
+                x_shift_step = 0;
+            if (y_shift_step * vy <= 0)
+                y_shift_step = 0;
 
             if (vx == 0)
-                x_shift = 0;
+                x_shift_step = 0;
             if (vy == 0)
-                y_shift = 0;
-        } while (not ((vx == 0 and vy == 0) or
-                      (x_shift == 0 and y_shift == 0)));
+                y_shift_step = 0;
+        }
     }
 
     void stop_move()
     {
         if (speed_x > 0)
-            accel_x = -1;
+            accel_x = -8;
 
         if (speed_x < 0)
-            accel_x = 1;
+            accel_x = 8;
 
-        if (-2 < speed_x && speed_x < 2)
+        if (-16 < speed_x && speed_x < 16)
             accel_x = speed_x = 0;
     }
 
@@ -291,43 +319,53 @@ public:
 
     // this function amplify this element, and then adjust dest.x value
     // to make middle point of the element won't change
-    void amplify(double w, std::optional<double> h = std::nullopt)
+    void amplify(double multiple, std::optional<double> h = std::nullopt)
     {
         pixel old_w = dest.w;
         pixel old_h = dest.h;
-        dest.w *= w;
-        dest.h = (h)? (dest.h * (*h)) : (static_cast<double>(src.h) * dest.w / src.w);
+        dest.w *= multiple;
+        dest.h = (h)? (dest.h * (*h)) : (src.h * dest.w / src.w);
         dest.x -= (dest.w - old_w) / 2;
         dest.y -= (dest.h - old_h) / 2;
     }
 
-    void amplify(pixel w, std::optional<pixel> h = std::nullopt)
+    void amplify_to(pixel w, std::optional<pixel> h = std::nullopt)
     {
         if (h)
-            amplify(static_cast<double>(w)/dest.w, static_cast<double>(*h)/dest.h);
+            amplify(w/dest.w, *h/dest.h);
         else
-            amplify(static_cast<double>(w)/dest.w);
+            amplify(w/dest.w);
     }
 
-    bool collides_with (SDL_Rect const & r)
+    template <typename T>
+    bool collides_with (rect<T> const & r)
     {
-        SDL_Rect col = {
-            .x = dest.x + col_offset,
-            .y = dest.y + col_offset,
-            .w = col_w(),
-            .h = col_h()
+        SDL_Rect col {
+            .x = static_cast<int>(dest.x + col_offset),
+            .y = static_cast<int>(dest.y + col_offset),
+            .w = static_cast<int>(col_w()),
+            .h = static_cast<int>(col_h())
         };
-        return SDL_HasIntersection(&r, &col) == SDL_TRUE;
+        SDL_Rect rhs {r.to_sdl()};
+        return SDL_HasIntersection(&rhs, &col) == SDL_TRUE;
+    }
+
+    point<> mid_point()
+    {
+        return {
+            .x = dest.x + col_offset + col_w()/2,
+            .y = dest.y + col_offset + col_h()/2
+        };
     }
 private:
     bool is_pos_valid (pixel new_x, pixel new_y)
     {
-        SDL_Point top_left_map  = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
-                                    .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL};
-        SDL_Point top_right_map = { .x = (new_x + col_offset + col_w()) / TILE_SIZE_PIXEL,
-                                    .y = (new_y + col_offset          ) / TILE_SIZE_PIXEL };
-        SDL_Point down_left_map = { .x = (new_x + col_offset          ) / TILE_SIZE_PIXEL,
-                                    .y = (new_y + col_offset + col_h()) / TILE_SIZE_PIXEL };
+        SDL_Point top_left_map  = { .x = static_cast<int>(new_x + col_offset          ) / TILE_SIZE_PIXEL_INT,
+                                    .y = static_cast<int>(new_y + col_offset          ) / TILE_SIZE_PIXEL_INT};
+        SDL_Point top_right_map = { .x = static_cast<int>(new_x + col_offset + col_w()) / TILE_SIZE_PIXEL_INT,
+                                    .y = static_cast<int>(new_y + col_offset          ) / TILE_SIZE_PIXEL_INT};
+        SDL_Point down_left_map = { .x = static_cast<int>(new_x + col_offset          ) / TILE_SIZE_PIXEL_INT,
+                                    .y = static_cast<int>(new_y + col_offset + col_h()) / TILE_SIZE_PIXEL_INT};
 
         bool ok = true; // we can't early return here
         for (int x_i = top_left_map.x; x_i <= top_right_map.x; x_i++)
@@ -362,7 +400,7 @@ private:
         if (this != e and
             not e->dead and
             cast(e->flag_id) ^ cast(flag::map_only) /* doesn't have the ENTITY_FLAG_MAPONLY flag turned on */ and
-            e->collides_with(SDL_Rect{
+            e->collides_with(rect<pixel>{
                 .x = x + col_offset,
                 .y = y + col_offset,
                 .w = col_w(),

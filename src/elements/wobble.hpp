@@ -43,7 +43,7 @@ public:
             dir_id = zoom::amplify;
         else if (dest.w > max_amplsize_pixel)
             dir_id = zoom::condense;
-        amplify(dest.w + utility::cast(dir_id) * step);
+        amplify_to(dest.w + utility::cast(dir_id) * step);
     }
 };
 

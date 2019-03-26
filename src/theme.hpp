@@ -11,6 +11,7 @@
 #include "elements/wobble.hpp"
 #include "elements/player.hpp"
 #include "elements/obstacle.hpp"
+#include "elements/ball.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "fps.hpp"
@@ -51,6 +52,7 @@ public:
         build<element_types::wobble>("wobbles", config);
         build<element_types::player>("players", config);
         build<element_types::obstacle>("obstacles", config);
+        build<element_types::ball>("balls", config);
     }
 
     virtual

@@ -33,15 +33,31 @@ std::string random_string(std::string::size_type length)
     return str;
 }
 
-}
-
-std::ostream& operator << (std::ostream &os, SDL_Rect const & r)
+namespace type_traits
 {
-    os << "{x: " << r.x << "\n"
-       << " y: " << r.y << "\n"
-       << " w: " << r.w << "\n"
-       << " h: " << r.h << "}";
-    return os;
-}
+
+template <typename, typename = std::void_t<>>
+struct is_rectangle : std::false_type {};
+
+template <typename T>
+struct is_rectangle<T,
+                    std::void_t<decltype(std::declval<T>().x),
+                                decltype(std::declval<T>().y),
+                                decltype(std::declval<T>().w),
+                                decltype(std::declval<T>().h)>
+                    > : std::true_type {};
+
+template <typename, typename = std::void_t<>>
+struct is_point : std::false_type {};
+
+template <typename T>
+struct is_point<T,
+                std::void_t<decltype(std::declval<T>().x),
+                            decltype(std::declval<T>().y)>
+                > : std::true_type {};
+
+} // namespace type_traits
+
+} // namespace game::utility
 
 #endif // UTILITY_HPP_

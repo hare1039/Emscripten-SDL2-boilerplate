@@ -23,7 +23,7 @@ public:
         case SDLK_DOWN:
             for (auto && p : elements)
                 std::cout << p.first << " -> " << p.second.get() << std::endl;
-            next_theme = std::make_unique<stage>(renderer, "./asset/theme/01.toml");
+            next_theme = std::make_unique<court>(renderer);
             break;
 
         case SDLK_SPACE:

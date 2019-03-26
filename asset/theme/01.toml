@@ -7,16 +7,16 @@ mode = 1 # camera::mode::center
 [[elements]]
 name     = "rin"
 pic      = "./asset/pic/rin.png"
-width    = 245
-height   = 224
+picwidth = 245
+picheight= 224
 rotate_t = 0 # animation::rotate_type::none
 x        = 600
 y        = 500
 
 [[elements]]
 pic      = "./asset/pic/rin.png"
-width    = 245
-height   = 224
+picwidth = 245
+picheight= 224
 rotate_t = 0 # animation::rotate_type::none
 x        = 200
 y        = 200
@@ -24,8 +24,8 @@ y        = 200
 [[movables]]
 name     = "yoshi"
 pic      = "./asset/pic/yoshi.png"
-width    = 64
-height   = 64
+picwidth = 64
+picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 10
 y        = 10

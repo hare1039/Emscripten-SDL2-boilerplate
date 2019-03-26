@@ -10,7 +10,7 @@ void run_loop (void * ptr)
     {
         game_ptr->run();
     } catch (std::exception const & e) {
-        std::cout << "[run_loop] " << e.what() <<std::endl;
+        std::cout << "[run_loop] " << e.what() << std::endl;
     }
 }
 

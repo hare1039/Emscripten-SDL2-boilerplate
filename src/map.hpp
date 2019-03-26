@@ -52,11 +52,11 @@ public:
                 &w, &h);
             ec < 0)
             return;
-        SDL_Rect dest = {
-            .x = map_x_pixel,
-            .y = map_y_pixel,
-            .h = h,
-            .w = w
+        SDL_Rect dest {
+            .x = static_cast<int>(map_x_pixel),
+            .y = static_cast<int>(map_y_pixel),
+            .h = static_cast<int>(h),
+            .w = static_cast<int>(w)
         };
         SDL_RenderCopy (renderer, map_texture.get(), NULL /* full texture */, &dest);
     }
@@ -100,10 +100,10 @@ private:
                 if (t.graph_id == tile::graph::none)
                     continue;
                 SDL_Rect dest = {
-                    .x = x * TILE_SIZE_PIXEL,
-                    .y = y * TILE_SIZE_PIXEL,
-                    .h = TILE_SIZE_PIXEL,
-                    .w = TILE_SIZE_PIXEL
+                    .x = x * TILE_SIZE_PIXEL_INT,
+                    .y = y * TILE_SIZE_PIXEL_INT,
+                    .h = TILE_SIZE_PIXEL_INT,
+                    .w = TILE_SIZE_PIXEL_INT
                 };
                 SDL_BlitSurface(tile_surface, &t.src, s.get(), &dest);
             }

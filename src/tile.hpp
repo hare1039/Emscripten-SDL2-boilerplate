@@ -35,10 +35,10 @@ public:
         graph_id{g},
         flag_id {f},
         src {
-            .x = (utility::cast(g) - 1) * TILE_SIZE_PIXEL,
+            .x = (utility::cast(g) - 1) * TILE_SIZE_PIXEL_INT,
             .y = 0,
-            .h = TILE_SIZE_PIXEL,
-            .w = TILE_SIZE_PIXEL
+            .h = TILE_SIZE_PIXEL_INT,
+            .w = TILE_SIZE_PIXEL_INT
         } {}
 
     bool is_solid() { return utility::cast(flag_id) & utility::cast(flag::solid); }
