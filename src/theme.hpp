@@ -96,7 +96,7 @@ private:
                                                              std::forward<Args>(args)...));
             elements[name]->build_from_toml(table);
             if (table->get_as<bool>("bind_cam"))
-                theme_camera->bind(&elements[name]->dest);
+                theme_camera->bind(&elements[name]->state_.dest_);
         }
     }
 };

@@ -11,10 +11,11 @@ public:
 
     void on_key_down(SDL_Keycode const & key, Uint16 const &) override final
     {
+        auto yoshi = dynamic_cast<element_types::player *>(elements["yoshi"].get());
         switch (key)
         {
         case SDLK_UP:
-            elements["yoshi"]->jump();
+            yoshi->jump();
             break;
 
         case SDLK_DOWN:
@@ -24,16 +25,16 @@ public:
             break;
 
         case SDLK_LEFT:
-            elements["yoshi"]->move_left = true;
+            yoshi->move_left_ = true;
             break;
 
         case SDLK_RIGHT:
-            elements["yoshi"]->move_right = true;
+            yoshi->move_right_ = true;
             break;
 
         case SDLK_SPACE:
-            elements["yoshi"]->jump();
-            elements["rin"]->dest.x += 100;
+            yoshi->jump();
+            elements["rin"]->state_.dest_.x += 100;
             break;
 
         default:
@@ -43,14 +44,15 @@ public:
 
     void on_key_up  (SDL_Keycode const & key, Uint16 const &) override
     {
+        auto yoshi = dynamic_cast<element_types::player *>(elements["yoshi"].get());
         switch (key)
         {
         case SDLK_LEFT:
-            elements["yoshi"]->move_left = false;
+            yoshi->move_left_ = false;
             break;
 
         case SDLK_RIGHT:
-            elements["yoshi"]->move_right = false;
+            yoshi->move_right_ = false;
             break;
 
         default:

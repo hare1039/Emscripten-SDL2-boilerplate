@@ -16,7 +16,7 @@ public:
            std::unordered_map<std::string, std::unique_ptr<element>> &a,
            camera &c): movable {r, name, a, c}
     {
-        type_id = type::player; // not suggested in stackoverflow, TODO list!
+        type_ = type::player; // not suggested in stackoverflow, TODO list!
     }
 
     virtual
@@ -40,19 +40,19 @@ public:
             jump();
 
         else if (key == keyleft_)
-            move_left = true;
+            move_left_ = true;
 
         else if (key == keyright_)
-            move_right = true;
+            move_right_ = true;
     }
 
     void on_key_up  (SDL_Keycode const & key, Uint16 const &) override
     {
         if (key == keyleft_)
-            move_left = false;
+            move_left_ = false;
 
         else if (key == keyright_)
-            move_right = false;
+            move_right_ = false;
     }
 };
 

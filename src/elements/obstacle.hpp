@@ -17,19 +17,19 @@ public:
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override
     {
-        dest.x  = table->get_as<pixel>("x").value_or(dest.x);
-        dest.y  = table->get_as<pixel>("y").value_or(dest.y);
-        flag_id = static_cast<element::flag>(table->get_as<int>("flag_id")
-                                             .value_or(cast(flag_id)));
-        col_offset = table->get_as<pixel>("offset").value_or(0);
+        state_.dest_.x  = table->get_as<pixel>("x").value_or(state_.dest_.x);
+        state_.dest_.y  = table->get_as<pixel>("y").value_or(state_.dest_.y);
+        flag_ = static_cast<element::flag>(table->get_as<int>("flag")
+                                           .value_or(cast(flag_)));
+        col_offset_ = table->get_as<pixel>("offset").value_or(0);
 
-        bounce_x = static_cast<bounce_direction>(table->get_as<int>("bounce_x")
-                                                 .value_or(cast(bounce_x)));
-        bounce_y = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
-                                                 .value_or(cast(bounce_y)));
+        bounce_x_ = static_cast<bounce_direction>(table->get_as<int>("bounce_x")
+                                                  .value_or(cast(bounce_x_)));
+        bounce_y_ = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
+                                                  .value_or(cast(bounce_y_)));
 
-        dest.w  = table->get_as<pixel>("w").value_or(dest.w);
-        dest.h  = table->get_as<pixel>("h").value_or(dest.h);
+        state_.dest_.w  = table->get_as<pixel>("w").value_or(state_.dest_.w);
+        state_.dest_.h  = table->get_as<pixel>("h").value_or(state_.dest_.h);
     }
 
     void render()  override {/* invisible element */}

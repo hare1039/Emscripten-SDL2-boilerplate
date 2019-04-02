@@ -21,8 +21,8 @@ public:
 
     void render() override final
     {
-        SDL_Rect && pos {dest.to_sdl()};
-        SDL_RenderCopy (renderer, texture.get(), &src, &pos);
+        SDL_Rect && pos {state_.dest_.to_sdl()};
+        SDL_RenderCopy (renderer_, texture_.get(), &src_, &pos);
     }
 };
 
