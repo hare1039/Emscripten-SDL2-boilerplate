@@ -26,16 +26,14 @@ class element
 public:
     template <typename T> constexpr inline
     auto cast(T&& v) { return utility::cast(std::forward<T>(v)); } // aliasing utility::cast function
-protected:
     std::string name_;
+protected:
     std::unordered_map<std::string, std::unique_ptr<element>> &all_elements_;
     camera& cam_;
 
     SDL_Renderer   *renderer_ = nullptr;
     SDL_Texture_ptr texture_   {nullptr, &SDL_DestroyTexture};
     std::unique_ptr<animation> anime_info_;
-
-    pixel col_offset_ = 5;
 
     int current_frame_col_ = 0;
     int current_frame_row_ = 0;
@@ -44,8 +42,9 @@ public:
     SDL_Rect src_ {};
     bool   valid_ {true};
 
-    double max_speed_x_ = 20;
-    double max_speed_y_ = 80;
+    pixel max_speed_x_ = 20;
+    pixel max_speed_y_ = 80;
+    pixel col_offset_ = 5;
 
 public:
     enum class type
@@ -64,7 +63,9 @@ public:
     };
     flag flag_ = flag::none;
 
-    enum class bounce_direction {stop, reverse, same};
+    enum class bounce_direction {stop    = 0,
+                                 reverse = 1,
+                                 same    = 2};
     bounce_direction bounce_x_ = bounce_direction::stop,
                      bounce_y_ = bounce_direction::stop;
 
@@ -191,9 +192,7 @@ public:
 
 
 public:
-    void move_calculate(double vx, double vy,
-                        bounce_direction bounce_direction_x = bounce_direction::stop,
-                        bounce_direction bounce_direction_y = bounce_direction::stop)
+    void move_calculate(double vx, double vy)
     {
         if (vx == 0 and vy == 0)
             return;
@@ -235,12 +234,7 @@ public:
                     if (is_pos_valid(state_.dest_.x + x_shift_step, state_.dest_.y))
                         state_.dest_.x += x_shift_step;
                     else
-                        switch(bounce_direction_x)
-                        {
-                            case bounce_direction::stop:    state_.speed_x_ = 0; break;
-                            case bounce_direction::reverse: state_.speed_x_ = -state_.speed_x_; break;
-                            case bounce_direction::same:    break;
-                        }
+                        state_.speed_x_ = 0;
                 }
 
                 if (y_shift_step != 0)
@@ -248,12 +242,7 @@ public:
                     if (is_pos_valid(state_.dest_.x, state_.dest_.y + y_shift_step))
                         state_.dest_.y += y_shift_step;
                     else
-                        switch (bounce_direction_y)
-                        {
-                            case bounce_direction::stop:    state_.speed_y_ = 0; break;
-                            case bounce_direction::reverse: state_.speed_y_ = -state_.speed_y_; break;
-                            case bounce_direction::same:    break;
-                        }
+                        state_.speed_y_ = 0;
                 }
             }
 

@@ -54,6 +54,13 @@ public:
         else if (key == keyright_)
             move_right_ = false;
     }
+
+    next_operation on_collision (element & e) override
+    {
+        if (state_.dest_.y + col_h() < e.state_.dest_.y + e.col_offset_)
+            jumpable_ = true;
+        return next_operation::cont;
+    }
 };
 
 } // namespace game::element_types

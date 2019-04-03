@@ -32,7 +32,7 @@ pic      = "./asset/pic/yoshi.png"
 picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
-x        = 100
+x        = 150
 y        = 400
 flag     = 1    # element::flag::gravity
 amplify  = 2.2
@@ -47,8 +47,8 @@ x        = 511
 y        = 490
 w        = 2
 h        = 500
-bounce_x = 2 # element::bounce_direction::same
-bounce_y = 1 # element::bounce_direction::reverse
+bounce_x = 1 # element::bounce_direction::reverse
+bounce_y = 2 # element::bounce_direction::same
 
 [[obstacles]]
 name     = "courtbar_head"
@@ -56,42 +56,42 @@ x        = 511
 y        = 460
 w        = 2
 h        = 30
-bounce_x = 1 # element::bounce_direction::reverse
-bounce_y = 2 # element::bounce_direction::same
+bounce_x = 2 # element::bounce_direction::same
+bounce_y = 1 # element::bounce_direction::reverse
 
-# [[obstacles]]
-# name     = "right_wall"
-# x        = 512
-# y        = 490
-# w        = 3
-# h        = 500
-# bounce_x = 2 # element::bounce_direction::same
-# bounce_y = 1 # element::bounce_direction::reverse
-#
 [[obstacles]]
-name     = "left_wall"
-x        = 165
+name     = "right_wall"
+x        = 950
 y        = 0
 w        = 5
 h        = 720
 bounce_x = 1 # element::bounce_direction::reverse
 bounce_y = 2 # element::bounce_direction::same
-#
-# [[obstacles]]
-# name     = "top_wall"
-# x        = 512
-# y        = 490
-# w        = 3
-# h        = 500
-# bounce_x = 2 # element::bounce_direction::same
-# bounce_y = 1 # element::bounce_direction::reverse
-#
+
+[[obstacles]]
+name     = "left_wall"
+x        = 55
+y        = 0
+w        = 5
+h        = 720
+bounce_x = 1 # element::bounce_direction::reverse
+bounce_y = 2 # element::bounce_direction::same
+
+[[obstacles]]
+name     = "ceiling"
+x        = 0
+y        = 40
+w        = 1080
+h        = 20
+bounce_x = 2 # element::bounce_direction::same
+bounce_y = 1 # element::bounce_direction::reverse
+
 [[obstacles]]
 name     = "floor"
 x        = 0
-y        = 630
+y        = 655
 w        = 1080
-h        = 2
+h        = 20
 bounce_x = 2 # element::bounce_direction::same
 bounce_y = 1 # element::bounce_direction::reverse
 
@@ -103,4 +103,4 @@ pic      = "./asset/pic/ball.png"
 picwidth = 91
 picheight= 91
 rotate_t = 0 # animation::rotate_type::none
-flag     = 1 # element::flag::gravity & element::flag::map_only
+flag     = 1 # element::flag::gravity

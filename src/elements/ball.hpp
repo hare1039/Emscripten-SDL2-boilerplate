@@ -12,6 +12,8 @@ class ball : public element
 {
     bounce_direction next_bounce_x_ = bounce_direction::stop,
                      next_bounce_y_ = bounce_direction::stop;
+    pixel old_speed_x_ = 0,
+          old_speed_y_ = 0;
 public:
     ball(SDL_Renderer *r,
          std::string_view name,
@@ -19,18 +21,18 @@ public:
          camera &c): element {r, name, a, c}
     {
         max_speed_x_ = 60;
-        max_speed_y_ = 90;
+        max_speed_y_ = 60;
     }
 
     next_operation on_collision(element & e) override
     {
         if (auto * p = dynamic_cast<player*>(&e))
         {
-            if (p->state_.dest_.x < state_.dest_.x)
-                state_.speed_x_ =   p->state_.speed_x_ + 30;
+            if (p->state_.dest_.x + p->state_.dest_.w/2 < state_.dest_.x + state_.dest_.w/2)
+                state_.speed_x_ =  p->state_.speed_x_ + 30;
             else
                 state_.speed_x_ = -(p->state_.speed_x_ + 30);
-            state_.speed_y_ = -(120 + 5);
+            state_.speed_y_ = -(p->state_.speed_y_ + 70);
         }
         else
         {
@@ -48,10 +50,17 @@ public:
         state_.speed_x_ += state_.accel_x_ * fps::instance()->speed_factor();
         state_.speed_y_ += state_.accel_y_ * fps::instance()->speed_factor();
 
-//        std::cout << state_.accel_y_ << "\n";
-//        std::cout << state_.speed_x_ << " " << state_.speed_y_ << static_cast<int>(next_bounce_x_) << static_cast<int>(next_bounce_y_) << " -> ";
-        move_calculate (state_.speed_x_, state_.speed_y_, next_bounce_x_, next_bounce_y_);
-//        std::cout << state_.speed_x_ << " " << state_.speed_y_ << "\n";
+        if (next_bounce_x_ == bounce_direction::reverse)
+            state_.speed_x_ = -old_speed_x_;
+
+        if (next_bounce_y_ == bounce_direction::reverse)
+            state_.speed_y_ = -old_speed_y_;
+
+        old_speed_x_ = state_.speed_x_;
+        old_speed_y_ = state_.speed_y_;
+        next_bounce_x_ = next_bounce_y_ = bounce_direction::stop;
+
+        move_calculate (state_.speed_x_, state_.speed_y_);
     }
 };
 
