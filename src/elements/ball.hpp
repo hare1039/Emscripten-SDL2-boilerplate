@@ -26,13 +26,13 @@ public:
 
     next_operation on_collision(element & e) override
     {
-        if (auto * p = dynamic_cast<player*>(&e))
+        if (e.type_ == type::player)
         {
-            if (p->state_.dest_.x + p->state_.dest_.w/2 < state_.dest_.x + state_.dest_.w/2)
-                state_.speed_x_ =  p->state_.speed_x_ + 30;
+            if (e.state_.dest_.x + e.state_.dest_.w/2 < state_.dest_.x + state_.dest_.w/2)
+                state_.speed_x_ =   e.state_.speed_x_ + 30;
             else
-                state_.speed_x_ = -(p->state_.speed_x_ + 30);
-            state_.speed_y_ = -(p->state_.speed_y_ + 70);
+                state_.speed_x_ = -(e.state_.speed_x_ + 30);
+            state_.speed_y_     = -(e.state_.speed_y_ + 70);
         }
         else
         {
