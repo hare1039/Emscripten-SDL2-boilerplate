@@ -59,6 +59,18 @@ public:
     {
         if (state_.dest_.y + col_h() < e.state_.dest_.y + e.col_offset_)
             jumpable_ = true;
+
+        if (e.type_ == type::ball)
+        {
+            element &ball = e;
+            if (mid_point().x < ball.mid_point().x)
+                ball.state_.speed_x_ =   state_.old_speed_x_ + 30;
+            else
+                ball.state_.speed_x_ = -(state_.old_speed_x_ + 30);
+
+            ball.state_.speed_y_ = -(state_.old_speed_y_ + 70);
+        }
+
         return next_operation::cont;
     }
 };

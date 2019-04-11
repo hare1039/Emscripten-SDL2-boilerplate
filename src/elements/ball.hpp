@@ -10,10 +10,6 @@ namespace game::element_types
 
 class ball : public element
 {
-    bounce_direction next_bounce_x_ = bounce_direction::stop,
-                     next_bounce_y_ = bounce_direction::stop;
-    pixel old_speed_x_ = 0,
-          old_speed_y_ = 0;
 public:
     ball(SDL_Renderer *r,
          std::string_view name,

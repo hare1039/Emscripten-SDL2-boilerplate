@@ -81,10 +81,12 @@ public:
     struct state
     {
         rect<> dest_ {};
-        pixel speed_x_ = 0; // pixel per second
-        pixel speed_y_ = 0; // pixel per second
-        pixel accel_x_ = 0; // pixel^2 per second
-        pixel accel_y_ = 10; // pixel^2 per second
+        pixel speed_x_ = 0;     // pixel per second
+        pixel speed_y_ = 0;     // pixel per second
+        pixel old_speed_x_ = 0; // speed of previous frame that can used in on_collision
+        pixel old_speed_y_ = 0; // speed of previous frame that can used in on_collision
+        pixel accel_x_ = 0;     // pixel^2 per second
+        pixel accel_y_ = 10;    // pixel^2 per second
     };
     state state_;
 
@@ -112,10 +114,10 @@ public:
     virtual
     void calculate()
     {
-        move_calculate (state_.speed_x_, state_.speed_y_);
-
         state_.speed_x_ += state_.accel_x_ * fps::instance()->speed_factor();
         state_.speed_y_ += state_.accel_y_ * fps::instance()->speed_factor();
+
+        move_calculate (state_.speed_x_, state_.speed_y_);
 
         animate();
     }
@@ -205,6 +207,9 @@ public:
     {
         if (vx == 0 and vy == 0)
             return;
+
+        state_.old_speed_x_ = state_.speed_x_;
+        state_.old_speed_y_ = state_.speed_y_;
 
         double speed_factor = fps::instance()->speed_factor();
         vx *= speed_factor;
@@ -318,8 +323,8 @@ public:
     point<> mid_point()
     {
         return {
-            .x = state_.dest_.x + col_offset_ + col_w()/2,
-            .y = state_.dest_.y + col_offset_ + col_h()/2
+            .x = state_.dest_.x + state_.dest_.w/2,
+            .y = state_.dest_.y + state_.dest_.h/2
         };
     }
 
@@ -379,7 +384,9 @@ private:
            }))
         {
             collision::queue().push_back(collision{ .A = *this, .B = *e });
-            return false;
+
+            // if e->type_ > type_ => will effect by this element => return false
+            return !(e->type_ > type_);
         }
 
         return true;
