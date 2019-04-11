@@ -22,45 +22,20 @@ public:
     {
         max_speed_x_ = 60;
         max_speed_y_ = 60;
+        type_ = type::ball;
     }
 
     next_operation on_collision(element & e) override
     {
-        if (e.type_ == type::player)
+        if (e.type_ != type::player)
         {
-            if (e.state_.dest_.x + e.state_.dest_.w/2 < state_.dest_.x + state_.dest_.w/2)
-                state_.speed_x_ =   e.state_.speed_x_ + 30;
-            else
-                state_.speed_x_ = -(e.state_.speed_x_ + 30);
-            state_.speed_y_     = -(e.state_.speed_y_ + 70);
-        }
-        else
-        {
-            if (next_bounce_x_ == bounce_direction::stop)
-                next_bounce_x_ = e.bounce_x_;
+            if (e.bounce_x_ == bounce_direction::reverse)
+                state_.speed_x_ = -state_.old_speed_x_;
 
-            if (next_bounce_y_ == bounce_direction::stop)
-                next_bounce_y_ = e.bounce_y_;
+            if (e.bounce_y_ == bounce_direction::reverse)
+                state_.speed_y_ = -state_.old_speed_y_;
         }
         return next_operation::cont;
-    }
-
-    void calculate() override
-    {
-        state_.speed_x_ += state_.accel_x_ * fps::instance()->speed_factor();
-        state_.speed_y_ += state_.accel_y_ * fps::instance()->speed_factor();
-
-        if (next_bounce_x_ == bounce_direction::reverse)
-            state_.speed_x_ = -old_speed_x_;
-
-        if (next_bounce_y_ == bounce_direction::reverse)
-            state_.speed_y_ = -old_speed_y_;
-
-        old_speed_x_ = state_.speed_x_;
-        old_speed_y_ = state_.speed_y_;
-        next_bounce_x_ = next_bounce_y_ = bounce_direction::stop;
-
-        move_calculate (state_.speed_x_, state_.speed_y_);
     }
 };
 

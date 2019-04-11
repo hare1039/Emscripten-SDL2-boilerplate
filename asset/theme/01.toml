@@ -29,5 +29,5 @@ picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 10
 y        = 10
-flag     = 1    # element::flag::gravity
+flag     = 2    # element::flag::gravity
 bind_cam = true # bind camera on this element

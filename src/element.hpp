@@ -47,19 +47,28 @@ public:
     pixel col_offset_ = 5;
 
 public:
+    /* type: element type.
+       extra: air (1) < player (50)
+       => air cannot pass player
+       => player are not effected by air
+       => if same, no effect to each other
+       in move_calculation
+     */
     enum class type
     {
-        generic = 0,
-        player
+        air     = 0,
+        ball    = 50,
+        player  = 50,
+        generic = 100
     };
     type type_ = type::generic;
 
     enum class flag
     {
-        none     = 0,
-        gravity  = 1,
-        ghost    = 1 << 1,
-        map_only = 1 << 2
+        none     = utility::compile_time::pow<0>,
+        gravity  = utility::compile_time::pow<1>,
+        ghost    = utility::compile_time::pow<2>,
+        map_only = utility::compile_time::pow<3>
     };
     flag flag_ = flag::none;
 
@@ -148,7 +157,7 @@ public:
         bounce_y_ = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
                                                   .value_or(cast(bounce_y_)));
 
-        if (not (cast(flag_) & cast(flag::gravity)))
+        if (not bool_of(flag_ & flag::gravity))
             state_.accel_y_ = 0;
 
         if (error_code ec = set_texture(
@@ -219,7 +228,7 @@ public:
 
         while (not (x_shift_step == 0 and y_shift_step == 0))
         {
-            if (cast(flag_) & cast(flag::ghost))
+            if (bool_of(flag_ & flag::ghost))
             {
                 state_.dest_.x += x_shift_step;
                 state_.dest_.y += y_shift_step;
@@ -344,7 +353,7 @@ private:
             }
         }
 
-        if (not (cast(flag_) & cast(flag::map_only)))
+        if (not bool_of(flag_ & flag::map_only))
             for (auto &e : all_elements_)
                 if (not is_element_pos_valid(e.second.get(), new_x, new_y))
                     ok = false;
@@ -361,7 +370,7 @@ private:
     {
         if (this != e and
             e->valid_ and
-            cast(e->flag_) ^ cast(flag::map_only) /* doesn't have the ENTITY_FLAG_MAPONLY flag turned on */ and
+            bool_of(e->flag_ ^ flag::map_only) /* doesn't have the ENTITY_FLAG_MAPONLY flag turned on */ and
             e->collides_with(rect<pixel>{
                 .x = x + col_offset_,
                 .y = y + col_offset_,

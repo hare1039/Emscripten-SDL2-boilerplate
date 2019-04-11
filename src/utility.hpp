@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
-#include "basic_headers.hpp"
+#include "compile_time_utility.hpp"
 
 namespace game::utility
 {
@@ -32,31 +32,6 @@ std::string random_string(std::string::size_type length)
     });
     return str;
 }
-
-namespace type_traits
-{
-
-template <typename, typename = std::void_t<>>
-struct is_rectangle : std::false_type {};
-
-template <typename T>
-struct is_rectangle<T,
-                    std::void_t<decltype(std::declval<T>().x),
-                                decltype(std::declval<T>().y),
-                                decltype(std::declval<T>().w),
-                                decltype(std::declval<T>().h)>
-                    > : std::true_type {};
-
-template <typename, typename = std::void_t<>>
-struct is_point : std::false_type {};
-
-template <typename T>
-struct is_point<T,
-                std::void_t<decltype(std::declval<T>().x),
-                            decltype(std::declval<T>().y)>
-                > : std::true_type {};
-
-} // namespace type_traits
 
 } // namespace game::utility
 

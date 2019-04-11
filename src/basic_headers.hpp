@@ -8,5 +8,7 @@
 #include "utility.hpp"
 #include "rect.hpp"
 #include "point.hpp"
+#include "compile_time_utility.hpp"
+#include "enum_operator.hpp"
 
 #endif // BASIC_HEADERS_HPP_
