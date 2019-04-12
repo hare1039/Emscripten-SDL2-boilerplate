@@ -18,7 +18,6 @@ public:
              camera &c): element{r, name, a, c}
     {
         col_offset_ = 0;
-        type_ = type::obstacle;
     }
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override

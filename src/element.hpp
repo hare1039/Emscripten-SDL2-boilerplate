@@ -56,14 +56,21 @@ public:
      */
     enum class type
     {
-        air     = 1,
-        text    = 2,
-        ball    = 50,
-        player  = 50,
-        obstacle= 99,
-        generic = 100
+        text,
+        ball,
+        player,
+        counter,
+        generic
     };
     type type_ = type::generic;
+
+    enum class hardness
+    {
+        air     = 1,
+        stone   = 50,
+        diamond = 100
+    };
+    hardness hardness_ = hardness::diamond;
 
     enum class flag
     {
@@ -244,7 +251,7 @@ protected:
         }
     }
 
-    // setup: x, y, flag, offset, bounce_x, bounce_y, accel_y
+    // setup: x, y, flag, offset, bounce_x, bounce_y, accel_y, hardness
     void build_from_toml_basic(std::shared_ptr<cpptoml::table> table)
     {
         state_.dest_.x  = table->get_as<pixel>("x").value_or(state_.dest_.x);
@@ -257,6 +264,9 @@ protected:
                                                   .value_or(cast(bounce_x_)));
         bounce_y_ = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
                                                   .value_or(cast(bounce_y_)));
+
+        hardness_ = static_cast<element::hardness>(table->get_as<int>("hardness")
+                                                   .value_or(cast(hardness_)));
 
         if (not bool_of(flag_ & flag::gravity))
             state_.accel_y_ = 0;
@@ -399,10 +409,9 @@ private:
         {
             collision::queue().push_back(collision{ .A = *this, .B = *e });
 
-            // if e->type_ > type_ => will effect by this element => return false
-            return !(e->type_ > type_);
+            // if e->hardness_ > hardness_ => will effect by this element => return false
+            return !(e->hardness_ > hardness_);
         }
-
         return true;
     }
 };

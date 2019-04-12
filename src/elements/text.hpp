@@ -21,7 +21,8 @@ public:
          std::unordered_map<std::string, std::unique_ptr<element>> &a,
          camera &c): floating {r, name, a, c}
     {
-        type_ = type::text;
+        type_     = type::text;
+        hardness_ = hardness::air;
     }
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override

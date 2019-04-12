@@ -17,6 +17,7 @@ public:
            camera &c): movable {r, name, a, c}
     {
         type_ = type::player; // not suggested in stackoverflow, TODO list!
+        hardness_ = hardness::stone;
     }
 
     virtual

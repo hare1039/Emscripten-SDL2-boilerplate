@@ -18,7 +18,8 @@ public:
     {
         max_speed_x_ = 60;
         max_speed_y_ = 60;
-        type_ = type::ball;
+        type_     = type::ball;
+        hardness_ = hardness::stone;
     }
 
     void on_collision(element & e) override
