@@ -47,7 +47,7 @@ public:
         thm = std::make_unique<theme_types::front_page>(renderer.get());
     }
 
-    ~app() { SDL_Quit(); }
+    ~app() { TTF_Quit(); IMG_Quit(); SDL_Quit(); }
 
     void run()
     {
