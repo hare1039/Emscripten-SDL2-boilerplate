@@ -148,21 +148,9 @@ public:
     virtual
     void build_from_toml(std::shared_ptr<cpptoml::table> table)
     {
-        state_.dest_.x  = table->get_as<pixel>("x").value_or(state_.dest_.x);
-        state_.dest_.y  = table->get_as<pixel>("y").value_or(state_.dest_.y);
-        flag_ = static_cast<element::flag>(table->get_as<int>("flag")
-                                           .value_or(cast(flag_)));
-        col_offset_ = table->get_as<pixel>("offset").value_or(col_offset_);
+        build_from_toml_basic(table);
 
-        bounce_x_ = static_cast<bounce_direction>(table->get_as<int>("bounce_x")
-                                                  .value_or(cast(bounce_x_)));
-        bounce_y_ = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
-                                                  .value_or(cast(bounce_y_)));
-
-        if (not bool_of(flag_ & flag::gravity))
-            state_.accel_y_ = 0;
-
-        if (error_code ec = set_texture(
+        if (error_code ec = set_texture_from_picture (
                 *(table->get_as<std::string>("pic")),
                 table->get_as<int>("picwidth").value_or(src_.w),
                 table->get_as<int>("picheight").value_or(src_.h),
@@ -175,34 +163,13 @@ public:
     }
 
     virtual
-    error_code set_texture(std::string_view path,
-                           pixel pic_w, pixel pic_h,
-                           animation::rotate_type t = animation::rotate_type::none)
-    {
-        SDL_Surface_ptr image {IMG_Load(path.data()), &SDL_FreeSurface};
-        if (not image)
-        {
-            std::cout << IMG_GetError() << std::endl;
-            return -1;
-        }
-
-        texture_.reset (SDL_CreateTextureFromSurface (renderer_, image.get()));
-
-        src_.w = state_.dest_.w = pic_w;
-        src_.h = state_.dest_.h = pic_h;
-        int pic_frame = image->h / pic_h;
-        anime_info_ = std::make_unique<animation>(pic_frame, t);
-        return 0;
-    }
-
-    virtual
     void on_key_down(SDL_Keycode const &, Uint16 const &) {}
 
     virtual
     void on_key_up(SDL_Keycode const &, Uint16 const &) {}
 
 
-public:
+protected:
     void move_calculate(double vx, double vy)
     {
         if (vx == 0 and vy == 0)
@@ -275,6 +242,37 @@ public:
         }
     }
 
+    // setup: x, y, flag, offset, bounce_x, bounce_y, accel_y
+    void build_from_toml_basic(std::shared_ptr<cpptoml::table> table)
+    {
+        state_.dest_.x  = table->get_as<pixel>("x").value_or(state_.dest_.x);
+        state_.dest_.y  = table->get_as<pixel>("y").value_or(state_.dest_.y);
+        flag_ = static_cast<element::flag>(table->get_as<int>("flag")
+                                           .value_or(cast(flag_)));
+        col_offset_ = table->get_as<pixel>("offset").value_or(col_offset_);
+
+        bounce_x_ = static_cast<bounce_direction>(table->get_as<int>("bounce_x")
+                                                  .value_or(cast(bounce_x_)));
+        bounce_y_ = static_cast<bounce_direction>(table->get_as<int>("bounce_y")
+                                                  .value_or(cast(bounce_y_)));
+
+        if (not bool_of(flag_ & flag::gravity))
+            state_.accel_y_ = 0;
+    }
+
+    error_code set_texture(SDL_Surface_ptr surface,
+                           pixel w, pixel h,
+                           animation::rotate_type t)
+    {
+        texture_.reset (SDL_CreateTextureFromSurface (renderer_, surface.get()));
+
+        src_.w = state_.dest_.w = w;
+        src_.h = state_.dest_.h = h;
+        int pic_frame = surface->h / h;
+        anime_info_ = std::make_unique<animation>(pic_frame, t);
+        return 0;
+    }
+public:
     void stop_move()
     {
         if (state_.speed_x_ > 0)
@@ -332,6 +330,20 @@ public:
     inline pixel col_h() { return state_.dest_.h - col_offset_ * 2; }
 
 private:
+    error_code set_texture_from_picture(std::string_view path,
+                                        pixel pic_w, pixel pic_h,
+                                        animation::rotate_type t = animation::rotate_type::none)
+    {
+        SDL_Surface_ptr image {IMG_Load(path.data()), &SDL_FreeSurface};
+        if (image == nullptr)
+        {
+            std::cout << IMG_GetError() << std::endl;
+            return -1;
+        }
+        return set_texture(std::move(image), pic_w, pic_h, t);
+    }
+
+
     bool is_pos_valid (pixel new_x, pixel new_y)
     {
         SDL_Point top_left_map  = { .x = static_cast<int>(new_x + col_offset_          ) / TILE_SIZE_PIXEL_INT,

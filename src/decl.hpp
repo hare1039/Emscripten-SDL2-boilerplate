@@ -11,6 +11,7 @@ using SDL_Texture_ptr = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTextur
 using SDL_Surface_ptr = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>;
 using SDL_Window_ptr  = std::unique_ptr<SDL_Window,  decltype(&SDL_DestroyWindow)>;
 using SDL_Renderer_ptr= std::unique_ptr<SDL_Renderer,decltype(&SDL_DestroyRenderer)>;
+using TTF_Font_ptr    = std::unique_ptr<TTF_Font,    decltype(&TTF_CloseFont)>;
 
 constexpr double ZOOM_FACTOR = 2;
 constexpr pixel  WINDOW_WIDTH_PIXEL      = 450 * ZOOM_FACTOR;
