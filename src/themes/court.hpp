@@ -46,18 +46,18 @@ public:
     void calculate() override
     {
         theme::calculate();
-        auto p1floor = dynamic_cast<element_types::obstacle *>(elements["right-floor"].get());
-        if (score.at(player1) != p1floor->collisions_)
+        auto p1floor = dynamic_cast<element_types::score_counter *>(elements["right-floor"].get());
+        if (score.at(player1) != p1floor->count())
         {
-            score.at(player1) = p1floor->collisions_;
+            score.at(player1) = p1floor->count();
             auto sb = dynamic_cast<element_types::text *>(elements["right-scoreboard"].get());
             sb->update_text(std::to_string(score.at(player1)));
         }
 
-        auto p2floor = dynamic_cast<element_types::obstacle *>(elements["left-floor"].get());
-        if (score.at(player2) != p2floor->collisions_)
+        auto p2floor = dynamic_cast<element_types::score_counter *>(elements["left-floor"].get());
+        if (score.at(player2) != p2floor->count())
         {
-            score.at(player2) = p2floor->collisions_;
+            score.at(player2) = p2floor->count();
             auto sb = dynamic_cast<element_types::text *>(elements["left-scoreboard"].get());
             sb->update_text(std::to_string(score.at(player2)));
         }

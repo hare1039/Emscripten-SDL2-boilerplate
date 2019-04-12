@@ -10,8 +10,6 @@ namespace game::element_types
 class obstacle : public element
 {
 public:
-    unsigned int collisions_ = 0;
-public:
     obstacle(SDL_Renderer *r,
              std::string_view name,
              std::unordered_map<std::string, std::unique_ptr<element>> &a,

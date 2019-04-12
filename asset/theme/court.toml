@@ -86,7 +86,7 @@ h        = 20
 bounce_x = 2 # element::bounce_direction::same
 bounce_y = 1 # element::bounce_direction::reverse
 
-[[obstacles]]
+[[score_counters]]
 name     = "left-floor"
 x        = 0
 y        = 655
@@ -95,7 +95,7 @@ h        = 20
 bounce_x = 2 # element::bounce_direction::same
 bounce_y = 1 # element::bounce_direction::reverse
 
-[[obstacles]]
+[[score_counters]]
 name     = "right-floor"
 x        = 540
 y        = 655
@@ -110,8 +110,8 @@ ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
 text     = "0"
 font_size= 120
 x        = 60
-y        = 60
-w        = 120
+y        = 30
+w        = 90
 h        = 120
 
 [[texts]]
@@ -120,8 +120,8 @@ ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
 text     = "0"
 font_size= 120
 x        = 780
-y        = 60
-w        = 120
+y        = 30
+w        = 90
 h        = 120
 
 [[balls]]

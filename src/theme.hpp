@@ -13,6 +13,7 @@
 #include "elements/obstacle.hpp"
 #include "elements/ball.hpp"
 #include "elements/text.hpp"
+#include "elements/score_counter.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "fps.hpp"
@@ -55,6 +56,7 @@ public:
         build<element_types::obstacle>("obstacles", config);
         build<element_types::ball>    ("balls",     config);
         build<element_types::text>    ("texts",     config);
+        build<element_types::score_counter> ("score_counters", config);
     }
 
     virtual

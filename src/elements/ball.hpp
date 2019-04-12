@@ -3,7 +3,7 @@
 
 #include "../element.hpp"
 #include "player.hpp"
-#include "obstacle.hpp"
+#include "score_counter.hpp"
 
 namespace game::element_types
 {
@@ -32,9 +32,8 @@ public:
             if (e.bounce_y_ == bounce_direction::reverse)
                 state_.speed_y_ = -state_.old_speed_y_;
 
-            if (e.type_ == type::obstacle)
-                dynamic_cast<element_types::obstacle *>(&e)->collisions_++;
-
+            if (e.type_ == type::counter)
+                dynamic_cast<element_types::score_counter *>(&e)->increase_once();
         }
     }
 };
