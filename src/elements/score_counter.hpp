@@ -11,7 +11,8 @@ namespace game::element_types
 class score_counter : public obstacle
 {
     unsigned int collision_count_ = 0;
-    bool         ball_in_ = false;
+    bool         ball_in_         = false;
+    bool         had_collision_   = false;
 public:
     score_counter(SDL_Renderer *r,
                   std::string_view name,
@@ -35,7 +36,18 @@ public:
 
     void on_collision(element &e) override
     {
-        ball_in_ = (e.type_ == type::ball);
+        if (e.type_ == type::ball)
+        {
+            had_collision_ = true;
+            ball_in_ = true;
+        }
+    }
+
+    void calculate() override
+    {
+        if (not had_collision_)
+            ball_in_ = false;
+        had_collision_ = false;
     }
 };
 
