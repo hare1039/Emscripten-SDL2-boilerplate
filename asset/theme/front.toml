@@ -13,14 +13,14 @@ x        = 600
 y        = 500
 
 [[wobbles]]
-name     = "rin"
-pic      = "./asset/pic/rin.png"
-picwidth = 245
-picheight= 224
+name     = "front_text"
+pic      = "./asset/pic/title.png"
+picwidth = 900
+picheight= 275
 rotate_t = 0 # animation::rotate_type::none
-x        = 300
-y        = 300
-duration = 1500 # ms
-max_ampl = 2
-min_ampl = 1.5
+x        = 450
+y        = 50
+duration = 1250 # ms
+max_ampl = 1
+min_ampl = 0.72
 start_ampl = 0.001
