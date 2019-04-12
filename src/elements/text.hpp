@@ -19,7 +19,10 @@ public:
     text(SDL_Renderer *r,
          std::string_view name,
          std::unordered_map<std::string, std::unique_ptr<element>> &a,
-         camera &c): floating {r, name, a, c} {}
+         camera &c): floating {r, name, a, c}
+    {
+        type_ = type::text;
+    }
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override
     {

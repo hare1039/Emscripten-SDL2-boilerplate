@@ -10,12 +10,15 @@ namespace game::element_types
 class obstacle : public element
 {
 public:
+    unsigned int collisions_ = 0;
+public:
     obstacle(SDL_Renderer *r,
              std::string_view name,
              std::unordered_map<std::string, std::unique_ptr<element>> &a,
              camera &c): element{r, name, a, c}
     {
         col_offset_ = 0;
+        type_ = type::obstacle;
     }
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override

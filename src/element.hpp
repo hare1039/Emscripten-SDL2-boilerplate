@@ -56,9 +56,11 @@ public:
      */
     enum class type
     {
-        air     = 0,
+        air     = 1,
+        text    = 2,
         ball    = 50,
         player  = 50,
+        obstacle= 99,
         generic = 100
     };
     type type_ = type::generic;

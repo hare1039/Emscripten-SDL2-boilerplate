@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <array>
 #include "../basic_headers.hpp"
 #include "../theme.hpp"
 #include "stage.hpp"
@@ -11,6 +12,8 @@ namespace game::theme_types
 
 class court : public theme
 {
+    enum {player1, player2};
+    std::array<unsigned int, 2> score{};
 public:
     court(SDL_Renderer * r): theme{r, "./asset/theme/court.toml"} {}
 
@@ -38,6 +41,26 @@ public:
     {
         elements["player1"]->on_key_up(key, mod);
         elements["player2"]->on_key_up(key, mod);
+    }
+
+    void calculate() override
+    {
+        theme::calculate();
+        auto p1floor = dynamic_cast<element_types::obstacle *>(elements["right-floor"].get());
+        if (score.at(player1) != p1floor->collisions_)
+        {
+            score.at(player1) = p1floor->collisions_;
+            auto sb = dynamic_cast<element_types::text *>(elements["right-scoreboard"].get());
+            sb->update_text(std::to_string(score.at(player1)));
+        }
+
+        auto p2floor = dynamic_cast<element_types::obstacle *>(elements["left-floor"].get());
+        if (score.at(player2) != p2floor->collisions_)
+        {
+            score.at(player2) = p2floor->collisions_;
+            auto sb = dynamic_cast<element_types::text *>(elements["left-scoreboard"].get());
+            sb->update_text(std::to_string(score.at(player2)));
+        }
     }
 };
 
