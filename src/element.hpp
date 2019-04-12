@@ -143,7 +143,7 @@ public:
     }
 
     virtual
-    next_operation on_collision (element &) { return next_operation::cont; }
+    void on_collision (element &) {}
 
     virtual
     void build_from_toml(std::shared_ptr<cpptoml::table> table)

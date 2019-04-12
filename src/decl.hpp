@@ -30,12 +30,6 @@ constexpr int    MAP_HEIGHT_PIXEL_INT    = MAP_HEIGHT_PIXEL;
 
 constexpr double FPS = 16.0;
 
-enum class next_operation
-{
-    skip,
-    cont
-};
-
 } // namespace game
 
 

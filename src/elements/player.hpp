@@ -55,7 +55,7 @@ public:
             move_right_ = false;
     }
 
-    next_operation on_collision (element & e) override
+    void on_collision (element & e) override
     {
         if (state_.dest_.y + col_h() < e.state_.dest_.y + e.col_offset_)
             jumpable_ = true;
@@ -70,8 +70,6 @@ public:
 
             ball.state_.speed_y_ = -(state_.old_speed_y_ + 70);
         }
-
-        return next_operation::cont;
     }
 };
 

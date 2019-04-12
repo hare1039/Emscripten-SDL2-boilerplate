@@ -64,8 +64,8 @@ public:
                        [] (auto &e) { e.second->calculate(); });
         std::for_each (element::collision::queue().begin(), element::collision::queue().end(),
                        [] (element::collision & col) {
-                           if (col.A.on_collision(col.B) == next_operation::cont)
-                               col.B.on_collision(col.A);
+                           col.A.on_collision(col.B);
+                           col.B.on_collision(col.A);
                        });
         element::collision::queue().clear();
     }

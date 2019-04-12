@@ -21,7 +21,7 @@ public:
         type_ = type::ball;
     }
 
-    next_operation on_collision(element & e) override
+    void on_collision(element & e) override
     {
         if (e.type_ != type::player)
         {
@@ -30,8 +30,11 @@ public:
 
             if (e.bounce_y_ == bounce_direction::reverse)
                 state_.speed_y_ = -state_.old_speed_y_;
+
+            if (e.type_ == type::obstacle)
+                dynamic_cast<element_types::obstacle *>(&e)->collisions_++;
+
         }
-        return next_operation::cont;
     }
 };
 
