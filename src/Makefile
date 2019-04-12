@@ -10,6 +10,7 @@ ALL:
                     -s USE_SDL=2                    \
                     -s USE_SDL_NET=2                \
                     -s USE_SDL_IMAGE=2              \
+                    -s USE_SDL_TTF=2                \
                     --preload-file ../asset         \
                     -s SDL2_IMAGE_FORMATS='["png"]' \
                     --emrun                         \
@@ -28,6 +29,7 @@ debug:
                     -s USE_SDL=2                    \
                     -s USE_SDL_NET=2                \
                     -s USE_SDL_IMAGE=2              \
+                    -s USE_SDL_TTF=2                \
                     -s ASSERTIONS=1                 \
                     -s SDL2_IMAGE_FORMATS='["png"]' \
                     --preload-file ../asset         \

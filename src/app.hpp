@@ -20,7 +20,17 @@ public:
         game_fps {std::make_unique<fps>()}
     {
         if (error_code ec = SDL_Init(SDL_INIT_VIDEO); ec < 0)
-            std::cout << SDL_GetError() << std::endl;
+            std::cout << "SDL_Init: " << SDL_GetError() << "\n";
+
+        if (TTF_Init() == -1)
+            std::cout << "TTF_Init: " << TTF_GetError() << "\n";
+
+        {
+            int flags   = IMG_INIT_PNG;
+            int initted = IMG_Init(flags);
+            if ((initted & flags) != flags)
+                std::cout << "IMG_Init: " << IMG_GetError() << "\n";
+        }
 
         SDL_Window   * wind = nullptr;
         SDL_Renderer * rend = nullptr;
