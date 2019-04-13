@@ -17,7 +17,7 @@ picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 800
-y        = 400
+y        = 500
 flag     = 2    # element::flag::gravity
 amplify  = 2.2
 keyup    = 1073741906 # SDLK_UP
@@ -33,7 +33,7 @@ picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 150
-y        = 400
+y        = 500
 flag     = 2    # element::flag::gravity
 amplify  = 2.2
 keyup    = 119  # SDLK_w
@@ -126,7 +126,7 @@ h        = 120
 
 [[balls]]
 name     = "ball"
-x        = 200
+x        = 100
 y        = 200
 pic      = "./asset/pic/ball.png"
 picwidth = 91
