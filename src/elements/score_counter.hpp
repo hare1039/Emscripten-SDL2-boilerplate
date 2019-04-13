@@ -23,6 +23,7 @@ public:
     }
 
     void increase() { collision_count_++; }
+    void decrease() { collision_count_--; }
     void increase_once()
     {
         if (not ball_in_)
@@ -32,7 +33,7 @@ public:
         }
     }
 
-    unsigned int count() { return collision_count_; }
+    unsigned int& count() { return collision_count_; }
 
     void on_collision(element &e) override
     {

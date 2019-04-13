@@ -46,16 +46,16 @@ name     = "courtbar"
 x        = 511
 y        = 490
 w        = 2
-h        = 500
+h        = 520
 bounce_x = 1 # element::bounce_direction::reverse
 bounce_y = 2 # element::bounce_direction::same
 
 [[obstacles]]
 name     = "courtbar_head"
 x        = 511
-y        = 460
+y        = 480
 w        = 2
-h        = 30
+h        = 10
 bounce_x = 2 # element::bounce_direction::same
 bounce_y = 1 # element::bounce_direction::reverse
 

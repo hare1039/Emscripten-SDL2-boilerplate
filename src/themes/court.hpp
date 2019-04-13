@@ -12,9 +12,10 @@ namespace game::theme_types
 
 class court : public theme
 {
-    enum player {player1, player2};
-    std::array<rect<>, 2> rect_{};
-    std::array<unsigned int, 2> score_{};
+    enum player {player1 /* right player */,
+                 player2 /* left  player */, player_list_end};
+    std::array<rect<>, player_list_end> rect_{};
+    std::array<unsigned int, player_list_end> score_{};
 public:
     court(SDL_Renderer * r): theme{r, "./asset/theme/court.toml"}
     {
@@ -51,22 +52,45 @@ public:
     void calculate() override
     {
         theme::calculate();
-        auto p1floor = dynamic_cast<element_types::score_counter *>(elements["right-floor"].get());
-        if (score_.at(player1) != p1floor->count())
+        std::array<element_types::score_counter *, player_list_end> score_counter {{
+            dynamic_cast<element_types::score_counter *>(elements["left-floor"].get()),
+            dynamic_cast<element_types::score_counter *>(elements["right-floor"].get())
+        }};
+        player winner = player_list_end;
+        if (score_.at(player1) != score_counter.at(player1)->count())
+            winner = player1;
+
+        // if score of player2 also increase, make sure which one are the real winner
+        if (score_.at(player2) != score_counter.at(player2)->count())
         {
-            score_.at(player1) = p1floor->count();
-            auto sb = dynamic_cast<element_types::text *>(elements["right-scoreboard"].get());
-            sb->update_text(std::to_string(score_.at(player1)));
-            serve(player1);
+            if (winner == player1)
+            {
+                if (elements["ball"]->mid_point().x > elements["right-floor"]->state_.dest_.x)
+                {
+                    winner = player2;
+                    score_counter.at(player1)->count() = score_.at(player1);
+                }
+                else
+                {
+                    winner = player1;
+                    score_counter.at(player2)->count() = score_.at(player2);
+                }
+            }
+            else
+            {
+                winner = player2;
+            }
         }
 
-        auto p2floor = dynamic_cast<element_types::score_counter *>(elements["left-floor"].get());
-        if (score_.at(player2) != p2floor->count())
+        if (winner != player_list_end)
         {
-            score_.at(player2) = p2floor->count();
-            auto sb = dynamic_cast<element_types::text *>(elements["left-scoreboard"].get());
-            sb->update_text(std::to_string(score_.at(player2)));
-            serve(player2);
+            score_.at(winner) = score_counter.at(winner)->count();
+            dynamic_cast<element_types::text *>(
+                (winner == player1)?
+                    elements["right-scoreboard"].get():
+                    elements["left-scoreboard"] .get())
+                ->update_text(std::to_string(score_.at(winner)));
+            serve(winner);
         }
     }
 
@@ -76,17 +100,20 @@ private:
         switch(p)
         {
         case player1:
-            elements["ball"]->state_.dest_.x  = 100;
+            elements["ball"]->state_.dest_.x  = 800;
             elements["ball"]->state_.dest_.y  = 200;
             elements["ball"]->state_.speed_x_ = 0;
             elements["ball"]->state_.speed_y_ = 0;
             break;
 
         case player2:
-            elements["ball"]->state_.dest_.x  = 800;
+            elements["ball"]->state_.dest_.x  = 100;
             elements["ball"]->state_.dest_.y  = 200;
             elements["ball"]->state_.speed_x_ = 0;
             elements["ball"]->state_.speed_y_ = 0;
+            break;
+
+        default:
             break;
         }
         reset_theme();
