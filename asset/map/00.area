@@ -1,0 +1,6 @@
+./asset/pic/tileset.png
+5 4
+./asset/map/01.map ./asset/map/01.map ./asset/map/00.map ./asset/map/00.map ./asset/map/00.map
+./asset/map/01.map ./asset/map/01.map ./asset/map/00.map ./asset/map/00.map ./asset/map/00.map
+./asset/map/00.map ./asset/map/00.map ./asset/map/00.map ./asset/map/00.map ./asset/map/00.map
+./asset/map/00.map ./asset/map/00.map ./asset/map/00.map ./asset/map/00.map ./asset/map/00.map

@@ -1,0 +1,33 @@
+# This is a TOML document.
+
+area = "./asset/map/00.area"
+[camera]
+mode = 1 # camera::mode::center
+
+[[elements]]
+name     = "rin"
+pic      = "./asset/pic/rin.png"
+picwidth = 245
+picheight= 224
+rotate_t = 0 # animation::rotate_type::none
+x        = 600
+y        = 500
+
+[[elements]]
+pic      = "./asset/pic/rin.png"
+picwidth = 245
+picheight= 224
+rotate_t = 0 # animation::rotate_type::none
+x        = 200
+y        = 200
+
+[[movables]]
+name     = "yoshi"
+pic      = "./asset/pic/yoshi.png"
+picwidth = 64
+picheight= 64
+rotate_t = 1    # animation::rotate_type::circle
+x        = 10
+y        = 10
+flag     = 2    # element::flag::gravity
+bind_cam = true # bind camera on this element

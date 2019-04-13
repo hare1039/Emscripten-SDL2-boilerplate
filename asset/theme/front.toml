@@ -1,0 +1,26 @@
+# This is a TOML document.
+
+area = "./asset/map/front.area"
+[camera]
+mode = 0 # camera::mode::top_left
+
+[[floatings]]
+pic      = "./asset/pic/rin.png"
+picwidth = 245
+picheight= 224
+rotate_t = 0 # animation::rotate_type::none
+x        = 600
+y        = 500
+
+[[wobbles]]
+name     = "front_text"
+pic      = "./asset/pic/title.png"
+picwidth = 900
+picheight= 275
+rotate_t = 0 # animation::rotate_type::none
+x        = 450
+y        = 50
+duration = 1250 # ms
+max_ampl = 1
+min_ampl = 0.72
+start_ampl = 0.001

@@ -1,0 +1,135 @@
+# This is a TOML document.
+
+area = "./asset/map/court.area"
+# 1080 * 720 => mid point (540, 360)
+
+[camera]
+mode = 0 # camera::mode::top_left
+x    = 60
+y    = 60
+
+# SDL table at https://wiki.libsdl.org/SDLKeycodeLookup
+
+[[players]]
+name     = "player1"
+pic      = "./asset/pic/yoshi.png"
+picwidth = 64
+picheight= 64
+rotate_t = 1    # animation::rotate_type::circle
+x        = 800
+y        = 500
+flag     = 2    # element::flag::gravity
+amplify  = 2.2
+keyup    = 1073741906 # SDLK_UP
+keydown  = 1073741905 # SDLK_DOWN
+keyleft  = 1073741904 # SDLK_LEFT
+keyright = 1073741903 # SDLK_RIGHT
+
+
+[[players]]
+name     = "player2"
+pic      = "./asset/pic/yoshi.png"
+picwidth = 64
+picheight= 64
+rotate_t = 1    # animation::rotate_type::circle
+x        = 150
+y        = 500
+flag     = 2    # element::flag::gravity
+amplify  = 2.2
+keyup    = 119  # SDLK_w
+keydown  = 115  # SDLK_s
+keyleft  = 97   # SDLK_a
+keyright = 100  # SDLK_d
+
+[[obstacles]]
+name     = "courtbar"
+x        = 511
+y        = 490
+w        = 2
+h        = 520
+bounce_x = 1 # element::bounce_direction::reverse
+bounce_y = 2 # element::bounce_direction::same
+
+[[obstacles]]
+name     = "courtbar_head"
+x        = 511
+y        = 480
+w        = 2
+h        = 10
+bounce_x = 2 # element::bounce_direction::same
+bounce_y = 1 # element::bounce_direction::reverse
+
+[[obstacles]]
+name     = "right_wall"
+x        = 950
+y        = 0
+w        = 5
+h        = 720
+bounce_x = 1 # element::bounce_direction::reverse
+bounce_y = 2 # element::bounce_direction::same
+
+[[obstacles]]
+name     = "left_wall"
+x        = 55
+y        = 0
+w        = 5
+h        = 720
+bounce_x = 1 # element::bounce_direction::reverse
+bounce_y = 2 # element::bounce_direction::same
+
+[[obstacles]]
+name     = "ceiling"
+x        = 0
+y        = 40
+w        = 1080
+h        = 20
+bounce_x = 2 # element::bounce_direction::same
+bounce_y = 1 # element::bounce_direction::reverse
+
+[[score_counters]]
+name     = "left-floor"
+x        = 0
+y        = 655
+w        = 540
+h        = 20
+bounce_x = 2 # element::bounce_direction::same
+bounce_y = 1 # element::bounce_direction::reverse
+
+[[score_counters]]
+name     = "right-floor"
+x        = 540
+y        = 655
+w        = 540
+h        = 20
+bounce_x = 2 # element::bounce_direction::same
+bounce_y = 1 # element::bounce_direction::reverse
+
+[[texts]]
+name     = "left-scoreboard"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "0"
+font_size= 120
+x        = 60
+y        = 30
+w        = 90
+h        = 120
+
+[[texts]]
+name     = "right-scoreboard"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "0"
+font_size= 120
+x        = 780
+y        = 30
+w        = 90
+h        = 120
+
+[[balls]]
+name     = "ball"
+x        = 100
+y        = 200
+pic      = "./asset/pic/ball.png"
+picwidth = 91
+picheight= 91
+rotate_t = 0 # animation::rotate_type::none
+flag     = 2 # element::flag::gravity
