@@ -40,29 +40,29 @@ ulli operator "" _s (ulli v) { return v * 1000; }
 
 class fps : public enable_instance<fps>
 {
-    double _speed_factor = 0;
-    int old_time  = 0;
-    int last_time = 0;
-    int frames = 0;
-    int number_frames = 0;
+    double speed_factor_ = 0;
+    int old_time_  = 0;
+    int last_time_ = 0;
+    int frames_        = 0;
+    int number_frames_ = 0;
 public:
     void calculate()
     {
-        if (old_time + 1_s < SDL_GetTicks())
+        if (old_time_ + 1_s < SDL_GetTicks())
         {
-            old_time = SDL_GetTicks();
-            number_frames = frames;
-            frames = 0;
+            old_time_      = SDL_GetTicks();
+            number_frames_ = frames_;
+            frames_        = 0;
         }
 
-        double delta = (SDL_GetTicks() - last_time) / 1000.0;
-        _speed_factor = ((delta > 1) ? 0 /* pause game if browser stop looping */ : delta) * FPS;
-        last_time = SDL_GetTicks();
-        frames++;
+        double delta  = (SDL_GetTicks() - last_time_) / 1000.0;
+        speed_factor_ = ((delta > 1) ? 0 /* pause game if browser stop looping */ : delta) * FPS;
+        last_time_    = SDL_GetTicks();
+        frames_++;
     }
 
-    int frame() { return number_frames; }
-    double speed_factor() { return _speed_factor; }
+    int frame() { return number_frames_; }
+    double speed_factor() { return speed_factor_; }
 };
 
 } // namespace game
