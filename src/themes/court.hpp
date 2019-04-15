@@ -17,7 +17,7 @@ class court : public theme
     std::array<rect<>, player_list_end> rect_{};
     std::array<unsigned int, player_list_end> score_{};
 public:
-    court(SDL_Renderer * r): theme{r, "./asset/theme/court.toml"}
+    court(SDL_Renderer * r): theme {r, "./asset/theme/court.toml"}
     {
         rect_.at(player1) = elements["player1"]->state_.dest_;
         rect_.at(player2) = elements["player2"]->state_.dest_;
@@ -36,6 +36,7 @@ public:
             break;
 
         case SDLK_SPACE:
+            fps::instance()->pause();
             break;
 
         default:
@@ -47,6 +48,15 @@ public:
     {
         elements["player1"]->on_key_up(key, mod);
         elements["player2"]->on_key_up(key, mod);
+        switch (key)
+        {
+        case SDLK_SPACE:
+            fps::instance()->resume();
+            break;
+
+        default:
+            break;
+        }
     }
 
     void calculate() override

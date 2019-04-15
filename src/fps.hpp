@@ -43,8 +43,10 @@ class fps : public enable_instance<fps>
     double speed_factor_ = 0;
     int old_time_  = 0;
     int last_time_ = 0;
-    int frames_        = 0;
+    int frames_    = 0;
     int number_frames_ = 0;
+
+    bool is_paused_ = false;
 public:
     void calculate()
     {
@@ -61,8 +63,20 @@ public:
         frames_++;
     }
 
-    int frame() { return number_frames_; }
-    double speed_factor() { return speed_factor_; }
+    void pause() { is_paused_ = true; }
+
+    void resume()
+    {
+        if (is_paused_)
+        {
+            is_paused_     = false;
+            old_time_      = SDL_GetTicks();
+            number_frames_ = frames_ = 0;
+        }
+    }
+
+    int frame() { return (is_paused_)? 0 : number_frames_; }
+    double speed_factor() { return (is_paused_)? 0 : speed_factor_; }
 };
 
 } // namespace game
