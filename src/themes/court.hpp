@@ -60,9 +60,9 @@ public:
         if (score_.at(player1) != score_counter.at(player1)->count())
             winner = player1;
 
-        // if score of player2 also increase, make sure which one are the real winner
         if (score_.at(player2) != score_counter.at(player2)->count())
         {
+            // if score of player2 also increase, make sure which one are the real winner
             if (winner == player1)
             {
                 if (elements["ball"]->mid_point().x > elements["right-floor"]->state_.dest_.x)
