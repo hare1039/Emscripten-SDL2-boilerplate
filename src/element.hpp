@@ -284,6 +284,11 @@ protected:
         anime_info_ = std::make_unique<animation>(pic_frame, t);
         return 0;
     }
+
+    error_code set_alpha(std::uint8_t alpha)
+    {
+        return SDL_SetTextureAlphaMod(texture_.get(), alpha);
+    }
 public:
     void stop_move()
     {
@@ -299,22 +304,31 @@ public:
 
     // this function amplify this element, and then adjust dest.x value
     // to make middle point of the element won't change
-    void amplify (double multiple, std::optional<double> h = std::nullopt)
+
+    enum class amplify_mode {top_left, center};
+    void amplify (double multiple,
+                  std::optional<double> h = std::nullopt,
+                  std::optional<amplify_mode> mode = std::nullopt)
     {
         pixel old_w = state_.dest_.w;
         pixel old_h = state_.dest_.h;
         state_.dest_.w *= multiple;
         state_.dest_.h = (h)? (state_.dest_.h * (*h)) : (src_.h * state_.dest_.w / src_.w);
-        state_.dest_.x -= (state_.dest_.w - old_w) / 2;
-        state_.dest_.y -= (state_.dest_.h - old_h) / 2;
+        if (mode.value_or(amplify_mode::center) == amplify_mode::center)
+        {
+            state_.dest_.x -= (state_.dest_.w - old_w) / 2;
+            state_.dest_.y -= (state_.dest_.h - old_h) / 2;
+        }
     }
 
-    void amplify_to (pixel w, std::optional<pixel> h = std::nullopt)
+    void amplify_to (pixel w,
+                     std::optional<pixel> h = std::nullopt,
+                     std::optional<amplify_mode> mode = std::nullopt)
     {
         if (h)
-            amplify(w/state_.dest_.w, *h/state_.dest_.h);
+            amplify(w/state_.dest_.w, *h/state_.dest_.h, mode);
         else
-            amplify(w/state_.dest_.w);
+            amplify(w/state_.dest_.w, std::nullopt, mode);
     }
 
     template <typename T>

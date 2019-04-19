@@ -33,6 +33,19 @@ std::string random_string(std::string::size_type length)
     return str;
 }
 
+template<typename IntegerType,
+         std::enable_if_t<std::is_integral<IntegerType>::value, int> = 0>
+SDL_Color operator + (SDL_Color const & org, IntegerType bright)
+{
+    return SDL_Color {
+        .r = org.r,
+        .b = org.b,
+        .g = org.g,
+        .a = (org.a + bright) > std::numeric_limits<Uint8>::max() ?
+            std::numeric_limits<Uint8>::max() : static_cast<Uint8>((org.a + bright))
+    };
+}
+
 } // namespace game::utility
 
 #endif // UTILITY_HPP_

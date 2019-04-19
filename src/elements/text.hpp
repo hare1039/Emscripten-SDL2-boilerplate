@@ -13,7 +13,7 @@ class text : public floating
 public:
     std::string ttf_path_;
     std::string text_;
-    SDL_Color   color_{0, 0, 0, 0};
+    SDL_Color   color_{0, 0, 0, 255};
     unsigned int font_size_ = 16;
 public:
     text(SDL_Renderer *r,
@@ -33,9 +33,6 @@ public:
 
         ttf_path_ = *table->get_as<std::string>("ttf_path");
         text_     =  table->get_as<std::string>("text").value_or(text_);
-
-        state_.dest_.w  = table->get_as<pixel>("w").value_or(state_.dest_.w);
-        state_.dest_.h  = table->get_as<pixel>("h").value_or(state_.dest_.h);
 
         using color_int = decltype(color_.r);
         color_ = SDL_Color {
@@ -72,8 +69,14 @@ private:
             std::cout << TTF_GetError() << std::endl;
             return -1;
         }
+        pixel w = font_surface->w, h = font_surface->h;
+        if (set_texture(std::move(font_surface), w, h, animation::rotate_type::none))
+        {
+            std::cout << "set_texture error" << std::endl;
+            return -1;
+        }
 
-        return set_texture(std::move(font_surface), state_.dest_.w, state_.dest_.h, animation::rotate_type::none);
+        return set_alpha(color_.a);
     }
 };
 

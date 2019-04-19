@@ -3,35 +3,89 @@
 
 #include "../basic_headers.hpp"
 #include "text.hpp"
-#include "option_group.hpp"
+#include "../utility.hpp"
 
 namespace game::element_types
 {
 
+namespace {
+
+template<typename IntegerType,
+         std::enable_if_t<std::is_integral<IntegerType>::value, int> = 0>
+SDL_Color operator + (SDL_Color const & org, IntegerType bright)
+{
+    return game::utility::operator + (org, bright);
+}
+
+}
+
+
 class option : public text
 {
-    friend option_group<option>;
-    std::string option_group_name_;
+public:
+    class group : std::enable_shared_from_this<group>
+    {
+        std::vector<option *> options_;
+    public:
+        void add (option & o) { options_.push_back(&o); }
+
+        void select (option & selected)
+        {
+            for (option * o : options_)
+                o->unselect();
+
+            selected.select();
+        }
+
+    public:
+        static
+        auto& registry()
+        {
+            static std::unordered_map<std::string, std::weak_ptr<group>> reg;
+            return reg;
+        }
+
+        static
+        void tidy_up()
+        {
+            for (auto it = registry().begin(); it != registry().end();)
+                if (it->second.lock() == nullptr)
+                    it = registry().erase(it);
+                else
+                    ++it;
+        }
+    };
+    friend group;
+
+private:
+    std::string group_name_;
     bool selected_ = false;
-    std::shared_ptr<option_group<option>> group_ref_ = nullptr;
+    std::shared_ptr<group> group_ref_ = nullptr;
     pixel amp_size_original_ = 0;
     pixel amp_size_selected_ = 0;
     constexpr static pixel size_add_ = 50;
+
+    SDL_Color color_original_ {};
+    SDL_Color color_selected_ {};
+    constexpr static Uint8 color_add_ = 100; // typeof SDL_Color.a
 
     void select()
     {
         if (not selected_)
         {
-            amplify_to (amp_size_selected_);
+            update_text(text_ + " <", std::nullopt, color_selected_);
+            amplify_to (amp_size_selected_, std::nullopt, amplify_mode::top_left);
             selected_ = true;
         }
     }
 
     void unselect()
     {
+        using namespace std::literals;
         if (selected_)
         {
-            amplify_to (amp_size_original_);
+            update_text(text_.substr(0, text_.size() - (" <"s.size())), std::nullopt, color_original_);
+            amplify_to (amp_size_original_, std::nullopt, amplify_mode::top_left);
             selected_ = false;
         }
     }
@@ -47,18 +101,22 @@ public:
         text::build_from_toml(table);
         amp_size_original_ = state_.dest_.w;
         amp_size_selected_ = amp_size_original_ + size_add_;
+        color_original_    = color_;
+        color_selected_    = color_ + color_add_;
         flag_ = flag::ghost;
-        option_group<option>::tidy_up();
+        group::tidy_up();
 
-        assert(table->contains("option_group_name"));
-        option_group_name_ = *table->get_as<std::string>("option_group_name");
+        assert(table->contains("group_name"));
+        group_name_ = *table->get_as<std::string>("group_name");
+        if (table->get_as<bool>("selected").value_or(selected_))
+            select();
 
-        auto && reg = option_group<option>::registry();
-        if (auto it = reg.find(option_group_name_); it == reg.end())
+        auto && reg = group::registry();
+        if (auto it = reg.find(group_name_); it == reg.end())
         {
-            group_ref_ = std::make_shared<option_group<option>>();
-            std::weak_ptr<option_group<option>> ptr = group_ref_;
-            reg.emplace(option_group_name_, ptr);
+            group_ref_ = std::make_shared<group>();
+            std::weak_ptr<group> ptr = group_ref_;
+            reg.emplace(group_name_, ptr);
         }
         else
             group_ref_ = it->second.lock();
