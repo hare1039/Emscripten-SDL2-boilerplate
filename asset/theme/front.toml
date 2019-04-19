@@ -24,3 +24,33 @@ duration = 1250 # ms
 max_ampl = 1
 min_ampl = 0.72
 start_ampl = 0.001
+
+[[options]]
+name     = "option-2-player"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "2 player"
+option_group_name = "game-selection"
+color_red   = 244
+color_green = 22
+color_blue  = 22
+font_size= 120
+x        = 150
+y        = 330
+w        = 600
+h        = 90
+amplify  = 0.65
+
+[[options]]
+name     = "option-online"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "online"
+option_group_name = "game-selection"
+color_red   = 244
+color_green = 22
+color_blue  = 22
+font_size= 120
+x        = 190
+y        = 430
+w        = 500
+h        = 90
+amplify  = 0.65

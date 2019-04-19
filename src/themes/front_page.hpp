@@ -30,8 +30,20 @@ public:
     {
         switch (key)
         {
+            using namespace element_types;
+        case SDLK_UP:
+            option_group<option>::registry()["game-selection"].lock()->
+                select(*dynamic_cast<option *>(elements["option-2-player"].get()));
+            break;
+
         case SDLK_DOWN:
-            next_theme = std::make_unique<court>(renderer);
+            option_group<option>::registry()["game-selection"].lock()->
+                select(*dynamic_cast<option *>(elements["option-online"].get()));
+            break;
+
+        case SDLK_RETURN:
+            if (dynamic_cast<option *>(elements["option-2-player"].get())->is_selected())
+                next_theme = std::make_unique<court>(renderer);
             break;
         default:
             break;

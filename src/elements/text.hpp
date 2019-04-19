@@ -46,6 +46,8 @@ public:
         };
         font_size_ = table->get_as<unsigned int>("font_size").value_or(font_size_);
         regenerate_texture();
+        if (auto rate = table->get_as<double>("amplify"); rate)
+            amplify(*rate);
     }
 
     void update_text(std::string_view new_text,
