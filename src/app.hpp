@@ -12,12 +12,11 @@ class app
     bool should_continue {true};
     SDL_Window_ptr   window{nullptr, &SDL_DestroyWindow};
     SDL_Renderer_ptr renderer{nullptr, &SDL_DestroyRenderer};
-    std::unique_ptr<fps>   game_fps;
+    std::unique_ptr<fps>   game_fps{std::make_unique<fps>()};
     std::unique_ptr<theme> thm;
 
 public:
-    app():
-        game_fps {std::make_unique<fps>()}
+    app()
     {
         if (error_code ec = SDL_Init(SDL_INIT_VIDEO); ec < 0)
             std::cout << "SDL_Init: " << SDL_GetError() << "\n";

@@ -34,17 +34,16 @@ protected:
     std::unique_ptr<area>   theme_area  {nullptr};
     std::unique_ptr<camera> theme_camera{std::make_unique<camera>()};
     std::unique_ptr<theme>  next_theme  {nullptr};
-
-public:
-    cache_container<std::string, element> elements;
+    cache_container<std::string, element> elements {[](element *lhs, element *rhs){ return lhs->z_index_ < rhs->z_index_; }};
 
 public:
     theme(SDL_Renderer * r, std::string_view path):
-        renderer {r},
-        elements {[](element *lhs, element *rhs){ return lhs->z_index_ < rhs->z_index_; }}
+        renderer {r}
     {
-        // std::shared_ptr<cpptoml::table>
         auto config = cpptoml::parse_file(path.data());
+
+        assert(config->contains("area") and
+               config->contains("camera"));
 
         theme_area  = std::make_unique<area>(renderer, *(config->get_as<std::string>("area")));
         auto cam    = config->get_table("camera");
@@ -62,7 +61,7 @@ public:
         build<element_types::ball>    ("balls",     config);
         build<element_types::text>    ("texts",     config);
         build<element_types::score_counter> ("score_counters", config);
-        build<element_types::option>  ("options", config);
+        build<element_types::option>  ("options",   config);
     }
 
     virtual
@@ -87,10 +86,8 @@ public:
                        [] (element *e) { e->render(); });
     }
 
-    virtual
-    std::unique_ptr<theme> next() { return std::move(next_theme); }
-    virtual
-    bool is_finished() { return (!! next_theme); }
+    virtual std::unique_ptr<theme> next() { return std::move(next_theme); }
+    virtual bool is_finished() { return (!! next_theme); }
 
 private:
     template<typename Element, typename ... Args>

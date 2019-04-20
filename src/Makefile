@@ -3,7 +3,7 @@ OBJECT=../index.*
 CXX=emcc
 
 ALL:
-	$(CXX) main.cpp -Wall -Wextra -O3               \
+	$(CXX) main.cpp -Wall -Wextra -O3 -DNDEBUG      \
                     -std=c++17                      \
                     -s WASM=1                       \
                     -s DISABLE_EXCEPTION_CATCHING=0 \
