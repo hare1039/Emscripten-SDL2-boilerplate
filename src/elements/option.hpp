@@ -93,7 +93,7 @@ private:
 public:
     option(SDL_Renderer *r,
            std::string_view name,
-           std::unordered_map<std::string, std::unique_ptr<element>> &a,
+           cache_container<std::string, element> &a,
            camera &c): text {r, name, a, c} {}
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override

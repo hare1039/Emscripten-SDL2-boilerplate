@@ -16,6 +16,7 @@
 #include "fps.hpp"
 #include "rect.hpp"
 #include "tile.hpp"
+#include "cache_container.hpp"
 #include "external_libraries/cpptoml/include/cpptoml.h"
 
 namespace game
@@ -28,7 +29,7 @@ public:
     auto cast(T&& v) { return utility::cast(std::forward<T>(v)); } // aliasing utility::cast function
     std::string name_;
 protected:
-    std::unordered_map<std::string, std::unique_ptr<element>> &all_elements_;
+    cache_container<std::string, element> &all_elements_;
     camera& cam_;
 
     SDL_Renderer   *renderer_ = nullptr;
@@ -45,6 +46,7 @@ public:
     pixel max_speed_x_ = 20;
     pixel max_speed_y_ = 80;
     pixel col_offset_ = 5;
+    unsigned int z_index_ = 0; // higher z_index_ become, element are more to front when rendering
 
 public:
     /* type: element type.
@@ -111,7 +113,7 @@ public:
 public:
     element(SDL_Renderer *r,
             std::string_view element_name,
-            std::unordered_map<std::string, std::unique_ptr<element>> &all,
+            cache_container<std::string, element> &all,
             camera &c):
         name_         {element_name},
         all_elements_ {all},
@@ -251,7 +253,7 @@ protected:
         }
     }
 
-    // setup: x, y, flag, offset, bounce_x, bounce_y, accel_y, hardness
+    // setup: x, y, flag, offset, bounce_x, bounce_y, accel_y, z_index, hardness
     void build_from_toml_basic(std::shared_ptr<cpptoml::table> table)
     {
         state_.dest_.x  = table->get_as<pixel>("x").value_or(state_.dest_.x);
@@ -267,6 +269,8 @@ protected:
 
         hardness_ = static_cast<element::hardness>(table->get_as<int>("hardness")
                                                    .value_or(cast(hardness_)));
+
+        z_index_ = table->get_as<unsigned int>("z_index").value_or(z_index_);
 
         if (not bool_of(flag_ & flag::gravity))
             state_.accel_y_ = 0;

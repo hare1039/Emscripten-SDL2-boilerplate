@@ -16,7 +16,7 @@ class floating : public element
 public:
     floating(SDL_Renderer *r,
              std::string_view name,
-             std::unordered_map<std::string, std::unique_ptr<element>> &a,
+             cache_container<std::string, element> &a,
              camera &c): element{r, name, a, c} {}
 
     void render() override final

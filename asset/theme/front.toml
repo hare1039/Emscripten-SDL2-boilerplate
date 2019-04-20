@@ -8,13 +8,13 @@ mode = 0 # camera::mode::top_left
 name     = "hare1039"
 ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
 text     = "@hare1039"
-color_red   = 255
-color_green = 255
-color_blue  = 255
-color_alpha = 255
-font_size= 32
-x        = 660
-y        = 600
+color_red   = 77
+color_green = 83
+color_blue  = 140
+font_size= 40
+x        = 700
+y        = 630
+z_index  = 1
 
 [[floatings]]
 pic      = "./asset/pic/rin.png"

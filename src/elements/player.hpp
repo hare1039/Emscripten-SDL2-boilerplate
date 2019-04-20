@@ -13,7 +13,7 @@ class player : public movable
 public:
     player(SDL_Renderer *r,
            std::string_view name,
-           std::unordered_map<std::string, std::unique_ptr<element>> &a,
+           cache_container<std::string, element> &a,
            camera &c): movable {r, name, a, c}
     {
         type_ = type::player; // not suggested in stackoverflow, TODO list!

@@ -18,6 +18,7 @@
 #include "camera.hpp"
 #include "area.hpp"
 #include "fps.hpp"
+#include "cache_container.hpp"
 #include "external_libraries/cpptoml/include/cpptoml.h"
 
 namespace game
@@ -33,11 +34,14 @@ protected:
     std::unique_ptr<area>   theme_area  {nullptr};
     std::unique_ptr<camera> theme_camera{std::make_unique<camera>()};
     std::unique_ptr<theme>  next_theme  {nullptr};
-    std::unordered_map<std::string, std::unique_ptr<element>> elements;
+
+public:
+    cache_container<std::string, element> elements;
 
 public:
     theme(SDL_Renderer * r, std::string_view path):
-        renderer {r}
+        renderer {r},
+        elements {[](element *lhs, element *rhs){ return lhs->z_index_ < rhs->z_index_; }}
     {
         // std::shared_ptr<cpptoml::table>
         auto config = cpptoml::parse_file(path.data());
@@ -79,8 +83,8 @@ public:
     {
         auto [x, y] = theme_camera->get_pos();
         theme_area->render (x, y);
-        std::for_each (elements.begin(), elements.end(),
-                       [] (auto &e) { e.second->render(); });
+        std::for_each (elements.cache_begin(), elements.cache_end(),
+                       [] (element *e) { e->render(); });
     }
 
     virtual

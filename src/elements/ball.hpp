@@ -13,7 +13,7 @@ class ball : public element
 public:
     ball(SDL_Renderer *r,
          std::string_view name,
-         std::unordered_map<std::string, std::unique_ptr<element>> &a,
+         cache_container<std::string, element> &a,
          camera &c): element {r, name, a, c}
     {
         max_speed_x_ = 60;

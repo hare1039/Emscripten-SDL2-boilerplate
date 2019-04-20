@@ -16,7 +16,7 @@ class score_counter : public obstacle
 public:
     score_counter(SDL_Renderer *r,
                   std::string_view name,
-                  std::unordered_map<std::string, std::unique_ptr<element>> &a,
+                  cache_container<std::string, element> &a,
                   camera &c): obstacle {r, name, a, c}
     {
         type_ = type::counter;
