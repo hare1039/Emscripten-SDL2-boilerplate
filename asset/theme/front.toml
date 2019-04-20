@@ -4,13 +4,25 @@ area = "./asset/map/front.area"
 [camera]
 mode = 0 # camera::mode::top_left
 
+[[texts]]
+name     = "hare1039"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "@hare1039"
+color_red   = 77
+color_green = 83
+color_blue  = 140
+font_size= 40
+x        = 700
+y        = 630
+z_index  = 1
+
 [[floatings]]
 pic      = "./asset/pic/rin.png"
 picwidth = 245
 picheight= 224
 rotate_t = 0 # animation::rotate_type::none
-x        = 600
-y        = 500
+x        = 660
+y        = 450
 
 [[wobbles]]
 name     = "front_text"
@@ -24,3 +36,30 @@ duration = 1250 # ms
 max_ampl = 1
 min_ampl = 0.72
 start_ampl = 0.001
+
+[[options]]
+name     = "option-2-player"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "local"
+selected = true
+group_name  = "game-selection"
+color_red   = 244
+color_green = 22
+color_blue  = 22
+color_alpha = 150
+font_size= 64
+x        = 150
+y        = 330
+
+[[options]]
+name     = "option-online"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "online"
+group_name  = "game-selection"
+color_red   = 244
+color_green = 22
+color_blue  = 22
+color_alpha = 150
+font_size= 64
+x        = 150
+y        = 400
