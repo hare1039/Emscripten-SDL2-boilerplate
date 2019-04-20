@@ -37,6 +37,24 @@ public:
             selected.select();
         }
 
+        option& next()
+        {
+            for (auto it = options_.begin(); it != options_.end(); it = std::next(it))
+                if ((*it)->is_selected())
+                    return **((std::next(it) == options_.end())? it: std::next(it));
+            return *options_.front();
+        }
+
+        option& prev()
+        {
+            for (auto it = options_.rbegin(); it != options_.rend(); it = std::next(it))
+                if ((*it)->is_selected())
+                    return **((std::next(it) == options_.rend())? it: std::next(it));
+            return *options_.back();
+        }
+        inline void select_next() { select(next()); }
+        inline void select_prev() { select(prev()); }
+
     public:
         static
         auto& registry()
@@ -53,6 +71,18 @@ public:
                     it = registry().erase(it);
                 else
                     ++it;
+        }
+
+        template<typename String> static inline
+        void select_next(String&& group_name)
+        {
+            registry()[std::forward<String>(group_name)].lock()->select_next();
+        }
+
+        template<typename String> static inline
+        void select_prev(String&& group_name)
+        {
+            registry()[std::forward<String>(group_name)].lock()->select_prev();
         }
     };
     friend group;

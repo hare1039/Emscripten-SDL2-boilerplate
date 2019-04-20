@@ -32,13 +32,11 @@ public:
         {
             using namespace element_types;
         case SDLK_UP:
-            option::group::registry()["game-selection"].lock()->
-                select(*dynamic_cast<option *>(elements["option-2-player"].get()));
+            option::group::select_prev("game-selection");
             break;
 
         case SDLK_DOWN:
-            option::group::registry()["game-selection"].lock()->
-                select(*dynamic_cast<option *>(elements["option-online"].get()));
+            option::group::select_next("game-selection");
             break;
 
         case SDLK_RETURN:
