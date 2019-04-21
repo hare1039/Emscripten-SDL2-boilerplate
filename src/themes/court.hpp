@@ -17,7 +17,7 @@ class court : public theme
     std::array<rect<>, player_list_end> rect_{};
     std::array<unsigned int, player_list_end> score_{};
 public:
-    court(SDL_Renderer * r): theme {r, "./asset/theme/court.toml"}
+    court(SDL_Renderer * r, std::unique_ptr<fps>* gfps): theme {r, gfps, "./asset/theme/court.toml"}
     {
         rect_.at(player1) = elements["player1"]->state_.dest_;
         rect_.at(player2) = elements["player2"]->state_.dest_;
@@ -32,11 +32,11 @@ public:
         case SDLK_DOWN:
             for (auto && p : elements)
                 std::cout << p.first << " -> " << p.second.get() << std::endl;
-            next_theme = std::make_unique<court>(renderer);
+            next_theme = std::make_unique<court>(renderer, game_fps);
             break;
 
         case SDLK_SPACE:
-            fps::instance()->pause();
+            (*game_fps)->pause();
             break;
 
         default:
@@ -51,7 +51,7 @@ public:
         switch (key)
         {
         case SDLK_SPACE:
-            fps::instance()->resume();
+            (*game_fps)->resume();
             break;
 
         default:

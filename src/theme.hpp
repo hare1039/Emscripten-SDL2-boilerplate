@@ -17,7 +17,6 @@
 #include "elements/option.hpp"
 #include "camera.hpp"
 #include "area.hpp"
-#include "fps.hpp"
 #include "cache_container.hpp"
 #include "external_libraries/cpptoml/include/cpptoml.h"
 
@@ -31,14 +30,16 @@ class theme : public event
 protected:
     friend app;
     SDL_Renderer *          renderer    {nullptr};
+    std::unique_ptr<fps> *  game_fps    {nullptr};
     std::unique_ptr<area>   theme_area  {nullptr};
     std::unique_ptr<camera> theme_camera{std::make_unique<camera>()};
     std::unique_ptr<theme>  next_theme  {nullptr};
     cache_container<std::string, element> elements {[](element *lhs, element *rhs){ return lhs->z_index_ < rhs->z_index_; }};
 
 public:
-    theme(SDL_Renderer * r, std::string_view path):
-        renderer {r}
+    theme(SDL_Renderer * r, std::unique_ptr<fps>* gfps, std::string_view path):
+        renderer {r},
+        game_fps {gfps}
     {
         auto config = cpptoml::parse_file(path.data());
 
@@ -99,7 +100,7 @@ private:
                 get_as<std::string>("name").
                 value_or(utility::random_string(20));
 
-            elements.emplace(name, std::make_unique<Element>(renderer, name, elements, *theme_camera,
+            elements.emplace(name, std::make_unique<Element>(renderer, name, elements, *theme_camera, game_fps,
                                                              std::forward<Args>(args)...));
             elements[name]->build_from_toml(table);
             if (table->get_as<bool>("bind_cam"))

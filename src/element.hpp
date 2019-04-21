@@ -31,10 +31,10 @@ public:
 protected:
     cache_container<std::string, element> &all_elements_;
     camera& cam_;
-
-    SDL_Renderer   *renderer_ = nullptr;
-    SDL_Texture_ptr texture_   {nullptr, &SDL_DestroyTexture};
+    SDL_Renderer *renderer_ {nullptr};
+    SDL_Texture_ptr texture_ {nullptr, &SDL_DestroyTexture};
     std::unique_ptr<animation> anime_info_;
+    std::unique_ptr<fps>* game_fps_ {nullptr};
 
     int current_frame_col_ = 0;
     int current_frame_row_ = 0;
@@ -114,19 +114,21 @@ public:
     element(SDL_Renderer *r,
             std::string_view element_name,
             cache_container<std::string, element> &all,
-            camera &c):
+            camera &c,
+            std::unique_ptr<fps>* game_fps):
         name_         {element_name},
         all_elements_ {all},
         cam_          {c},
-        renderer_     {r} {}
+        renderer_     {r},
+        game_fps_     {game_fps} {}
 
     virtual ~element() = default;
 
     virtual
     void calculate()
     {
-        state_.speed_x_ += state_.accel_x_ * fps::instance()->speed_factor();
-        state_.speed_y_ += state_.accel_y_ * fps::instance()->speed_factor();
+        state_.speed_x_ += state_.accel_x_ * (*game_fps_)->speed_factor();
+        state_.speed_y_ += state_.accel_y_ * (*game_fps_)->speed_factor();
 
         move_calculate (state_.speed_x_, state_.speed_y_);
 
@@ -189,7 +191,7 @@ protected:
         state_.old_speed_x_ = state_.speed_x_;
         state_.old_speed_y_ = state_.speed_y_;
 
-        double speed_factor = fps::instance()->speed_factor();
+        double speed_factor = (*game_fps_)->speed_factor();
         vx *= speed_factor;
         vy *= speed_factor;
 

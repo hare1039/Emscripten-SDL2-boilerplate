@@ -13,7 +13,7 @@ namespace game::theme_types
 class front_page : public theme
 {
 public:
-    front_page(SDL_Renderer * r): theme {r, "./asset/theme/front.toml"} {}
+    front_page(SDL_Renderer * r, std::unique_ptr<fps>* gfps): theme {r, gfps, "./asset/theme/front.toml"} {}
 
     void calculate() override final
     {
@@ -41,7 +41,7 @@ public:
 
         case SDLK_RETURN:
             if (dynamic_cast<option *>(elements["option-2-player"].get())->is_selected())
-                next_theme = std::make_unique<court>(renderer);
+                next_theme = std::make_unique<court>(renderer, game_fps);
             break;
         default:
             break;

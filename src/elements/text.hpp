@@ -19,7 +19,8 @@ public:
     text(SDL_Renderer *r,
          std::string_view name,
          cache_container<std::string, element> &a,
-         camera &c): floating {r, name, a, c}
+         camera &c,
+         std::unique_ptr<fps>* game_fps): floating {r, name, a, c, game_fps}
     {
         type_     = type::text;
         hardness_ = hardness::air;

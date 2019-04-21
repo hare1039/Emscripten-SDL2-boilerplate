@@ -22,7 +22,8 @@ public:
     wobble(SDL_Renderer *r,
            std::string_view name,
            cache_container<std::string, element> &a,
-           camera &c): floating {r, name, a, c} {}
+           camera &c,
+           std::unique_ptr<fps>* game_fps): floating {r, name, a, c, game_fps} {}
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override
     {
@@ -38,7 +39,7 @@ public:
     void calculate() override
     {
         floating::calculate();
-        pixel step = (max_amplsize_pixel_ - min_amplsize_pixel_) / (duration_ / fps::instance()->frame());
+        pixel step = (max_amplsize_pixel_ - min_amplsize_pixel_) / (duration_ / (*game_fps_)->frame());
         if (state_.dest_.w < min_amplsize_pixel_)
             dir_ = zoom::amplify;
         else if (state_.dest_.w > max_amplsize_pixel_)

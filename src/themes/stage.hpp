@@ -7,7 +7,8 @@ namespace game::theme_types
 class stage : public theme
 {
 public:
-    stage(SDL_Renderer * r, std::string path): theme{r, path} {}
+    stage(SDL_Renderer * r, std::unique_ptr<fps>* gfps, std::string path):
+        theme {r, gfps, path} {}
 
     void on_key_down(SDL_Keycode const & key, Uint16 const &) override final
     {
@@ -21,7 +22,7 @@ public:
         case SDLK_DOWN:
             for (auto && p : elements)
                 std::cout << p.first << " -> " << p.second.get() << std::endl;
-            next_theme = std::make_unique<stage>(renderer, "./asset/theme/01.toml");
+            next_theme = std::make_unique<stage>(renderer, game_fps, "./asset/theme/01.toml");
             break;
 
         case SDLK_LEFT:

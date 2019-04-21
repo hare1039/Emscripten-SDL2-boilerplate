@@ -14,7 +14,8 @@ public:
     player(SDL_Renderer *r,
            std::string_view name,
            cache_container<std::string, element> &a,
-           camera &c): movable {r, name, a, c}
+           camera &c,
+           std::unique_ptr<fps>* game_fps): movable {r, name, a, c, game_fps}
     {
         type_ = type::player; // not suggested in stackoverflow, TODO list!
         hardness_ = hardness::stone;

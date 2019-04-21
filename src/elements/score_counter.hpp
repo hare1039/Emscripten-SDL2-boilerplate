@@ -17,7 +17,8 @@ public:
     score_counter(SDL_Renderer *r,
                   std::string_view name,
                   cache_container<std::string, element> &a,
-                  camera &c): obstacle {r, name, a, c}
+                  camera &c,
+                  std::unique_ptr<fps>* game_fps): obstacle {r, name, a, c, game_fps}
     {
         type_ = type::counter;
     }

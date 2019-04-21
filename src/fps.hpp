@@ -38,7 +38,7 @@ ulli operator "" _s (ulli v) { return v * 1000; }
  *
  */
 
-class fps : public enable_instance<fps>
+class fps
 {
     double speed_factor_ = 0;
     int old_time_  = 0;

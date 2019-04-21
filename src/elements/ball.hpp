@@ -14,7 +14,8 @@ public:
     ball(SDL_Renderer *r,
          std::string_view name,
          cache_container<std::string, element> &a,
-         camera &c): element {r, name, a, c}
+         camera &c,
+         std::unique_ptr<fps>* game_fps): element {r, name, a, c, game_fps}
     {
         max_speed_x_ = 60;
         max_speed_y_ = 60;

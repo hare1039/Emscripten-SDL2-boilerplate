@@ -43,7 +43,7 @@ public:
         if (error_code ec = SDL_SetRenderDrawColor(renderer.get(), 12, 199, 166, 255); ec < 0)
             std::cout << SDL_GetError() << std::endl;
 
-        thm = std::make_unique<theme_types::front_page>(renderer.get());
+        thm = std::make_unique<theme_types::front_page>(renderer.get(), &game_fps);
     }
 
     ~app() { TTF_Quit(); IMG_Quit(); SDL_Quit(); }
