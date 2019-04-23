@@ -17,11 +17,11 @@ ALL:
                     -o ../index.html
 
 .PHONY: run clean
-run: ALL
+run:
 	sh -c 'cd ..; emrun --port 7000 --no_browser .'
 
-.PHONY: debug
-debug:
+.PHONY: debug_compile
+debug_compile:
 	$(CXX) main.cpp -Wall -Wextra                   \
                     -std=c++17                      \
                     -s WASM=1                       \
@@ -34,8 +34,10 @@ debug:
                     -s SDL2_IMAGE_FORMATS='["png"]' \
                     --preload-file ../asset         \
                     --emrun                         \
-                    -o ../index.html             && \
-    sh -c 'cd ..; emrun --port 7000 --no_browser .'
+                    -o ../index.html
+
+.PHONY: debug
+debug: debug_compile run
 
 clean:
 	rm -rf $(OBJECT)
