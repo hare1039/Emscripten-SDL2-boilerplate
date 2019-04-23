@@ -1,5 +1,4 @@
 #include <iostream>
-#include <SDL.h>
 
 #include "app.hpp"
 
@@ -18,5 +17,9 @@ int main()
 {
     int simulate_infinite_loop = 1;
     game::app game;
+#ifdef __EMSCRIPTEN__
     emscripten_set_main_loop_arg(run_loop, static_cast<void *>(&game), -1, simulate_infinite_loop);
+#else
+    for (;;) { run_loop(&game); }
+#endif // __EMSCRIPTEN__
 }

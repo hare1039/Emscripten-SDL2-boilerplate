@@ -4,7 +4,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <emscripten.h>
+#if __has_include(<emscripten.h>)
+#   include <emscripten.h>
+#endif // __has_include(<emscripten.h>)
 #include "decl.hpp"
 #include "utility.hpp"
 #include "rect.hpp"

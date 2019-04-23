@@ -52,7 +52,11 @@ public:
     {
         if (not should_continue)
         {
+#ifdef __EMSCRIPTEN__
             emscripten_cancel_main_loop();
+#else
+            std::exit(0);
+#endif // __EMSCRIPTEN__
             return;
         }
 
