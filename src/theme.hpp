@@ -18,6 +18,7 @@
 #include "camera.hpp"
 #include "area.hpp"
 #include "cache_container.hpp"
+#include "theme_animation.hpp"
 #include "external_libraries/cpptoml/include/cpptoml.h"
 
 namespace game
@@ -34,6 +35,7 @@ protected:
     std::unique_ptr<area>   theme_area  {nullptr};
     std::unique_ptr<camera> theme_camera{std::make_unique<camera>()};
     std::unique_ptr<theme>  next_theme  {nullptr};
+    theme_animation         animation;
     cache_container<std::string, element> elements {[](element *lhs, element *rhs){ return lhs->z_index_ < rhs->z_index_; }};
 
 public:
@@ -54,20 +56,23 @@ public:
                           cam->get_as<int>("y").value_or(0));
 
         build<element>("elements", config);
-        build<element_types::movable> ("movables",  config);
-        build<element_types::floating>("floatings", config);
-        build<element_types::wobble>  ("wobbles",   config);
-        build<element_types::player>  ("players",   config);
-        build<element_types::obstacle>("obstacles", config);
-        build<element_types::ball>    ("balls",     config);
-        build<element_types::text>    ("texts",     config);
-        build<element_types::score_counter> ("score_counters", config);
-        build<element_types::option>  ("options",   config);
+        build<elements::types::movable> ("movables",  config);
+        build<elements::types::floating>("floatings", config);
+        build<elements::types::wobble>  ("wobbles",   config);
+        build<elements::types::player>  ("players",   config);
+        build<elements::types::obstacle>("obstacles", config);
+        build<elements::types::ball>    ("balls",     config);
+        build<elements::types::text>    ("texts",     config);
+        build<elements::types::score_counter> ("score_counters", config);
+        build<elements::types::option>  ("options",   config);
     }
 
     virtual
     void calculate()
     {
+        if (animation.is_running())
+            animation.calculate();
+
         std::for_each (elements.begin(), elements.end(),
                        [] (auto &e) { e.second->calculate(); });
         std::for_each (element::collision::queue().begin(), element::collision::queue().end(),

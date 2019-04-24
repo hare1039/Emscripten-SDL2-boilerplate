@@ -28,9 +28,9 @@ public:
 
     void on_key_down(SDL_Keycode const & key, Uint16 const &) override final
     {
+        using namespace elements::types;
         switch (key)
         {
-            using namespace element_types;
         case SDLK_UP:
             option::group::select_prev("game-selection");
             break;

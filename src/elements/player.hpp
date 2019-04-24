@@ -4,7 +4,7 @@
 #include <cassert>
 #include "movable.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class player : public movable
@@ -75,6 +75,6 @@ public:
     }
 };
 
-} // namespace game::element_types
+} // namespace game::elements::types
 
 #endif // ELEMENTS_PLAYER_HPP_

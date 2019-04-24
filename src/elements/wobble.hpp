@@ -8,7 +8,7 @@
 #include "../fps.hpp"
 #include "floating.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class wobble : public floating
@@ -48,6 +48,6 @@ public:
     }
 };
 
-}// namespace game::element
+}// namespace game::elements::types
 
 #endif // ELEMENTS_WOBBLE_HPP_

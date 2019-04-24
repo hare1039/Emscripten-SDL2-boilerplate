@@ -5,7 +5,7 @@
 #include "player.hpp"
 #include "score_counter.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class ball : public element
@@ -34,11 +34,11 @@ public:
                 state_.speed_y_ = -state_.old_speed_y_;
 
             if (e.type_ == type::counter)
-                dynamic_cast<element_types::score_counter *>(&e)->increase_once();
+                dynamic_cast<elements::types::score_counter *>(&e)->increase_once();
         }
     }
 };
 
-} // namespace game::element_types
+} // namespace game::elements::types
 
 #endif // ELEMENTS_BALL_HPP_

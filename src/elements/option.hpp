@@ -5,7 +5,7 @@
 #include "text.hpp"
 #include "../utility.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 namespace {
@@ -158,6 +158,6 @@ public:
     bool is_selected() { return selected_; }
 };
 
-} // namespace game::element_types
+} // namespace game::elements::types
 
 #endif // ELEMENTS_OPTION_HPP_

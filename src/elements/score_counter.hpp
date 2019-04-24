@@ -5,7 +5,7 @@
 #include "../basic_headers.hpp"
 #include "obstacle.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class score_counter : public obstacle
@@ -53,6 +53,6 @@ public:
     }
 };
 
-} // namespace game::element_types
+} // namespace game::elements::types
 
 #endif // ELEMENTS_SCORE_COUNTER_HPP_

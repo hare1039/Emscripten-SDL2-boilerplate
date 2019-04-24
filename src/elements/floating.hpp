@@ -8,7 +8,7 @@
 #include "../element.hpp"
 #include "../camera.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class floating : public element
@@ -27,6 +27,6 @@ public:
     }
 };
 
-} // namespace
+} // namespace game::elements::types
 
 #endif // ELEMENTS_FLOATING_HPP_

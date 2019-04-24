@@ -12,7 +12,7 @@ public:
 
     void on_key_down(SDL_Keycode const & key, Uint16 const &) override final
     {
-        auto yoshi = dynamic_cast<element_types::player *>(elements["yoshi"].get());
+        auto yoshi = dynamic_cast<elements::types::player *>(elements["yoshi"].get());
         switch (key)
         {
         case SDLK_UP:
@@ -45,7 +45,7 @@ public:
 
     void on_key_up  (SDL_Keycode const & key, Uint16 const &) override
     {
-        auto yoshi = dynamic_cast<element_types::player *>(elements["yoshi"].get());
+        auto yoshi = dynamic_cast<elements::types::player *>(elements["yoshi"].get());
         switch (key)
         {
         case SDLK_LEFT:

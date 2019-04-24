@@ -62,9 +62,9 @@ public:
     void calculate() override
     {
         theme::calculate();
-        std::array<element_types::score_counter *, player_list_end> score_counter {{
-            dynamic_cast<element_types::score_counter *>(elements["left-floor"].get()),
-            dynamic_cast<element_types::score_counter *>(elements["right-floor"].get())
+        std::array<elements::types::score_counter *, player_list_end> score_counter {{
+            dynamic_cast<elements::types::score_counter *>(elements["left-floor"].get()),
+            dynamic_cast<elements::types::score_counter *>(elements["right-floor"].get())
         }};
         player winner = player_list_end;
         if (score_.at(player1) != score_counter.at(player1)->count())
@@ -95,7 +95,7 @@ public:
         if (winner != player_list_end)
         {
             score_.at(winner) = score_counter.at(winner)->count();
-            dynamic_cast<element_types::text *>(
+            dynamic_cast<elements::types::text *>(
                 (winner == player1)?
                     elements["right-scoreboard"].get():
                     elements["left-scoreboard"] .get())

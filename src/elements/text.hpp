@@ -5,7 +5,7 @@
 #include "../basic_headers.hpp"
 #include "../element.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class text : public floating
@@ -81,6 +81,6 @@ private:
     }
 };
 
-} // namespace game::element_types
+} // namespace game::elements::types
 
 #endif // ELEMENTS_TEXT_HPP_

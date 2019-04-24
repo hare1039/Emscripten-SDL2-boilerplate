@@ -6,7 +6,7 @@
 #include "../basic_headers.hpp"
 #include "../element.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class movable : public element
@@ -78,6 +78,6 @@ public:
     bool& alive() {return valid_;}
 };
 
-} // namespace game::element_types
+} // namespace game::elements::types
 
 #endif // ELEMENTS_MOVABLE_HPP_

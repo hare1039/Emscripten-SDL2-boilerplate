@@ -4,7 +4,7 @@
 #include "../basic_headers.hpp"
 #include "../element.hpp"
 
-namespace game::element_types
+namespace game::elements::types
 {
 
 class obstacle : public element
@@ -31,7 +31,6 @@ public:
     void animate() override {/* invisible element */}
 };
 
-}
-
+} // namespace game::elements::types
 
 #endif // ELEMENTS_OBSTACLE_HPP_
