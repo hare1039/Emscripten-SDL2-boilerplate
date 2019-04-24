@@ -111,8 +111,6 @@ text     = "0"
 font_size= 120
 x        = 60
 y        = 30
-w        = 90
-h        = 120
 
 [[texts]]
 name     = "right-scoreboard"
@@ -121,8 +119,17 @@ text     = "0"
 font_size= 120
 x        = 780
 y        = 30
-w        = 90
-h        = 120
+
+[[texts]]
+name     = "ready-text"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "READY"
+font_size= 60
+color_red   = 255
+color_green = 25
+color_blue  = 0
+x        = 450
+y        = 30
 
 [[balls]]
 name     = "ball"
