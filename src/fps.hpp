@@ -8,8 +8,10 @@
 namespace game
 {
 
-using ulli = unsigned long long int;
-ulli operator "" _s (ulli v) { return v * 1000; }
+namespace {
+    using ulli = unsigned long long int;
+    ulli operator "" _s (ulli v) { return v * 1000; }
+}
 /*
 ** http://www.sdltutorials.com/sdl-collision **
  * Next, we have the actual calculation for the SpeedFactor.
