@@ -291,10 +291,6 @@ protected:
         return 0;
     }
 
-    error_code set_alpha(std::uint8_t alpha)
-    {
-        return SDL_SetTextureAlphaMod(texture_.get(), alpha);
-    }
 public:
     void stop_move()
     {
@@ -336,6 +332,13 @@ public:
         else
             amplify(w/state_.dest_.w, std::nullopt, mode);
     }
+
+    error_code set_alpha(std::uint8_t alpha)
+    {
+        return SDL_SetTextureAlphaMod(texture_.get(), alpha);
+    }
+
+    void bind_fps(std::unique_ptr<fps> * new_heart) { game_fps_ = new_heart; }
 
     template <typename T>
     bool collides_with (rect<T> const & r)
