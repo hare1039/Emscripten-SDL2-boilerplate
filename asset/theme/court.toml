@@ -17,7 +17,7 @@ picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 800
-y        = 500
+y        = 540
 flag     = 2    # element::flag::gravity
 amplify  = 2.2
 keyup    = 1073741906 # SDLK_UP
@@ -33,7 +33,7 @@ picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 150
-y        = 500
+y        = 540
 flag     = 2    # element::flag::gravity
 amplify  = 2.2
 keyup    = 119  # SDLK_w
@@ -117,19 +117,19 @@ name     = "right-scoreboard"
 ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
 text     = "0"
 font_size= 120
-x        = 780
+x        = 790
 y        = 30
 
 [[texts]]
 name     = "ready-text"
 ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
-text     = "READY"
+text     = "GET READY!"
 font_size= 60
 color_red   = 255
 color_green = 25
 color_blue  = 0
-x        = 450
-y        = 30
+x        = 300
+y        = 60
 
 [[balls]]
 name     = "ball"
