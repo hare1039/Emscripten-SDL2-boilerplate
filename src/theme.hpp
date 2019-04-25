@@ -99,18 +99,20 @@ private:
     template<typename Element, typename ... Args>
     void build(std::string_view toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
     {
-        for (const auto &table : *(config->get_table_array(toml_name.data())))
-        {
-            std::string name = table->
-                get_as<std::string>("name").
-                value_or(utility::random_string(20));
+        auto table_array = config->get_table_array(toml_name.data());
+        if (table_array != nullptr)
+            for (const auto &table : *table_array)
+            {
+                std::string name = table->
+                    get_as<std::string>("name").
+                    value_or(utility::random_string(20));
 
-            elements.emplace(name, std::make_unique<Element>(renderer, name, elements, *theme_camera, game_fps,
-                                                             std::forward<Args>(args)...));
-            elements[name]->build_from_toml(table);
-            if (table->get_as<bool>("bind_cam"))
-                theme_camera->bind(&elements[name]->state_.dest_);
-        }
+                elements.emplace(name, std::make_unique<Element>(renderer, name, elements, *theme_camera, game_fps,
+                                                                 std::forward<Args>(args)...));
+                elements[name]->build_from_toml(table);
+                if (table->get_as<bool>("bind_cam"))
+                    theme_camera->bind(&elements[name]->state_.dest_);
+            }
     }
 };
 
