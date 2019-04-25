@@ -5,6 +5,7 @@
 #include "fps.hpp"
 #include <memory>
 #include <chrono>
+#include <functional>
 
 namespace game
 {
@@ -15,20 +16,31 @@ namespace {
 
 class theme_animation
 {
-    std::chrono::milliseconds length_;
-    std::chrono::time_point<std::chrono::steady_clock> end_ {std::chrono::steady_clock::now() + 24h};
-    std::function<void(void)> work_;
+    std::chrono::high_resolution_clock::duration length_;
+    std::chrono::time_point<std::chrono::high_resolution_clock> end_ {std::chrono::high_resolution_clock::now() - 24h};
+    std::function<void(void)> on_calculate_;
+    std::function<void(void)> on_finish_ {[](){}};
     std::unique_ptr<fps>      fps_ {std::make_unique<fps>()};
 public:
 
-    void set (std::chrono::milliseconds length, std::function<void(void)> && work)
+    void set (std::chrono::high_resolution_clock::duration length,
+              std::function<void(void)> && on_calculate,
+              std::function<void(void)> && on_finish)
     {
-        length_ = length;
-        work_   = work;
+        length_       = length;
+        on_calculate_ = on_calculate;
+        on_finish_    = on_finish;
     }
-    bool is_running() { return std::chrono::steady_clock::now() > end_; }
-    void start()      { end_ = std::chrono::steady_clock::now() + length_; }
-    void calculate()  { fps_->calculate(); work_(); }
+
+    bool is_running()
+    {
+        bool should_end = std::chrono::high_resolution_clock::now() > end_;
+        if (should_end)
+            std::invoke(on_finish_);
+        return not should_end;
+    }
+    void start()      { end_ = std::chrono::high_resolution_clock::now() + length_; }
+    void calculate()  { fps_->calculate(); std::invoke(on_calculate_); }
     std::unique_ptr<fps>* get_fps() { return &fps_; }
 };
 
