@@ -6,6 +6,7 @@
 #include <array>
 #include "../basic_headers.hpp"
 #include "../theme.hpp"
+#include "../element_effects/fade.hpp"
 #include "stage.hpp"
 namespace game::theme_types
 {
@@ -133,6 +134,22 @@ private:
     {
         elements["player1"]->state_.dest_ = rect_.at(player1);
         elements["player2"]->state_.dest_ = rect_.at(player2);
+
+        using namespace std::literals;
+        using namespace elements::effects;
+
+        (*game_fps)->pause();
+        elements["ready-text"]->bind_fps(animation.get_fps());
+
+        animation.set(1500ms,
+                      [this, fade = make<fade>(1500ms)] () mutable {
+                          fade(*elements["ready-text"]);
+                      },
+                      [this] () mutable {
+                          (*game_fps)->resume();
+                          elements["ready-text"]->bind_fps(game_fps);
+                      });
+        animation.start();
     }
 };
 
