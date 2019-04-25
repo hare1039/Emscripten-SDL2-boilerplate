@@ -17,6 +17,9 @@ int get_array_pos(int x, int y, int width) { return y * width + x; }
 template <typename E> constexpr inline
 auto cast(E e) noexcept { return static_cast<std::underlying_type_t<E>>(e); }
 
+template <typename T, typename ... Args> constexpr inline
+T make_object(Args&& ... args) { T o(std::forward<Args>(args)...); return o; }
+
 std::string random_string(std::string::size_type length)
 {
     std::string str(length, 0);

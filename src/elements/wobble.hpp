@@ -31,7 +31,7 @@ public:
         duration_           = table->get_as<double>("duration").value_or(duration_);
         max_amplsize_pixel_ = table->get_as<double>("max_ampl").value_or(max_amplsize_pixel_) * state_.dest_.w;
         min_amplsize_pixel_ = table->get_as<double>("min_ampl").value_or(min_amplsize_pixel_) * state_.dest_.w;
-        state_.dest_.w            *= table->get_as<double>("start_ampl").value_or(1);
+        state_.dest_.w     *= table->get_as<double>("start_ampl").value_or(1);
         if (state_.dest_.w <= 0)
             state_.dest_.w = 1;
     }

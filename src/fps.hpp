@@ -52,6 +52,9 @@ class fps
 public:
     void calculate()
     {
+        if (is_paused_)
+            return;
+
         if (old_time_ + 1_s < SDL_GetTicks())
         {
             old_time_      = SDL_GetTicks();
