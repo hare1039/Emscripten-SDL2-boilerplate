@@ -15,6 +15,7 @@ public:
 
     void operator() (element &e) override
     {
+        base::operator()(e);
         double percent = (now() - start_).count() / static_cast<double>(length_.count());
         e.set_alpha((1 - percent) * 255);
     }

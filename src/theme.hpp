@@ -95,6 +95,16 @@ public:
     virtual std::unique_ptr<theme> next() { return std::move(next_theme); }
     virtual bool is_finished() { return (!! next_theme); }
 
+protected:
+    template<typename ... Rest> inline
+    void bind_animation_fps(element &e, Rest && ... rest)
+    {
+        e.bind_fps(animation.get_fps());
+        bind_animation_fps(std::forward<Rest>(rest)...);
+    }
+
+    std::function<void(void)> default_resume () { return [this]{ default_resume_impl(); }; };
+
 private:
     template<typename Element, typename ... Args>
     void build(std::string_view toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
@@ -114,6 +124,19 @@ private:
                     theme_camera->bind(&elements[name]->state_.dest_);
             }
     }
+
+
+    // perform default game resume process
+    // fps resume and all element binds to game_fps
+    void default_resume_impl()
+    {
+        (*game_fps)->resume();
+        std::for_each(elements.begin(), elements.end(),
+                      [this] (auto &e) { e.second->bind_fps(game_fps); });
+    }
+
+
+    inline void bind_animation_fps() {}
 };
 
 } // namespace game

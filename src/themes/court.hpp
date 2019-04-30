@@ -7,6 +7,7 @@
 #include "../basic_headers.hpp"
 #include "../theme.hpp"
 #include "../element_effects/fade.hpp"
+#include "../element_effects/compose.hpp"
 #include "stage.hpp"
 namespace game::theme_types
 {
@@ -22,6 +23,7 @@ public:
     {
         rect_.at(player1) = elements["player1"]->state_.dest_;
         rect_.at(player2) = elements["player2"]->state_.dest_;
+        reset_theme();
     }
 
     void on_key_down(SDL_Keycode const & key, Uint16 const & mod) override
@@ -139,16 +141,19 @@ private:
         using namespace elements::effects;
 
         (*game_fps)->pause();
-        elements["ready-text"]->bind_fps(animation.get_fps());
+        bind_animation_fps(*elements["ready-text"]);
 
         animation.set(1500ms,
-                      [this, fade = make<fade>(1500ms)] () mutable {
-                          fade(*elements["ready-text"]);
-                      },
-                      [this] () mutable {
-                          (*game_fps)->resume();
-                          elements["ready-text"]->bind_fps(game_fps);
-                      });
+                      compose(500ms, [this, fade = make<fade>(500ms)] () mutable {
+                                         fade(*elements["ready-text"]);
+                                     },
+                              500ms, [this, fade = make<fade>(500ms)] () mutable {
+                                         fade(*elements["ready-text"]);
+                                     },
+                              500ms, [this, fade = make<fade>(500ms)] () mutable {
+                                         fade(*elements["ready-text"]);
+                                     }),
+                      default_resume());
         animation.start();
     }
 };

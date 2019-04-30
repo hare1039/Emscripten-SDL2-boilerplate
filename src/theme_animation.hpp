@@ -36,7 +36,11 @@ public:
     {
         bool should_end = std::chrono::high_resolution_clock::now() > end_;
         if (should_end)
+        {
             std::invoke(on_finish_);
+            on_finish_ = [](){};
+        }
+
         return not should_end;
     }
     void start()      { end_ = std::chrono::high_resolution_clock::now() + length_; }
