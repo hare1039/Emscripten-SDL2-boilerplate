@@ -23,13 +23,14 @@ class theme_animation
     std::unique_ptr<fps>      fps_ {std::make_unique<fps>()};
 public:
 
-    void set (std::chrono::high_resolution_clock::duration length,
-              std::function<void(void)> && on_calculate,
-              std::function<void(void)> && on_finish)
+    theme_animation& set (std::chrono::high_resolution_clock::duration length,
+                          std::function<void(void)> && on_calculate,
+                          std::function<void(void)> && on_finish)
     {
         length_       = length;
         on_calculate_ = on_calculate;
         on_finish_    = on_finish;
+        return *this;
     }
 
     bool is_running()
@@ -43,8 +44,8 @@ public:
 
         return not should_end;
     }
-    void start()      { end_ = std::chrono::high_resolution_clock::now() + length_; }
-    void calculate()  { fps_->calculate(); std::invoke(on_calculate_); }
+    theme_animation& start()      { end_ = std::chrono::high_resolution_clock::now() + length_; return *this; }
+    theme_animation& calculate()  { fps_->calculate(); std::invoke(on_calculate_); return *this; }
     std::unique_ptr<fps>* get_fps() { return &fps_; }
 };
 
