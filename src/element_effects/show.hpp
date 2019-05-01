@@ -1,5 +1,5 @@
-#ifndef ELEMENT_EFFECTS_FADE_HPP_
-#define ELEMENT_EFFECTS_FADE_HPP_
+#ifndef ELEMENT_EFFECTS_SHOW_HPP_
+#define ELEMENT_EFFECTS_SHOW_HPP_
 
 #include "base.hpp"
 #include <optional>
@@ -7,10 +7,10 @@
 namespace game::elements::effects
 {
 
-class fade : public base
+class show : public base
 {
 public:
-    fade(std::chrono::high_resolution_clock::duration length):
+    show(std::chrono::high_resolution_clock::duration length):
         base(length) {}
 
     void operator() (element &e) override
@@ -18,10 +18,10 @@ public:
         base::operator()(e);
         double percent = (now() - start_).count() / static_cast<double>(length_.count());
         if (0 <= percent and percent <= 1)
-            e.set_alpha((1 - percent) * 255);
+            e.set_alpha(percent * 255);
     }
 };
 
 } // namespace game::elements::effects
 
-#endif // ELEMENT_EFFECTS_FADE_HPP_
+#endif // ELEMENT_EFFECTS_SHOW_HPP_

@@ -6,9 +6,9 @@
 #include <array>
 #include "../basic_headers.hpp"
 #include "../theme.hpp"
-#include "../element_effects/fade.hpp"
-#include "../element_effects/compose.hpp"
+#include "../element_effects/collection.hpp"
 #include "stage.hpp"
+
 namespace game::theme_types
 {
 
@@ -16,8 +16,11 @@ class court : public theme
 {
     enum player {player1 /* right player */,
                  player2 /* left  player */, player_list_end};
+    bool game_ends_ = false;
     std::array<rect<>, player_list_end> rect_{};
     std::array<unsigned int, player_list_end> score_{};
+    unsigned int max_score_ = 1;
+
 public:
     court(SDL_Renderer * r, std::unique_ptr<fps>* gfps): theme {r, gfps, "./asset/theme/court.toml"}
     {
@@ -65,6 +68,9 @@ public:
     void calculate() override
     {
         theme::calculate();
+        if (game_ends_)
+            return;
+
         std::array<elements::types::score_counter *, player_list_end> score_counter {{
             dynamic_cast<elements::types::score_counter *>(elements["left-floor"].get()),
             dynamic_cast<elements::types::score_counter *>(elements["right-floor"].get())
@@ -134,15 +140,24 @@ private:
 
     void reset_theme()
     {
+        if (score_.at(player1) >= max_score_)
+        {
+            end_game(player1);
+            return;
+        }
+        else if (score_.at(player2) >= max_score_)
+        {
+            end_game(player2);
+            return;
+        }
+
         elements["player1"]->state_.dest_ = rect_.at(player1);
         elements["player2"]->state_.dest_ = rect_.at(player2);
 
         using namespace std::literals;
         using namespace elements::effects;
 
-        (*game_fps)->pause();
-        bind_animation_fps(*elements["ready-text"]);
-
+        enable_animation(*elements["ready-text"]);
         animation.set(1500ms,
                       compose(500ms, [this, fade = make<fade>(500ms)] () mutable {
                                          fade(*elements["ready-text"]);
@@ -155,6 +170,36 @@ private:
                                      }),
                       default_resume());
         animation.start();
+    }
+
+    void end_game(player winner)
+    {
+        using namespace std::literals;
+        using namespace elements::effects;
+        enable_animation(*elements["player1"], *elements["player2"]);
+
+        elements["game-set-text"]->set_alpha(255);
+        animation.set(4000ms,
+                      [this, winner,
+                       fade    = make<fade>(4000ms),
+                       amplify = make<amplify>(4000ms, 7.0)] () mutable {
+                          switch(winner)
+                          {
+                          case player1:
+                              fade(*elements["player2"]);
+                              amplify(*elements["player2"]);
+                              break;
+                          case player2:
+                              fade(*elements["player1"]);
+                              amplify(*elements["player1"]);
+                              break;
+                          default: break;
+                          }
+                      },
+                      [this] { next_theme = std::make_unique<theme_types::stage>(
+                                            renderer, game_fps, "./asset/theme/01.toml");});
+        animation.start();
+        game_ends_ = true;
     }
 };
 

@@ -25,15 +25,16 @@ public:
         length_{length} {}
 
     std::chrono::high_resolution_clock::duration length() { return length_; }
-    void reset() { start_ = now(); }
+    virtual void on_start(element &) {}
 
     virtual
-    void operator() (element &)
+    void operator() (element &e)
     {
         if (not is_called)
         {
             is_called = true;
             start_ = now();
+            on_start(e);
         }
     }
 };

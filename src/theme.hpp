@@ -95,12 +95,19 @@ public:
     virtual std::unique_ptr<theme> next() { return std::move(next_theme); }
     virtual bool is_finished() { return (!! next_theme); }
 
-protected:
+protected: // animation related functions
     template<typename ... Rest> inline
     void bind_animation_fps(element &e, Rest && ... rest)
     {
         e.bind_fps(animation.get_fps());
         bind_animation_fps(std::forward<Rest>(rest)...);
+    }
+
+    template<typename ... Element> inline
+    void enable_animation (Element && ... e)
+    {
+        (*game_fps)->pause();
+        bind_animation_fps(std::forward<Element>(e)...);
     }
 
     std::function<void(void)> default_resume () { return [this]{ default_resume_impl(); }; };
