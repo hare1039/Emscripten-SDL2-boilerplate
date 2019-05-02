@@ -24,7 +24,8 @@ keyup    = 1073741906 # SDLK_UP
 keydown  = 1073741905 # SDLK_DOWN
 keyleft  = 1073741904 # SDLK_LEFT
 keyright = 1073741903 # SDLK_RIGHT
-
+keysmash = 13         # SDLK_RETURN
+smash    = "left"
 
 [[players]]
 name     = "player2"
@@ -40,6 +41,8 @@ keyup    = 119  # SDLK_w
 keydown  = 115  # SDLK_s
 keyleft  = 97   # SDLK_a
 keyright = 100  # SDLK_d
+keysmash = 118  # SDLK_v
+smash    = "right"
 
 [[obstacles]]
 name     = "courtbar"
