@@ -12,6 +12,8 @@
 namespace game::theme_types
 {
 
+class front_page;
+
 class court : public theme
 {
     enum player {player1 /* right player */,
@@ -148,6 +150,7 @@ private:
         animation.start();
     }
 
+    template<typename NextTheme = front_page>
     void end_game(player winner)
     {
         using namespace std::literals;
@@ -172,8 +175,7 @@ private:
                           default: break;
                           }
                       },
-                      [this] { next_theme = std::make_unique<theme_types::stage>(
-                                            renderer, game_fps, "./asset/theme/01.toml"); });
+                      [this] { next_theme = std::make_unique<NextTheme>(renderer, game_fps); });
         animation.start();
         game_ends_ = true;
     }
