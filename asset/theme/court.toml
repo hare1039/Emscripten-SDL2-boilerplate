@@ -131,6 +131,18 @@ color_blue  = 0
 x        = 300
 y        = 60
 
+[[texts]]
+name     = "game-set-text"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "GAME SET!!!"
+font_size= 60
+color_red   = 255
+color_green = 25
+color_blue  = 0
+color_alpha = 0
+x        = 300
+y        = 60
+
 [[balls]]
 name     = "ball"
 x        = 100
