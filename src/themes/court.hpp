@@ -19,7 +19,7 @@ class court : public theme
     bool game_ends_ = false;
     std::array<rect<>, player_list_end> rect_{};
     std::array<unsigned int, player_list_end> score_{};
-    unsigned int max_score_ = 1;
+    unsigned int max_score_ = 5;
 
 public:
     court(SDL_Renderer * r, std::unique_ptr<fps>* gfps): theme {r, gfps, "./asset/theme/court.toml"}
@@ -33,36 +33,12 @@ public:
     {
         elements["player1"]->on_key_down(key, mod);
         elements["player2"]->on_key_down(key, mod);
-        switch (key)
-        {
-        case SDLK_DOWN:
-            for (auto && p : elements)
-                std::cout << p.first << " -> " << p.second.get() << std::endl;
-            next_theme = std::make_unique<court>(renderer, game_fps);
-            break;
-
-        case SDLK_SPACE:
-            (*game_fps)->pause();
-            break;
-
-        default:
-            break;
-        }
     }
 
     void on_key_up  (SDL_Keycode const & key, Uint16 const &mod) override
     {
         elements["player1"]->on_key_up(key, mod);
         elements["player2"]->on_key_up(key, mod);
-        switch (key)
-        {
-        case SDLK_SPACE:
-            (*game_fps)->resume();
-            break;
-
-        default:
-            break;
-        }
     }
 
     void calculate() override
@@ -197,7 +173,7 @@ private:
                           }
                       },
                       [this] { next_theme = std::make_unique<theme_types::stage>(
-                                            renderer, game_fps, "./asset/theme/01.toml");});
+                                            renderer, game_fps, "./asset/theme/01.toml"); });
         animation.start();
         game_ends_ = true;
     }
