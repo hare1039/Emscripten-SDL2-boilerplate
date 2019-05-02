@@ -9,5 +9,4 @@ cd src
 make clean
 make
 cd ..
-git reset HEAD src asset
 echo "Now, please add and commit to your gh-pages"
