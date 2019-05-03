@@ -12,17 +12,23 @@ namespace game::theme_types
 
 class front_page : public theme
 {
+    pixel camera_x_ = 0, camera_y_ = 0;
 public:
     front_page(SDL_Renderer * r, std::unique_ptr<fps>* gfps): theme {r, gfps, "./asset/theme/front.toml"} {}
 
     void calculate() override final
     {
-        auto [x, y] = theme_camera->get_pos();
-        // 1080 here is a magic number. It is used for making front-page background loop
-        if (x + WINDOW_WIDTH_PIXEL >= 1080 - 2)
-            theme_camera->set(0, 0);
+        // 1080: front-page background map width
+
+        double shift = (*game_fps)->speed_factor() * 8;
+        if (camera_x_ + WINDOW_WIDTH_PIXEL >= 1080 - shift)
+            camera_x_ = camera_y_ = 0;
         else
-            theme_camera->shift(2, 2);
+        {
+            camera_x_ += shift;
+            camera_y_ += shift;
+        }
+        theme_camera->set(camera_x_, camera_y_);
         theme::calculate();
     }
 
