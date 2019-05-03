@@ -39,7 +39,10 @@ public:
     void calculate() override
     {
         floating::calculate();
-        pixel step = (max_amplsize_pixel_ - min_amplsize_pixel_) / (duration_ / (*game_fps_)->frame());
+        if ((*game_fps_)->frame() == 0)
+            return;
+        pixel step = ((max_amplsize_pixel_ - min_amplsize_pixel_) * 1000) / (duration_ * (*game_fps_)->frame());
+
         if (state_.dest_.w < min_amplsize_pixel_)
             dir_ = zoom::amplify;
         else if (state_.dest_.w > max_amplsize_pixel_)
