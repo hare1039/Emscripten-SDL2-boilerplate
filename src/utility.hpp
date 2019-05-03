@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <functional>
 #include "compile_time_utility.hpp"
 
 namespace game::utility
@@ -19,6 +20,26 @@ auto cast(E e) noexcept { return static_cast<std::underlying_type_t<E>>(e); }
 
 template <typename T, typename ... Args> constexpr inline
 T make_object(Args&& ... args) { T o(std::forward<Args>(args)...); return o; }
+
+template <typename Comp, typename Bind, typename Max> inline
+Bind&& normalize(Bind&& var, Max&& standard, Comp comp = Comp())
+{
+    if (comp(var, standard))
+        var = standard;
+    return var;
+}
+
+template <typename Bind, typename Max> inline
+Bind&& trim(Bind&& var, Max&& standard)
+{
+    return normalize<std::greater_equal<Bind>>(std::forward<Bind>(var), std::forward<Max>(standard));
+}
+
+template <typename Bind, typename Max> inline
+Bind&& trim_inv(Bind&& var, Max&& standard)
+{
+    return normalize<std::less_equal<Bind>>(std::forward<Bind>(var), std::forward<Max>(standard));
+}
 
 std::string random_string(std::string::size_type length)
 {

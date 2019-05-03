@@ -137,7 +137,7 @@ public:
         state_.speed_x_ += state_.accel_x_ * (*game_fps_)->speed_factor();
         state_.speed_y_ += state_.accel_y_ * (*game_fps_)->speed_factor();
 
-        move_calculate (state_.speed_x_, state_.speed_y_);
+        move_calculate();
 
         animate();
     }
@@ -187,17 +187,23 @@ public:
 
 
 protected:
-    void move_calculate(double vx, double vy)
+    void move_calculate()
     {
-        if (vx == 0 and vy == 0)
+        if (state_.speed_x_ == 0 and state_.speed_y_ == 0)
             return;
+
+        utility::trim    (state_.speed_x_,  max_speed_x_);
+        utility::trim_inv(state_.speed_x_, -max_speed_x_);
+
+        utility::trim    (state_.speed_y_,  max_speed_y_);
+        utility::trim_inv(state_.speed_y_, -max_speed_y_);
 
         state_.old_speed_x_ = state_.speed_x_;
         state_.old_speed_y_ = state_.speed_y_;
 
         double speed_factor = (*game_fps_)->speed_factor();
-        vx *= speed_factor;
-        vy *= speed_factor;
+        double vx = state_.speed_x_ * speed_factor;
+        double vy = state_.speed_y_ * speed_factor;
 
         double x_shift_step = 0;
         if (vx < 0)
