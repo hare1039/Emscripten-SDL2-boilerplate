@@ -17,7 +17,7 @@ picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 800
-y        = 540
+y        = 550
 flag     = 2    # element::flag::gravity
 amplify  = 2.2
 keyup    = 1073741906 # SDLK_UP
@@ -34,14 +34,14 @@ picwidth = 64
 picheight= 64
 rotate_t = 1    # animation::rotate_type::circle
 x        = 150
-y        = 540
+y        = 550
 flag     = 2    # element::flag::gravity
 amplify  = 2.2
-keyup    = 119  # SDLK_w
-keydown  = 115  # SDLK_s
-keyleft  = 97   # SDLK_a
-keyright = 100  # SDLK_d
-keysmash = 118  # SDLK_v
+keyup    = 114  # SDLK_r
+keydown  = 102  # SDLK_f
+keyleft  = 100  # SDLK_d
+keyright = 103  # SDLK_g
+keysmash = 122  # SDLK_z
 smash    = "right"
 
 [[obstacles]]
@@ -88,6 +88,13 @@ w        = 1080
 h        = 20
 bounce_x = 2 # element::bounce_direction::same
 bounce_y = 1 # element::bounce_direction::reverse
+
+[[fences]]
+name     = "invisible-fence"
+x        = 511
+y        = 0
+w        = 2
+h        = 960
 
 [[score_counters]]
 name     = "left-floor"
