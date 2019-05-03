@@ -158,7 +158,7 @@ private:
         enable_animation(*elements["player1"], *elements["player2"]);
 
         elements["game-set-text"]->set_alpha(255);
-        animation.set(4000ms,
+        animation.set(6000ms,
                       [this, winner,
                        fade    = make<fade>(4000ms),
                        amplify = make<amplify>(4000ms, 7.0)] () mutable {
