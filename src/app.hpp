@@ -71,7 +71,7 @@ public:
     }
 
 public:
-    void handle_event(SDL_Event& event) { thm->on_event(event); }
+    void handle_event(SDL_Event& event) { check_quit(event); thm->on_event(event); }
 
     void calculate()
     {
@@ -84,6 +84,13 @@ public:
         SDL_RenderClear(renderer.get());
         thm->render();
         SDL_RenderPresent(renderer.get());
+    }
+
+private:
+    inline void check_quit(SDL_Event const & e)
+    {
+        if (e.type == SDL_QUIT)
+            should_continue = false;
     }
 };
 
