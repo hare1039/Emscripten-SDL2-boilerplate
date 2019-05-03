@@ -23,6 +23,8 @@ public:
     {
         type_ = type::player; // not suggested in stackoverflow, TODO list!
         hardness_ = hardness::stone;
+        ignore_types_ = type::ball;
+        collides_types_ = type::fence;
     }
 
     virtual
@@ -77,6 +79,11 @@ public:
                     ball.state_.speed_y_ = -70;
                 if (keyboard_.is_pressing(key::down))
                     ball.state_.speed_y_ = 70;
+
+                if ((not keyboard_.is_pressing(key::up)) and
+                    (not keyboard_.is_pressing(key::down)))
+                    ball.state_.speed_y_ = 0;
+
                 if (keyboard_.is_pressing(key::right) or
                     keyboard_.is_pressing(key::left))
                     ball.state_.speed_x_ = static_cast<int>(smash_) * 70;

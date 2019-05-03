@@ -15,6 +15,7 @@
 #include "elements/text.hpp"
 #include "elements/score_counter.hpp"
 #include "elements/option.hpp"
+#include "elements/fence.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "cache_container.hpp"
@@ -65,6 +66,7 @@ public:
         build<elements::types::text>    ("texts",     config);
         build<elements::types::score_counter> ("score_counters", config);
         build<elements::types::option>  ("options",   config);
+        build<elements::types::fence>   ("fences", config);
     }
 
     virtual

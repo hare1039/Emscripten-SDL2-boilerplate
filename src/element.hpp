@@ -49,30 +49,37 @@ public:
     unsigned int z_index_ = 0; // higher z_index_ become, element are more to front when rendering
 
 public:
-    /* type: element type.
-       extra: air (1) < player (50)
-       => air cannot pass player
-       => player are not effected by air
-       => if same, no effect to each other
-       in move_calculation
-     */
     enum class type
     {
-        text,
-        ball,
-        player,
-        counter,
-        generic
+        none    = 0,
+        generic = 1 << 1,
+        text    = 1 << 2,
+        ball    = 1 << 3,
+        player  = 1 << 4,
+        counter = 1 << 5,
+        fence   = 1 << 6
     };
     type type_ = type::generic;
 
+public:
+    /* move_calculation collide system:
+       1. => is in ingore list
+       2. => is in collides list
+       3. check hardness
+       hardness
+       => air(1) cannot pass player(50)
+       => player are not effected by air
+       => if same, effect to both side
+     */
     enum class hardness
     {
         air     = 1,
         stone   = 50,
         diamond = 100
     };
-    hardness hardness_ = hardness::diamond;
+    hardness hardness_   = hardness::diamond;
+    type collides_types_ = type::none;
+    type ignore_types_   = type::none;
 
     enum class flag
     {
@@ -155,8 +162,7 @@ public:
         src_.y = src_.h * (current_frame_row_ + anime_info_->get_current_frame());
     }
 
-    virtual
-    void on_collision (element &) {}
+    virtual void on_collision (element &) {}
 
     virtual
     void build_from_toml(std::shared_ptr<cpptoml::table> table)
@@ -175,11 +181,9 @@ public:
             amplify(*rate);
     }
 
-    virtual
-    void on_key_down(SDL_Keycode const &, Uint16 const &) {}
+    virtual void on_key_down(SDL_Keycode const &, Uint16 const &) {}
 
-    virtual
-    void on_key_up(SDL_Keycode const &, Uint16 const &) {}
+    virtual void on_key_up(SDL_Keycode const &, Uint16 const &) {}
 
 
 protected:
@@ -432,8 +436,14 @@ private:
         {
             collision::queue().push_back(collision{ .A = *this, .B = *e });
 
-            // if e->hardness_ > hardness_ => will effect by this element => return false
-            return !(e->hardness_ > hardness_);
+            // detail description are at enum class hardness
+            if (bool_of(ignore_types_   & e->type_))
+                return true;
+
+            if (bool_of(collides_types_ & e->type_))
+                return false;
+
+            return hardness_ > e->hardness_;
         }
         return true;
     }

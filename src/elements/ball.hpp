@@ -17,10 +17,11 @@ public:
          camera &c,
          std::unique_ptr<fps>* game_fps): element {r, name, a, c, game_fps}
     {
-        max_speed_x_ = 60;
-        max_speed_y_ = 60;
-        type_     = type::ball;
-        hardness_ = hardness::stone;
+        max_speed_x_  = 60;
+        max_speed_y_  = 60;
+        type_         = type::ball;
+        hardness_     = hardness::stone;
+        ignore_types_ = type::player;
     }
 
     void on_collision(element & e) override
