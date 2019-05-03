@@ -5,12 +5,15 @@
 #include "basic_headers.hpp"
 #include "enable_instance.hpp"
 
+#include <chrono>
+
 namespace game
 {
 
 namespace {
-    using ulli = unsigned long long int;
-    ulli operator "" _s (ulli v) { return v * 1000; }
+    using namespace std::chrono_literals;
+    inline auto now() { return std::chrono::high_resolution_clock::now(); }
+    using time_point = std::chrono::high_resolution_clock::time_point;
 }
 /*
 ** http://www.sdltutorials.com/sdl-collision **
@@ -42,9 +45,9 @@ namespace {
 
 class fps
 {
-    double speed_factor_ = 0;
-    int old_time_  = 0;
-    int last_time_ = 0;
+    double speed_factor_  = 0;
+    time_point old_time_;
+    time_point last_time_;
     int frames_    = 0;
     int number_frames_ = 0;
 
@@ -55,16 +58,16 @@ public:
         if (is_paused_)
             return;
 
-        if (old_time_ + 1_s < SDL_GetTicks())
+        if (old_time_ + 1s < now())
         {
-            old_time_      = SDL_GetTicks();
+            old_time_      = now();
             number_frames_ = frames_;
             frames_        = 0;
         }
 
-        double delta  = (SDL_GetTicks() - last_time_) / 1000.0;
-        speed_factor_ = ((delta > 1) ? 0 /* pause game if browser stop looping */ : delta) * FPS;
-        last_time_    = SDL_GetTicks();
+        std::chrono::duration<double> delta = now() - last_time_;
+        speed_factor_ = ((delta > 1s) ? 0 /* pause game if browser stop looping */ : delta.count()) * FPS;
+        last_time_    = now();
         frames_++;
     }
 
@@ -75,7 +78,7 @@ public:
         if (is_paused_)
         {
             is_paused_     = false;
-            old_time_      = SDL_GetTicks();
+            old_time_      = now();
             number_frames_ = frames_ = 0;
         }
     }
