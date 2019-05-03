@@ -158,7 +158,7 @@ private:
         enable_animation(*elements["player1"], *elements["player2"]);
 
         elements["game-set-text"]->set_alpha(255);
-        animation.set(6000ms,
+        animation.set(5000ms,
                       [this, winner,
                        fade    = make<fade>(4000ms),
                        amplify = make<amplify>(4000ms, 7.0)] () mutable {
@@ -175,7 +175,8 @@ private:
                           default: break;
                           }
                       },
-                      [this] { next_theme = std::make_unique<NextTheme>(renderer, game_fps); });
+                      [this] { default_resume()();
+                               next_theme = std::make_unique<NextTheme>(renderer, game_fps); });
         animation.start();
         game_ends_ = true;
     }

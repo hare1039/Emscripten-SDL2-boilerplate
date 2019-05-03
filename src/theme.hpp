@@ -66,7 +66,7 @@ public:
         build<elements::types::text>    ("texts",     config);
         build<elements::types::score_counter> ("score_counters", config);
         build<elements::types::option>  ("options",   config);
-        build<elements::types::fence>   ("fences", config);
+        build<elements::types::fence>   ("fences",    config);
     }
 
     virtual
