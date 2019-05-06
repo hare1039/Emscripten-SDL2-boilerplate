@@ -61,9 +61,8 @@ public:
         SDL_RenderCopy (renderer, map_texture.get(), NULL /* full texture */, &dest);
     }
 
-    inline constexpr
+    inline
     tile& at(int x, int y) { return tiles.at(utility::get_array_pos(x, y, MAP_WIDTH)); }
-
 
 private:
     void gen_texture()
