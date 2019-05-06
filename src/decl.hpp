@@ -2,6 +2,8 @@
 #define DECL_HPP_
 #pragma once
 
+#include <memory>
+
 namespace game
 {
 
