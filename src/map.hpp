@@ -55,8 +55,8 @@ public:
         SDL_Rect dest {
             .x = static_cast<int>(map_x_pixel),
             .y = static_cast<int>(map_y_pixel),
-            .h = static_cast<int>(h),
-            .w = static_cast<int>(w)
+            .w = static_cast<int>(w),
+            .h = static_cast<int>(h)
         };
         SDL_RenderCopy (renderer, map_texture.get(), NULL /* full texture */, &dest);
     }
@@ -102,8 +102,8 @@ private:
                 SDL_Rect dest = {
                     .x = x * TILE_SIZE_PIXEL_INT,
                     .y = y * TILE_SIZE_PIXEL_INT,
-                    .h = TILE_SIZE_PIXEL_INT,
-                    .w = TILE_SIZE_PIXEL_INT
+                    .w = TILE_SIZE_PIXEL_INT,
+                    .h = TILE_SIZE_PIXEL_INT
                 };
                 SDL_BlitSurface(tile_surface, &t.src, s.get(), &dest);
             }

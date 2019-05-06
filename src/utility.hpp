@@ -63,10 +63,10 @@ SDL_Color operator + (SDL_Color const & org, IntegerType bright)
 {
     return SDL_Color {
         .r = org.r,
-        .b = org.b,
         .g = org.g,
+        .b = org.b,
         .a = (org.a + bright) > std::numeric_limits<Uint8>::max() ?
-            std::numeric_limits<Uint8>::max() : static_cast<Uint8>((org.a + bright))
+              std::numeric_limits<Uint8>::max() : static_cast<Uint8>((org.a + bright))
     };
 }
 

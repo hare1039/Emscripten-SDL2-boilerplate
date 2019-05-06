@@ -37,8 +37,8 @@ public:
         src {
             .x = (utility::cast(g) - 1) * TILE_SIZE_PIXEL_INT,
             .y = 0,
-            .h = TILE_SIZE_PIXEL_INT,
-            .w = TILE_SIZE_PIXEL_INT
+            .w = TILE_SIZE_PIXEL_INT,
+            .h = TILE_SIZE_PIXEL_INT
         } {}
 
     bool is_solid() { return utility::cast(flag_id) & utility::cast(flag::solid); }
