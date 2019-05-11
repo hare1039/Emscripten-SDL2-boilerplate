@@ -3,6 +3,7 @@
 area = "./asset/map/00.area"
 [camera]
 mode = 1 # camera::mode::center
+bind = "yoshi" # bind camera on yoshi
 
 [[elements]]
 name     = "rin"
@@ -21,7 +22,7 @@ rotate_t = 0 # animation::rotate_type::none
 x        = 200
 y        = 200
 
-[[movables]]
+[[players]]
 name     = "yoshi"
 pic      = "./asset/pic/yoshi.png"
 picwidth = 64
@@ -30,4 +31,17 @@ rotate_t = 1    # animation::rotate_type::circle
 x        = 10
 y        = 10
 flag     = 2    # element::flag::gravity
-bind_cam = true # bind camera on this element
+keyup    = 1073741906 # SDLK_UP
+keydown  = 1073741905 # SDLK_DOWN
+keyleft  = 1073741904 # SDLK_LEFT
+keyright = 1073741903 # SDLK_RIGHT
+keysmash = 13         # SDLK_RETURN
+smash    = "left"
+
+[[texts]]
+name     = "debug notice"
+ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
+text     = "debug-page"
+font_size= 40
+x        = 60
+y        = 30

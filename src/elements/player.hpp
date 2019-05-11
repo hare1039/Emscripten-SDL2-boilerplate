@@ -15,11 +15,11 @@ class player : public movable
     enum class smash {right = 1, none = 0, left = -1};
     smash smash_;
 public:
-    player(SDL_Renderer *r,
-           std::string_view name,
+    player(std::string_view name,
            cache_container<std::string, element> &a,
+           SDL_Renderer *r,
            camera &c,
-           std::unique_ptr<fps>* game_fps): movable {r, name, a, c, game_fps}
+           std::unique_ptr<fps>* game_fps): movable {name, a, r, c, game_fps}
     {
         type_ = type::player; // not suggested in stackoverflow, TODO list!
         hardness_ = hardness::stone;

@@ -121,11 +121,11 @@ private:
     }
 
 public:
-    option(SDL_Renderer *r,
-           std::string_view name,
+    option(std::string_view name,
            cache_container<std::string, element> &a,
+           SDL_Renderer *r,
            camera &c,
-           std::unique_ptr<fps>* game_fps): text {r, name, a, c, game_fps} {}
+           std::unique_ptr<fps>* game_fps): text {name, a, r, c, game_fps} {}
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override
     {

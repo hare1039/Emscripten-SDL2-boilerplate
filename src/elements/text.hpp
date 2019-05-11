@@ -16,11 +16,11 @@ public:
     SDL_Color   color_{0, 0, 0, 255};
     unsigned int font_size_ = 16;
 public:
-    text(SDL_Renderer *r,
-         std::string_view name,
+    text(std::string_view name,
          cache_container<std::string, element> &a,
+         SDL_Renderer *r,
          camera &c,
-         std::unique_ptr<fps>* game_fps): floating {r, name, a, c, game_fps}
+         std::unique_ptr<fps>* game_fps): floating {name, a, r, c, game_fps}
     {
         type_     = type::text;
         hardness_ = hardness::air;

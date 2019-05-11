@@ -18,11 +18,11 @@ public:
     bool dead_       = false;
 
 public:
-    movable(SDL_Renderer *r,
-            std::string_view name,
+    movable(std::string_view name,
             cache_container<std::string, element> &a,
+            SDL_Renderer *r,
             camera &c,
-            std::unique_ptr<fps>* game_fps): element {r, name, a, c, game_fps} {}
+            std::unique_ptr<fps>* game_fps): element {name, a, r, c, game_fps} {}
 
     void animate() override
     {

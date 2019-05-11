@@ -14,11 +14,11 @@ namespace game::elements::types
 class floating : public element
 {
 public:
-    floating(SDL_Renderer *r,
-             std::string_view name,
+    floating(std::string_view name,
              cache_container<std::string, element> &a,
+             SDL_Renderer *r,
              camera &c,
-             std::unique_ptr<fps>* game_fps): element{r, name, a, c, game_fps} {}
+             std::unique_ptr<fps>* game_fps): element{name, a, r, c, game_fps} {}
 
     void render() override final
     {

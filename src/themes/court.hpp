@@ -6,7 +6,7 @@
 #include <array>
 #include "../basic_headers.hpp"
 #include "../theme.hpp"
-#include "../element_effects/collection.hpp"
+#include "../element_effects/register.hpp"
 #include "stage.hpp"
 
 namespace game::theme_types

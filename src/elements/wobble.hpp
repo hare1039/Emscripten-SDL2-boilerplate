@@ -19,11 +19,11 @@ class wobble : public floating
     enum class zoom {amplify = 1, condense = -1};
     zoom dir_ = zoom::amplify; // flag to move element big / small
 public:
-    wobble(SDL_Renderer *r,
-           std::string_view name,
+    wobble(std::string_view name,
            cache_container<std::string, element> &a,
+           SDL_Renderer *r,
            camera &c,
-           std::unique_ptr<fps>* game_fps): floating {r, name, a, c, game_fps} {}
+           std::unique_ptr<fps>* game_fps): floating {name, a, r, c, game_fps} {}
 
     void build_from_toml(std::shared_ptr<cpptoml::table> table) override
     {

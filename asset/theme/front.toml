@@ -38,7 +38,7 @@ min_ampl = 0.72
 start_ampl = 0.001
 
 [[options]]
-name     = "option-2-player"
+name     = "option-local"
 ttf_path = "./asset/fonts/Sebastien-Slab-Round.ttf"
 text     = "local"
 selected = true

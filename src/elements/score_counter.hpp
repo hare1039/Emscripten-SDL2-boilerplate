@@ -14,11 +14,11 @@ class score_counter : public obstacle
     bool         ball_in_         = false;
     bool         had_collision_   = false;
 public:
-    score_counter(SDL_Renderer *r,
-                  std::string_view name,
+    score_counter(std::string_view name,
                   cache_container<std::string, element> &a,
+                  SDL_Renderer *r,
                   camera &c,
-                  std::unique_ptr<fps>* game_fps): obstacle {r, name, a, c, game_fps}
+                  std::unique_ptr<fps>* game_fps): obstacle {name, a, r, c, game_fps}
     {
         type_ = type::counter;
     }

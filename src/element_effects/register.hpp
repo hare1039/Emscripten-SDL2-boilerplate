@@ -1,5 +1,5 @@
-#ifndef ELEMENT_EFFECTS_COLLECTION_HPP_
-#define ELEMENT_EFFECTS_COLLECTION_HPP_
+#ifndef ELEMENT_EFFECTS_REGISTER_HPP_
+#define ELEMENT_EFFECTS_REGISTER_HPP_
 
 #include "show.hpp"
 #include "fade.hpp"
@@ -8,4 +8,4 @@
 #include "amplify.hpp"
 #include "base.hpp"
 
-#endif // ELEMENT_EFFECTS_COLLECTION_HPP_
+#endif // ELEMENT_EFFECTS_REGISTER_HPP_

@@ -118,9 +118,9 @@ public:
     };
 
 public:
-    element(SDL_Renderer *r,
-            std::string_view element_name,
+    element(std::string_view element_name,
             cache_container<std::string, element> &all,
+            SDL_Renderer *r,
             camera &c,
             std::unique_ptr<fps>* game_fps):
         name_         {element_name},

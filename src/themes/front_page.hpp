@@ -46,8 +46,10 @@ public:
             break;
 
         case SDLK_RETURN:
-            if (dynamic_cast<option *>(elements["option-2-player"].get())->is_selected())
+            if (dynamic_cast<option *>(elements["option-local"].get())->is_selected())
                 next_theme = std::make_unique<court>(renderer, game_fps);
+            else if (dynamic_cast<option *>(elements["option-online"].get())->is_selected())
+                next_theme = std::make_unique<stage>(renderer, game_fps, "./asset/theme/01.toml");
             break;
         default:
             break;

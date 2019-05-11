@@ -4,18 +4,9 @@
 #include <vector>
 #include <unordered_map>
 #include <string_view>
+#include "elements/register.hpp"
 #include "basic_headers.hpp"
 #include "event.hpp"
-#include "elements/floating.hpp"
-#include "elements/movable.hpp"
-#include "elements/wobble.hpp"
-#include "elements/player.hpp"
-#include "elements/obstacle.hpp"
-#include "elements/ball.hpp"
-#include "elements/text.hpp"
-#include "elements/score_counter.hpp"
-#include "elements/option.hpp"
-#include "elements/fence.hpp"
 #include "camera.hpp"
 #include "area.hpp"
 #include "cache_container.hpp"
@@ -45,6 +36,7 @@ public:
         game_fps {gfps}
     {
         auto config = cpptoml::parse_file(path.data());
+        elements::types::builder(elements, config, renderer, std::ref(*theme_camera), game_fps);
 
         assert(config->contains("area") and
                config->contains("camera"));
@@ -55,18 +47,10 @@ public:
                                                           .value_or(utility::cast(camera::mode::top_left)));
         theme_camera->set(cam->get_as<int>("x").value_or(0),
                           cam->get_as<int>("y").value_or(0));
+        std::string bind_element = cam->get_as<std::string>("bind").value_or("");
 
-        build<element>("elements", config);
-        build<elements::types::movable> ("movables",  config);
-        build<elements::types::floating>("floatings", config);
-        build<elements::types::wobble>  ("wobbles",   config);
-        build<elements::types::player>  ("players",   config);
-        build<elements::types::obstacle>("obstacles", config);
-        build<elements::types::ball>    ("balls",     config);
-        build<elements::types::text>    ("texts",     config);
-        build<elements::types::score_counter> ("score_counters", config);
-        build<elements::types::option>  ("options",   config);
-        build<elements::types::fence>   ("fences",    config);
+        if (not bind_element.empty())
+            theme_camera->bind(&elements[bind_element]->state_.dest_);
     }
 
     virtual
@@ -115,26 +99,6 @@ protected: // animation related functions
     std::function<void(void)> default_resume () { return [this]{ default_resume_impl(); }; };
 
 private:
-    template<typename Element, typename ... Args>
-    void build(std::string_view toml_name, std::shared_ptr<cpptoml::table> config, Args && ... args)
-    {
-        auto table_array = config->get_table_array(toml_name.data());
-        if (table_array != nullptr)
-            for (const auto &table : *table_array)
-            {
-                std::string name = table->
-                    get_as<std::string>("name").
-                    value_or(utility::random_string(20));
-
-                elements.emplace(name, std::make_unique<Element>(renderer, name, elements, *theme_camera, game_fps,
-                                                                 std::forward<Args>(args)...));
-                elements[name]->build_from_toml(table);
-                if (table->get_as<bool>("bind_cam"))
-                    theme_camera->bind(&elements[name]->state_.dest_);
-            }
-    }
-
-
     // perform default game resume process
     // fps resume and all element binds to game_fps
     void default_resume_impl()

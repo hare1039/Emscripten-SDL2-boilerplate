@@ -9,11 +9,11 @@ namespace game::elements::types
 class fence : public obstacle
 {
 public:
-    fence(SDL_Renderer *r,
-          std::string_view name,
+    fence(std::string_view name,
           cache_container<std::string, element> &a,
+          SDL_Renderer *r,
           camera &c,
-          std::unique_ptr<fps>* game_fps): obstacle {r, name, a, c, game_fps}
+          std::unique_ptr<fps>* game_fps): obstacle {name, a, r, c, game_fps}
     {
         hardness_ = hardness::air;
         type_     = type::fence;

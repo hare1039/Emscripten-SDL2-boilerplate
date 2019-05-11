@@ -10,11 +10,11 @@ namespace game::elements::types
 class obstacle : public element
 {
 public:
-    obstacle(SDL_Renderer *r,
-             std::string_view name,
+    obstacle(std::string_view name,
              cache_container<std::string, element> &a,
+             SDL_Renderer *r,
              camera &c,
-             std::unique_ptr<fps>* game_fps): element{r, name, a, c, game_fps}
+             std::unique_ptr<fps>* game_fps): element {name, a, r, c, game_fps}
     {
         col_offset_ = 0;
     }
