@@ -87,9 +87,11 @@
 
 TODO:
     以後會有一些重大改變
-    1. 我最近才知道這個傢伙 https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface，近期會把整個 code 在修一遍
-    2. data member 的命名系統不一致，以後全部都會改成後綴 "_"，我也要哪天來改個
+    
+    1. 我最近才知道這個傢伙 [Non-Virtua Interfacel](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface)，近期會把整個 code 在修一遍
+    
+    2. data member 的命名系統不一致，以後全部都會改成後綴 `_` 我也要哪天來改個
     3. Document 在寫好一點
     4. 地圖的限制
     
-# 我哪裡打得不好，還是有任何想要叫我重寫的地方，請放在 ISSUE ，感謝哦
+# 有任何想要叫我重寫的地方，請發個 ISSUE
