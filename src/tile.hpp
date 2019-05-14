@@ -19,7 +19,7 @@ public:
         snow,
         water
     };
-    graph graph_id = graph::none;
+    graph graph_ = graph::none;
 
     enum class flag
     {
@@ -27,21 +27,21 @@ public:
         solid  = 1,
         deadly = 1 << 1,
     };
-    flag flag_id = flag::none;
-    SDL_Rect src = {};
+    flag flag_ = flag::none;
+    SDL_Rect src_ = {};
 
 public:
     tile (graph g, flag f):
-        graph_id{g},
-        flag_id {f},
-        src {
+        graph_ {g},
+        flag_  {f},
+        src_ {
             .x = (utility::cast(g) - 1) * TILE_SIZE_PIXEL_INT,
             .y = 0,
             .w = TILE_SIZE_PIXEL_INT,
             .h = TILE_SIZE_PIXEL_INT
         } {}
 
-    bool is_solid() { return utility::cast(flag_id) & utility::cast(flag::solid); }
+    bool is_solid() { return utility::cast(flag_) & utility::cast(flag::solid); }
 
     template <char c> inline constexpr static
     auto cast (int i)
@@ -57,8 +57,8 @@ public:
 
 std::ostream & operator << (std::ostream & os, tile const & t)
 {
-    os << "[tile.flag]: "  << utility::cast(t.flag_id) << "\n"
-       << "[tile.graph]: " << utility::cast(t.graph_id);
+    os << "[tile.flag]: "  << utility::cast(t.flag_) << "\n"
+       << "[tile.graph]: " << utility::cast(t.graph_);
     return os;
 }
 

@@ -9,11 +9,11 @@ namespace game
 
 class app
 {
-    bool should_continue {true};
-    SDL_Window_ptr   window{nullptr, &SDL_DestroyWindow};
-    SDL_Renderer_ptr renderer{nullptr, &SDL_DestroyRenderer};
-    std::unique_ptr<fps>   game_fps{std::make_unique<fps>()};
-    std::unique_ptr<theme> thm;
+    bool should_continue_ {true};
+    SDL_Window_ptr   window_ {nullptr, &SDL_DestroyWindow};
+    SDL_Renderer_ptr renderer_ {nullptr, &SDL_DestroyRenderer};
+    std::unique_ptr<fps>   game_fps_ {std::make_unique<fps>()};
+    std::unique_ptr<theme> thm_;
 
 public:
     app()
@@ -37,20 +37,20 @@ public:
                                                         0,
                                                         &wind, &rend); ec < 0)
             std::cout << SDL_GetError() << std::endl;
-        window.reset(wind);
-        renderer.reset(rend);
+        window_.reset(wind);
+        renderer_.reset(rend);
 
-        if (error_code ec = SDL_SetRenderDrawColor(renderer.get(), 12, 199, 166, 255); ec < 0)
+        if (error_code ec = SDL_SetRenderDrawColor(renderer_.get(), 12, 199, 166, 255); ec < 0)
             std::cout << SDL_GetError() << std::endl;
 
-        thm = std::make_unique<theme_types::front_page>(renderer.get(), &game_fps);
+        thm_ = std::make_unique<theme_types::front_page>(renderer_.get(), &game_fps_);
     }
 
     ~app() { TTF_Quit(); IMG_Quit(); SDL_Quit(); }
 
     void run()
     {
-        if (not should_continue)
+        if (not should_continue_)
         {
 #ifdef __EMSCRIPTEN__
             emscripten_cancel_main_loop();
@@ -66,31 +66,31 @@ public:
 
         calculate();
         render();
-        if (thm->is_finished())
-            thm = thm->next();
+        if (thm_->is_finished())
+            thm_ = thm_->next();
     }
 
 public:
-    void handle_event(SDL_Event& event) { check_quit(event); thm->on_event(event); }
+    void handle_event(SDL_Event& event) { check_quit(event); thm_->on_event(event); }
 
     void calculate()
     {
-        game_fps->calculate();
-        thm->calculate();
+        game_fps_->calculate();
+        thm_->calculate();
     }
 
     void render()
     {
-        SDL_RenderClear(renderer.get());
-        thm->render();
-        SDL_RenderPresent(renderer.get());
+        SDL_RenderClear(renderer_.get());
+        thm_->render();
+        SDL_RenderPresent(renderer_.get());
     }
 
 private:
     inline void check_quit(SDL_Event const & e)
     {
         if (e.type == SDL_QUIT)
-            should_continue = false;
+            should_continue_ = false;
     }
 };
 

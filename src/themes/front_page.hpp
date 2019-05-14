@@ -20,7 +20,7 @@ public:
     {
         // 1080: front-page background map width
 
-        double shift = (*game_fps)->speed_factor() * 8;
+        double shift = (*game_fps_)->speed_factor() * 8;
         if (camera_x_ + WINDOW_WIDTH_PIXEL >= 1080 - shift)
             camera_x_ = camera_y_ = 0;
         else
@@ -28,7 +28,7 @@ public:
             camera_x_ += shift;
             camera_y_ += shift;
         }
-        theme_camera->set(camera_x_, camera_y_);
+        theme_camera_->set(camera_x_, camera_y_);
         theme::calculate();
     }
 
@@ -46,10 +46,10 @@ public:
             break;
 
         case SDLK_RETURN:
-            if (dynamic_cast<option *>(elements["option-local"].get())->is_selected())
-                next_theme = std::make_unique<court>(renderer, game_fps);
-            else if (dynamic_cast<option *>(elements["option-online"].get())->is_selected())
-                next_theme = std::make_unique<stage>(renderer, game_fps, "./asset/theme/01.toml");
+            if (dynamic_cast<option *>(elements_["option-local"].get())->is_selected())
+                next_theme_ = std::make_unique<court>(renderer_, game_fps_);
+            else if (dynamic_cast<option *>(elements_["option-online"].get())->is_selected())
+                next_theme_ = std::make_unique<stage>(renderer_, game_fps_, "./asset/theme/01.toml");
             break;
         default:
             break;

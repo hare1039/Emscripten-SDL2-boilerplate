@@ -12,13 +12,13 @@ public:
 
     void on_key_down(SDL_Keycode const & key, Uint16 const &mod) override final
     {
-        elements["yoshi"]->on_key_down(key, mod);
+        elements_["yoshi"]->on_key_down(key, mod);
         switch (key)
         {
         case SDLK_DOWN:
-            for (auto && p : elements)
+            for (auto && p : elements_)
                 std::cout << p.first << " -> " << p.second.get() << std::endl;
-            next_theme = std::make_unique<stage>(renderer, game_fps, "./asset/theme/01.toml");
+            next_theme_ = std::make_unique<stage>(renderer_, game_fps_, "./asset/theme/01.toml");
             break;
 
         default:
@@ -28,7 +28,7 @@ public:
 
     void on_key_up  (SDL_Keycode const & key, Uint16 const &mod) override
     {
-        elements["yoshi"]->on_key_up(key, mod);
+        elements_["yoshi"]->on_key_up(key, mod);
     }
 };
 

@@ -14,15 +14,15 @@ namespace game
 
 class map
 {
-    std::vector<tile> tiles;
+    std::vector<tile> tiles_;
 public:
-    SDL_Renderer     *renderer     = nullptr;
-    SDL_Surface      *tile_surface = nullptr;
-    SDL_Texture_ptr   map_texture{nullptr, &SDL_DestroyTexture};
+    SDL_Renderer     *renderer_     = nullptr;
+    SDL_Surface      *tile_surface_ = nullptr;
+    SDL_Texture_ptr   map_texture_ {nullptr, &SDL_DestroyTexture};
 
 public:
     map (std::string_view path, SDL_Renderer * r, SDL_Surface * tile_s)
-        : renderer{r}, tile_surface{tile_s}
+        : renderer_ {r}, tile_surface_ {tile_s}
     {
         std::ifstream level_file {path.data()};
         std::string token;
@@ -34,7 +34,7 @@ public:
                 auto pos      = token.find(":");
                 int flag_num  = std::stoi(token.substr(0, pos)),
                     graph_num = std::stoi(token.substr(pos + 1));
-                tiles.emplace_back (tile::cast<'g'>(graph_num), tile::cast<'f'>(flag_num));
+                tiles_.emplace_back (tile::cast<'g'>(graph_num), tile::cast<'f'>(flag_num));
             } catch (std::invalid_argument const & e) {
                 std::cout << "map parse failed" << std::endl;
             }
@@ -46,7 +46,7 @@ public:
     {
         int w = 0, h = 0;
         if (error_code ec = SDL_QueryTexture(
-                map_texture.get(),
+                map_texture_.get(),
                 NULL, // format
                 NULL, // access
                 &w, &h);
@@ -58,11 +58,10 @@ public:
             .w = static_cast<int>(w),
             .h = static_cast<int>(h)
         };
-        SDL_RenderCopy (renderer, map_texture.get(), NULL /* full texture */, &dest);
+        SDL_RenderCopy (renderer_, map_texture_.get(), NULL /* full texture */, &dest);
     }
 
-    inline
-    tile& at(int x, int y) { return tiles.at(utility::get_array_pos(x, y, MAP_WIDTH)); }
+    inline tile& at(int x, int y) { return tiles_.at(utility::get_array_pos(x, y, MAP_WIDTH)); }
 
 private:
     void gen_texture()
@@ -95,8 +94,8 @@ private:
         {
             for (int y = 0; y < MAP_WIDTH; y++)
             {
-                tile &t {tiles.at (utility::get_array_pos(x, y, MAP_WIDTH))};
-                if (t.graph_id == tile::graph::none)
+                tile &t {tiles_.at (utility::get_array_pos(x, y, MAP_WIDTH))};
+                if (t.graph_ == tile::graph::none)
                     continue;
                 SDL_Rect dest = {
                     .x = x * TILE_SIZE_PIXEL_INT,
@@ -104,11 +103,11 @@ private:
                     .w = TILE_SIZE_PIXEL_INT,
                     .h = TILE_SIZE_PIXEL_INT
                 };
-                SDL_BlitSurface(tile_surface, &t.src, s.get(), &dest);
+                SDL_BlitSurface(tile_surface_, &t.src_, s.get(), &dest);
             }
         }
 
-        map_texture.reset (SDL_CreateTextureFromSurface (renderer, s.get()));
+        map_texture_.reset (SDL_CreateTextureFromSurface (renderer_, s.get()));
     }
 };
 
