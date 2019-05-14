@@ -34,7 +34,7 @@
     ```
     
 # 框架簡介
-    ```
+
     app: 管理 game loop
         1. event queue => 丟到 theme->on_event();
         2. calculate() 
@@ -82,16 +82,15 @@
         1. virtual on_start();
         2. virtual operator();
         這些都可以 override
-    ```        
+        
 其他是輔助的檔案，有需要可以參考
 
 TODO:
     以後會有一些重大改變
     
-    1. 我最近才知道這個傢伙 [Non-Virtua Interfacel](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface)，近期會把整個 code 在修一遍
-    
-    2. data member 的命名系統不一致，以後全部都會改成後綴 `_` 我也要哪天來改個
-    3. Document 在寫好一點
-    4. 地圖的限制
+- [ ] 我最近才知道這個傢伙 [Non-Virtua Interfacel](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface)，近期會把整個 code 在修一遍
+- [x] data member 的命名系統不一致，以後全部都會改成後綴 `_` 我也要哪天來改個 (done)
+- [ ] Document 在寫好一點
+- [ ] 地圖的限制
     
 # 有任何想要叫我重寫的地方，請發個 ISSUE
