@@ -16,16 +16,16 @@ namespace {
 class animation
 {
 private:
-    int  current_frame      = 0;
-    int  frame_inc          = 1;
-    std::chrono::high_resolution_clock::time_point old_time;
-    bool frame_locked = false;
+    int  current_frame_ = 0;
+    int  frame_inc_     = 1;
+    std::chrono::high_resolution_clock::time_point old_time_;
+    bool frame_locked_  = false;
 
     static inline auto now() { return std::chrono::high_resolution_clock::now(); }
 
 public:
-    std::chrono::high_resolution_clock::duration frame_rate  = 100ms;
-    int  max_frame    = 1;
+    std::chrono::high_resolution_clock::duration frame_rate_ = 100ms;
+    int  max_frame_ = 1;
 
     enum rotate_type
     {
@@ -36,44 +36,44 @@ public:
     rotate_type rotate_type_ = none;
 
 public:
-    animation(int max_frame, rotate_type t): max_frame {max_frame}, rotate_type_ {t} {}
+    animation(int max_frame, rotate_type t): max_frame_ {max_frame}, rotate_type_ {t} {}
 
     void animate()
     {
-        if (frame_locked or (old_time + frame_rate > now()))
+        if (frame_locked_ or (old_time_ + frame_rate_ > now()))
             return;
 
-        old_time = now();
-        current_frame += frame_inc;
+        old_time_ = now();
+        current_frame_ += frame_inc_;
 
         if (rotate_type_ == rotate_type::oscillate)
         {
-            if ((frame_inc > 0 && current_frame >= max_frame) ||
-                (current_frame <= 0))
-                frame_inc = -frame_inc;
+            if ((frame_inc_ > 0 && current_frame_ >= max_frame_) ||
+                (current_frame_ <= 0))
+                frame_inc_ = -frame_inc_;
         }
         else if (rotate_type_ == rotate_type::circle)
         {
-            if (frame_inc > 0)
+            if (frame_inc_ > 0)
             {
-                if (current_frame >= max_frame)
-                    current_frame = 0;
+                if (current_frame_ >= max_frame_)
+                    current_frame_ = 0;
             }
             else
             {
-                if (current_frame < 0)
-                    current_frame = max_frame - 1;
+                if (current_frame_ < 0)
+                    current_frame_ = max_frame_ - 1;
             }
         }
-        else if (current_frame >= max_frame)
-            current_frame = 0;
+        else if (current_frame_ >= max_frame_)
+            current_frame_ = 0;
     }
 
 public:
-    animation& set_current_frame(int f) { if (f < 0 || f >= max_frame) return *this; current_frame = f; return *this;}
-    animation& lock()   {frame_locked = true; return *this;}
-    animation& unlock() {frame_locked = false; return *this;}
-    int get_current_frame() { return current_frame; }
+    animation& set_current_frame(int f) { if (f < 0 || f >= max_frame_) return *this; current_frame_ = f; return *this;}
+    animation& lock()   {frame_locked_ = true;  return *this;}
+    animation& unlock() {frame_locked_ = false; return *this;}
+    int get_current_frame() { return current_frame_; }
 };
 
 } // namespace game
