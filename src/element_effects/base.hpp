@@ -20,14 +20,27 @@ protected:
     bool is_called = false;
     static inline auto now() { return std::chrono::high_resolution_clock::now(); }
 
+    virtual void on_start (element &) {}
+    virtual void calculate(element &) {}
+
+    inline
+    double progress()
+    {
+        double percent = (now() - start_).count() / static_cast<double>(length_.count());
+        if (percent <= 0)
+            return 0;
+        else if (percent >= 1)
+            return 1;
+        else
+            return percent;
+    }
+
 public:
     base(std::chrono::high_resolution_clock::duration length):
         length_{length} {}
 
     std::chrono::high_resolution_clock::duration length() { return length_; }
-    virtual void on_start(element &) {}
 
-    virtual
     void operator() (element &e)
     {
         if (not is_called)
@@ -36,6 +49,7 @@ public:
             start_ = now();
             on_start(e);
         }
+        calculate(e);
     }
 };
 

@@ -13,12 +13,9 @@ public:
     show(std::chrono::high_resolution_clock::duration length):
         base(length) {}
 
-    void operator() (element &e) override
+    void calculate (element &e) override
     {
-        base::operator()(e);
-        double percent = (now() - start_).count() / static_cast<double>(length_.count());
-        if (0 <= percent and percent <= 1)
-            e.set_alpha(percent * 255);
+        e.set_alpha(progress() * 255);
     }
 };
 

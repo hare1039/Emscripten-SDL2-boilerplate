@@ -22,11 +22,9 @@ public:
         expand_width_   = (mutiple_ - 1) * original_width_;
     }
 
-    void operator() (element &e) override
+    void calculate (element &e) override
     {
-        base::operator()(e);
-        double percent = (now() - start_).count() / static_cast<double>(length_.count());
-        e.amplify_to(expand_width_ * percent + original_width_);
+        e.amplify_to(expand_width_ * progress() + original_width_);
     }
 };
 
