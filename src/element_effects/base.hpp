@@ -8,17 +8,12 @@
 namespace game::elements::effects
 {
 
-namespace {
-    using namespace std::literals;
-}
-
 class base
 {
 protected:
-    std::chrono::high_resolution_clock::duration length_;
-    std::chrono::time_point<std::chrono::high_resolution_clock> start_;
+    chrono::duration length_;
+    chrono::time_point start_;
     bool is_called = false;
-    static inline auto now() { return std::chrono::high_resolution_clock::now(); }
 
     virtual void on_start (element &) {}
     virtual void calculate(element &) {}
@@ -26,7 +21,7 @@ protected:
     inline
     double progress()
     {
-        double percent = (now() - start_).count() / static_cast<double>(length_.count());
+        double percent = (chrono::now() - start_).count() / static_cast<double>(length_.count());
         if (percent <= 0)
             return 0;
         else if (percent >= 1)
@@ -46,7 +41,7 @@ public:
         if (not is_called)
         {
             is_called = true;
-            start_ = now();
+            start_ = chrono::now();
             on_start(e);
         }
         calculate(e);

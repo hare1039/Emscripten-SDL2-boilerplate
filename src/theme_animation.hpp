@@ -10,9 +10,7 @@
 namespace game
 {
 
-namespace {
-    using namespace std::literals;
-}
+namespace detail {
 
 class theme_animation
 {
@@ -35,7 +33,7 @@ public:
 
     bool is_running()
     {
-        bool should_end = std::chrono::high_resolution_clock::now() > end_;
+        bool should_end = chrono::now() > end_;
         if (should_end)
         {
             std::invoke(on_finish_);
@@ -44,10 +42,14 @@ public:
 
         return not should_end;
     }
-    theme_animation& start()      { end_ = std::chrono::high_resolution_clock::now() + length_; return *this; }
+    theme_animation& start()      { end_ = chrono::now() + length_; return *this; }
     theme_animation& calculate()  { fps_->calculate(); std::invoke(on_calculate_); return *this; }
     std::unique_ptr<fps>* get_fps() { return &fps_; }
 };
+
+} // namespace detail
+
+using theme_animation = detail::theme_animation;
 
 } // namespace game
 

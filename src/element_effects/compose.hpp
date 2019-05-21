@@ -10,17 +10,15 @@ namespace game::elements::effects
 template<typename ... Animations>
 class compose
 {
-    static inline auto now() { return std::chrono::high_resolution_clock::now(); }
-
     std::tuple<Animations ...> animations_;
-    std::chrono::high_resolution_clock::time_point start_ {now()};
+    chrono::time_point start_ {chrono::now()};
 
     template<int index>
     void run()
     {
         if constexpr (index < sizeof...(Animations))
         {
-            if (now() < (std::get<index>(animations_) + start_))
+            if (chrono::now() < (std::get<index>(animations_) + start_))
                 std::invoke(std::get<index + 1>(animations_));
             else
                 run<index + 2>();

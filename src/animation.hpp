@@ -9,22 +9,19 @@
 namespace game
 {
 
-namespace {
-    using namespace std::chrono_literals;
-}
+namespace detail
+{
 
 class animation
 {
 private:
     int  current_frame_ = 0;
     int  frame_inc_     = 1;
-    std::chrono::high_resolution_clock::time_point old_time_;
+    chrono::time_point old_time_;
     bool frame_locked_  = false;
 
-    static inline auto now() { return std::chrono::high_resolution_clock::now(); }
-
 public:
-    std::chrono::high_resolution_clock::duration frame_rate_ = 100ms;
+    chrono::duration frame_rate_ = 100ms;
     int  max_frame_ = 1;
 
     enum rotate_type
@@ -40,10 +37,10 @@ public:
 
     void animate()
     {
-        if (frame_locked_ or (old_time_ + frame_rate_ > now()))
+        if (frame_locked_ or (old_time_ + frame_rate_ > chrono::now()))
             return;
 
-        old_time_ = now();
+        old_time_ = chrono::now();
         current_frame_ += frame_inc_;
 
         if (rotate_type_ == rotate_type::oscillate)
@@ -75,6 +72,10 @@ public:
     animation& unlock() {frame_locked_ = false; return *this;}
     int get_current_frame() { return current_frame_; }
 };
+
+} // namespace detail
+
+using animation = detail::animation;
 
 } // namespace game
 #endif // ANIMATION_HPP_

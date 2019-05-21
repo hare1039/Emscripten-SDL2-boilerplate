@@ -10,11 +10,9 @@
 namespace game
 {
 
-namespace {
-    using namespace std::chrono_literals;
-    inline auto now() { return std::chrono::high_resolution_clock::now(); }
-    using time_point = std::chrono::high_resolution_clock::time_point;
-}
+namespace detail
+{
+
 /*
 ** http://www.sdltutorials.com/sdl-collision **
  * Next, we have the actual calculation for the SpeedFactor.
@@ -46,8 +44,8 @@ namespace {
 class fps
 {
     double speed_factor_  = 0;
-    time_point old_time_;
-    time_point last_time_;
+    chrono::time_point old_time_;
+    chrono::time_point last_time_;
     int frames_    = 0;
     int number_frames_ = 0;
 
@@ -58,16 +56,16 @@ public:
         if (is_paused_)
             return;
 
-        if (old_time_ + 1s < now())
+        if (old_time_ + 1s < chrono::now())
         {
-            old_time_      = now();
+            old_time_      = chrono::now();
             number_frames_ = frames_;
             frames_        = 0;
         }
 
-        std::chrono::duration<double> delta = now() - last_time_;
+        std::chrono::duration<double> delta = chrono::now() - last_time_;
         speed_factor_ = ((delta > 1s) ? 0 /* pause game if browser stop looping */ : delta.count()) * FPS;
-        last_time_    = now();
+        last_time_    = chrono::now();
         frames_++;
     }
 
@@ -78,7 +76,7 @@ public:
         if (is_paused_)
         {
             is_paused_     = false;
-            old_time_      = now();
+            old_time_      = chrono::now();
             number_frames_ = frames_ = 0;
         }
     }
@@ -86,6 +84,10 @@ public:
     int frame() { return (is_paused_)? 0 : number_frames_; }
     double speed_factor() { return (is_paused_)? 0 : speed_factor_; }
 };
+
+} // namespace detail
+
+using fps = detail::fps;
 
 } // namespace game
 
